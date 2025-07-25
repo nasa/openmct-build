@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../src/yaml/openmct-configuration-schema.json
+openmct:
+    plugins:
+    - openmct.plugins.Espresso
+    - openmct.plugins.MyItems
+    - openmct.plugins.LocalStorage
+    - openmct.plugins.UTCTimeSystem
+    - openmct.plugins.PlanLayout:
+        options:
+            creatable: true
+    - openmct.plugins.DisplayLayout:
+        options:
+            showAsView:
+            - summary-widget
+            - example.imagery
+    - openmct.plugins.ClearData:
+        options:
+            indicator: true
+            items:
+            - table
+            - telemetry.plot.overlay
+            - telemetry.plot.stacked
+            - example.imagery
