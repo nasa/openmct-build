@@ -30,6 +30,7 @@ function build(instance: string) {
 }
 
 function main() {
+    const api = new Api();
     const args = parseArgs({
         options: {
             instance: {
@@ -41,7 +42,7 @@ function main() {
     });
     const [noun, verb, name] = args.positionals;
     console.log(`noun: ${noun}, verb: ${verb}, name: ${name}, instance: ${args.values.instance}`);
-    const command = Api.getCommandForNoun(noun);
+    const command = api.getCommandForNoun(noun);
     command.execute(verb, name, args.values);
     build(args.values.instance);
 }
