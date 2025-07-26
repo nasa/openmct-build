@@ -1,7 +1,7 @@
 import PluginsCommand from "./commands/PluginsCommand";
 
 export default class Api {
-    static getCommandForNoun(noun: string): PluginsCommand {
+    getCommandForNoun(noun: string): PluginsCommand {
         switch (noun) {
             case 'plugins':
                 return new PluginsCommand();

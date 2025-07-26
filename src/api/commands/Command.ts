@@ -1,9 +1,8 @@
 export default class Command {
     execute(verb: string, ...args: any[]) {
-        const inherited = this.constructor;
-        if (!inherited.hasOwnProperty(verb)) {
+        if (this[verb as keyof typeof this] === undefined) {
             throw new Error(`Unknown verb: ${verb}`);
         }
-        return (inherited[verb as keyof typeof inherited] as Function)(...args);
+        return (this[verb as keyof typeof this] as Function)(...args);
     }
 }
