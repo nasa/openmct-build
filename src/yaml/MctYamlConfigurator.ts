@@ -21,15 +21,31 @@ export default class MctYamlConfigurator {
     }
 
     loadFromYaml(yaml: string): OpenMctConfiguration {
-        let doc = this.#loadAndNormalizeYaml(yaml);
-        doc = this.#applyBaseConfiguration(doc);
+        let doc: OpenMctConfigurationSchema;
+        if (yaml === undefined || yaml.length === 0) {
+            doc = this.loadDefaultConfiguration();
+        } else {
+            doc = this.#loadYaml(yaml);
+            doc = this.#applyBaseConfiguration(doc);
+        }
 
         this.#openmctConfiguration = new OpenMctConfiguration(doc);
 
         return this.#openmctConfiguration;
     }
 
-    #loadAndNormalizeYaml(yaml: string): OpenMctConfigurationSchema {
+    serializeToYaml() {
+        return yamllib.dump(this.#openmctConfiguration);
+    }
+
+    loadDefaultConfiguration(): OpenMctConfigurationSchema {
+        const baseConfigText = fs.readFileSync(BASE_CONFIG_LOCATION, 'utf-8');
+        const baseConfigDoc = this.#loadYaml(baseConfigText);
+
+        return baseConfigDoc;
+    }
+
+    #loadYaml(yaml: string): OpenMctConfigurationSchema {
         let doc = yamllib.load(yaml) as OpenMctConfigurationSchema;
 
         const result = this.#validator.validate(doc, this.#jsonSchema);
@@ -39,8 +55,6 @@ export default class MctYamlConfigurator {
             ).join('\n');
             throw new ValidationError(`Validation failed:\n${errorMessages}`);
         }
-
-        doc.openmct.plugins = this.#normalizePlugins(doc.openmct.plugins as (PluginMap | string)[]);
 
         return doc;
     }
@@ -58,10 +72,21 @@ export default class MctYamlConfigurator {
     }
 
     #applyBaseConfiguration(doc: OpenMctConfigurationSchema): OpenMctConfigurationSchema {
-        const baseConfigText = fs.readFileSync(BASE_CONFIG_LOCATION, 'utf-8');
-        const baseConfigDoc = this.#loadAndNormalizeYaml(baseConfigText);
+        const baseConfigDoc = this.loadDefaultConfiguration();
+        const mappedBasePlugins = this.#normalizePlugins(baseConfigDoc.openmct.plugins);
+        const mappedDocPlugins = this.#normalizePlugins(doc.openmct?.plugins);
+        const mergedPlugins = merge(mappedBasePlugins, mappedDocPlugins);
 
-        return merge(doc, baseConfigDoc);
+        const arrayedPlugins: (string | PluginMap)[] = Object.entries(mergedPlugins).map(([pluginName, plugin]) => {
+            if (plugin !== undefined) {
+                return { [pluginName]: plugin } as PluginMap;
+            } else {
+                return pluginName as string;
+            }
+        });
+        doc.openmct.plugins = arrayedPlugins;
+
+        return doc;
     }
 
 

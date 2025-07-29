@@ -10,7 +10,7 @@ describe('API', () => {
 
     it('Returns a PluginsCommand object', () => {
         let pluginsCommand:PluginsCommand;
-        pluginsCommand = api.getCommandForNoun('plugins');
+        pluginsCommand = api.getCommandForNoun('plugins') as PluginsCommand;
         expect(pluginsCommand).toBeDefined();
         expect(pluginsCommand).toBeInstanceOf(PluginsCommand);
     });

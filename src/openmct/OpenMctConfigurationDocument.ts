@@ -14,7 +14,7 @@ export interface OpenMctConfigurationSchema {
      * Version of OpenMCT to use
      */
     version?: string;
-    plugins: (string | PluginMap)[] | PluginMap;
+    plugins: (string | PluginMap)[];
   };
 }
 export interface PluginMap {

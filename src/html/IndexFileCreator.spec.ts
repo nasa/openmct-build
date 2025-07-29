@@ -12,9 +12,9 @@ describe('YamlConfigurator', () => {
         const yamlString = `
         openmct:
             plugins:
-            - openmct.Plugins.LocalClock
-            - openmct.Plugins.example.Generator
-            - openmct.Plugins.PlanLayout:
+            - openmct.plugins.LocalClock
+            - openmct.plugins.example.Generator
+            - openmct.plugins.PlanLayout:
                 options:
                     creatable: true
         `;
@@ -34,9 +34,9 @@ describe('YamlConfigurator', () => {
             const document = indexFileCreator.generateDocument();
 
             const htmlText = document.documentElement.innerHTML;
-            expect(htmlText).toContain('openmct.install(openmct.Plugins.LocalClock());');
-            expect(htmlText).toContain('openmct.install(openmct.Plugins.example.Generator());');
-            expect(htmlText).toContain('openmct.install(openmct.Plugins.PlanLayout({"creatable":true}));');
+            expect(htmlText).toContain('openmct.install(openmct.plugins.LocalClock());');
+            expect(htmlText).toContain('openmct.install(openmct.plugins.example.Generator());');
+            expect(htmlText).toContain('openmct.install(openmct.plugins.PlanLayout({"creatable":true}));');
         });
     });
 });

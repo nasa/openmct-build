@@ -3,7 +3,7 @@ import PluginsCommand from "./PluginsCommand";
 
 describe('PluginsCommand', () => {
     let api:Api;
-    let pluginsCommand:PluginsCommand
+    let pluginsCommand:PluginsCommand;
 
     beforeEach(() => {
         api = new Api();
@@ -11,11 +11,11 @@ describe('PluginsCommand', () => {
     });
 
     it('Lists installed plugins', () => {
-        expect(() => pluginsCommand.execute('list')).not.toThrow();
+        expect(() => pluginsCommand.execute('list', undefined, {instance: 'default'})).not.toThrow();
     });
 
     it('Supports adding a new plugin', () => {
-        expect(() => pluginsCommand.execute('add', 'test plugin', {})).not.toThrow();
+        expect(() => pluginsCommand.execute('add', 'test plugin', {instance: 'default'})).not.toThrow();
     });
 
     it('rejects unknown verbs', () => {
