@@ -1,4 +1,4 @@
-import { Plugin } from "./OpenMctConfigurationDocument";
+import { Plugin, PluginMap } from "./OpenMctConfigurationDocument";
 
 export default class OpenMctPlugin {
     #pluginDefinition: Plugin;
@@ -13,7 +13,7 @@ export default class OpenMctPlugin {
         return this.#installFunctionName;
     }
 
-    getOptions(): object | undefined {
-        return this.#pluginDefinition['options'];
+    getOptions(): Plugin | undefined {
+        return this.#pluginDefinition;
     }
 }

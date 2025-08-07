@@ -22,8 +22,8 @@ export default class IndexFileCreator {
          */
 
         this.#configuration.getPlugins().forEach(plugin => {
-            const options = plugin.getOptions();
-            pluginInstallFunctionBody += `openmct.install(${plugin.getInstallFunctionName()}(${options ? JSON.stringify(options) : ''}));\n`;
+            const yamlPlugin = plugin.getOptions();
+            pluginInstallFunctionBody += `openmct.install(${plugin.getInstallFunctionName()}(${yamlPlugin?.options ? JSON.stringify(yamlPlugin.options) : ''}));\n`;
         });
         const pluginInstallFunction = `(() => {${pluginInstallFunctionBody}})();`;
 

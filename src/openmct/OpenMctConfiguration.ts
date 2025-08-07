@@ -23,11 +23,20 @@ export default class OpenMctConfiguration {
             }
         });
     }
-    addPlugin(pluginName:string, options:any) {
+    addPlugin(plugin: OpenMctPlugin) {
         if (this.#configuration.openmct.plugins === undefined) {
             this.#configuration.openmct.plugins = [];
         }
-        this.#configuration.openmct.plugins.push(options);
+        const yamlPlugin = plugin.getOptions();
+        if (yamlPlugin === undefined) {
+            this.#configuration.openmct.plugins.push(plugin.getInstallFunctionName());    
+        } else {
+            const yamlPluginMap = {} as PluginMap;
+            yamlPluginMap[plugin.getInstallFunctionName()] = yamlPlugin;
+            this.#configuration.openmct.plugins.push(yamlPluginMap);
+    
+        }
+
 
     }
     static loadConfigurationForInstance(instance: string): OpenMctConfiguration {

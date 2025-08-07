@@ -6,7 +6,7 @@ import IndexFileCreator from "../../html/IndexFileCreator";
 import OpenMctConfiguration, { INSTANCE_PATH, CONFIGURATION_YAML } from "../../openmct/OpenMctConfiguration";
 
 export default class BuildCommand extends Command {
-    execute(verb: string, name: string, {instance}: {instance: string}) {
+    execute(verb: undefined, name: undefined, {instance}: {instance: string}) {
         const fullInstancePath = path.join(__dirname, INSTANCE_PATH, instance);
         const configPath = path.join(fullInstancePath, CONFIGURATION_YAML);
         const configurator = new MctYamlConfigurator();
