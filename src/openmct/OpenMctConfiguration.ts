@@ -8,6 +8,8 @@ import appRootPath from 'app-root-path';
 export const INSTANCE_PATH = path.join(appRootPath.path, 'instances');
 export const CONFIGURATION_YAML = "instance.yaml";
 
+const DEFAULT_OPEN_MCT_VERSION = 'stable';
+
 export default class OpenMctConfiguration {
     #configuration: OpenMctConfigurationSchema;
 
@@ -16,29 +18,20 @@ export default class OpenMctConfiguration {
     }
     getPlugins() {
         return this.#configuration.openmct.plugins.map((plugin: PluginMap | string) => {
-            if (typeof plugin === 'string') {
-                return new OpenMctPlugin(plugin, {});
-            } else {
-                return new OpenMctPlugin(Object.keys(plugin)[0], plugin[Object.keys(plugin)[0]]);
-            }
+            return OpenMctPlugin.fromYamlPluginMapOrString(plugin);
         });
     }
     addPlugin(plugin: OpenMctPlugin) {
         if (this.#configuration.openmct.plugins === undefined) {
             this.#configuration.openmct.plugins = [];
         }
-        const yamlPlugin = plugin.getOptions();
-        if (yamlPlugin === undefined) {
-            this.#configuration.openmct.plugins.push(plugin.getInstallFunctionName());    
-        } else {
-            const yamlPluginMap = {} as PluginMap;
-            yamlPluginMap[plugin.getInstallFunctionName()] = yamlPlugin;
-            this.#configuration.openmct.plugins.push(yamlPluginMap);
-    
-        }
-
-
+        this.#configuration.openmct.plugins.push(plugin.toYamlPluginMapOrString());
     }
+
+    getOpenMctVersion(): string {
+        return this.#configuration.openmct.version || DEFAULT_OPEN_MCT_VERSION;
+    }
+
     static loadConfigurationForInstance(instance: string): OpenMctConfiguration {
         const configurator = new MctYamlConfigurator();
         const configString = fs.readFileSync(path.join(INSTANCE_PATH, instance, CONFIGURATION_YAML), 'utf-8');

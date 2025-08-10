@@ -4,12 +4,21 @@ import * as fs from 'fs';
 import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
 import IndexFileCreator from "../../html/IndexFileCreator";
 import OpenMctConfiguration, { INSTANCE_PATH, CONFIGURATION_YAML } from "../../openmct/OpenMctConfiguration";
+import NpmPackage from "../npm/NpmPackage";
 
 export default class BuildCommand extends Command {
     execute(verb: undefined, name: undefined, {instance}: {instance: string}) {
-        const fullInstancePath = path.join(__dirname, INSTANCE_PATH, instance);
+        const fullInstancePath = path.join(INSTANCE_PATH, instance);
         const configPath = path.join(fullInstancePath, CONFIGURATION_YAML);
         const configurator = new MctYamlConfigurator();
+
+        let config: OpenMctConfiguration = this.#getConfiguration({configPath, fullInstancePath, configurator});
+
+        this.#installNpmPackages({config, fullInstancePath});
+        this.#generateHtmlDocument({config, fullInstancePath});
+    }
+
+    #getConfiguration({configPath, fullInstancePath, configurator}: {configPath: string, fullInstancePath: string, configurator: MctYamlConfigurator}):OpenMctConfiguration {
         let config: OpenMctConfiguration;
 
         if (fs.existsSync(configPath)) {
@@ -20,9 +29,19 @@ export default class BuildCommand extends Command {
             config = new OpenMctConfiguration(configurator.loadDefaultConfiguration());
         }
 
+        return config;
+
+    }
+
+    #generateHtmlDocument({config, fullInstancePath}: {config: OpenMctConfiguration, fullInstancePath: string}) {
         const indexFileCreator = new IndexFileCreator(config);
         const indexFile = indexFileCreator.generateDocument();
 
         fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.innerHTML);
+    }
+
+    #installNpmPackages({config, fullInstancePath}: {config: OpenMctConfiguration, fullInstancePath: string}) {
+        const npmPackage = NpmPackage.getOrCreateNodePackage({fullInstancePath, config});
+        npmPackage.install();
     }
 }

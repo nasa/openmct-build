@@ -9,7 +9,7 @@ export default class PluginsCommand extends Command {
         const config = OpenMctConfiguration.loadConfigurationForInstance(instance);
         const plugins = config.getPlugins();
         console.log(`Plugins for instance ${instance}:`);
-        plugins.forEach((plugin: OpenMctPlugin) => console.log(plugin.getInstallFunctionName()));
+        plugins.forEach((plugin: OpenMctPlugin) => console.log(plugin));
     }
     add(name:string, {instance, pluginDefinition}: {instance: string, pluginDefinition: PluginMap}) {
         console.log(`Installing plugin ${name} for instance ${instance}`);
