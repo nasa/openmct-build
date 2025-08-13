@@ -8,9 +8,6 @@ export default class OpenMctPlugin {
         this.#installFunctionName = pluginName;
         if (pluginDefinition === undefined) {
             this.#pluginDefinition = {} as PluginMap;
-            this.#pluginDefinition = {
-                source: 'local'
-            };
         } else {
             this.#pluginDefinition = pluginDefinition;
         }
@@ -57,5 +54,9 @@ export default class OpenMctPlugin {
 
     getOptions(): object | undefined {
         return this.#pluginDefinition.options;
+    }
+
+    getSource(): string {
+        return this.#pluginDefinition.source || 'builtin';
     }
 }

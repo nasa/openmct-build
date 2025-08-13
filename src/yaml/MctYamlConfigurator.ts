@@ -73,8 +73,8 @@ export default class MctYamlConfigurator {
 
     #applyBaseConfiguration(doc: OpenMctConfigurationSchema): OpenMctConfigurationSchema {
         const baseConfigDoc = this.loadDefaultConfiguration();
-        const mappedBasePlugins = this.#normalizePlugins(baseConfigDoc.openmct.plugins);
-        const mappedDocPlugins = this.#normalizePlugins(doc.openmct?.plugins);
+        const mappedBasePlugins = this.#normalizePlugins(baseConfigDoc.openmct.plugins ?? []);
+        const mappedDocPlugins = this.#normalizePlugins(doc.openmct?.plugins ?? []);
         const mergedPlugins = merge(mappedBasePlugins, mappedDocPlugins);
 
         const arrayedPlugins: (string | PluginMap)[] = Object.entries(mergedPlugins).map(([pluginName, plugin]) => {

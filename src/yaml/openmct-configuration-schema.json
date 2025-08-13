@@ -1,8 +1,16 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "OpenMCT Configuration Schema",
+    "title": "OpenMct Configuration Schema",
     "description": "Schema for OpenMCT configuration YAML",
     "definitions": {
+        "pluginMap": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                  "$ref": "#/definitions/plugin"
+                }
+            }
+        },
         "plugin": {
             "type": "object",
             "properties": {
@@ -43,13 +51,12 @@
                   "type": "string",
                   "description": "Plugin identifier (e.g., 'openmct.Plugins.LocalStorage')"
                 },{
-                    "$ref": "#/definitions/plugin" 
+                    "$ref": "#/definitions/pluginMap" 
                 }
               ]
             }
           }
-        },
-        "required": ["plugins"]
+        }
       }
     }
   }

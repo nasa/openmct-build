@@ -42,6 +42,7 @@ export default class BuildCommand extends Command {
 
     #installNpmPackages({config, fullInstancePath}: {config: OpenMctConfiguration, fullInstancePath: string}) {
         const npmPackage = NpmPackage.getOrCreateNodePackage({fullInstancePath, config});
+        const nodePackages = config.getNodePlugins();
         npmPackage.install();
     }
 }

@@ -17,8 +17,13 @@ export default class OpenMctConfiguration {
         this.#configuration = configuration;
     }
     getPlugins() {
-        return this.#configuration.openmct.plugins.map((plugin: PluginMap | string) => {
+        return this.#configuration.openmct.plugins?.map((plugin: PluginMap | string) => {
             return OpenMctPlugin.fromYamlPluginMapOrString(plugin);
+        }) ?? [];
+    }
+    getNodePlugins() {
+        return this.getPlugins().filter((plugin: OpenMctPlugin) => {
+            return plugin.getSource() !== 'builtin';
         });
     }
     addPlugin(plugin: OpenMctPlugin) {

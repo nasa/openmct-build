@@ -14,12 +14,16 @@ export interface OpenMctConfigurationSchema {
      * Version of OpenMCT to use
      */
     version?: string;
-    plugins: (string | PluginMap)[];
+    plugins?: (string | PluginMap)[];
   };
 }
 export interface PluginMap {
-    [name: string]: Plugin;
+  [k: string]: Plugin;
 }
+/**
+ * This interface was referenced by `PluginMap`'s JSON-Schema definition
+ * via the `patternProperty` "^.*$".
+ */
 export interface Plugin {
   source?: 'npm' | 'github' | 'local' | 'builtin';
   /**
@@ -30,4 +34,5 @@ export interface Plugin {
    * The options to be passed to the plugin at install time
    */
   options?: {};
+  [k: string]: unknown | undefined;
 }

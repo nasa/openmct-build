@@ -7,7 +7,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 async function generateTypes() {
   const schemaPath = join(__dirname, '../src/yaml/openmct-configuration-schema.json');
-  const outputPath = join(__dirname, '../src/openmct/OpenmctConfigurationDocument.ts');
+  const outputPath = join(__dirname, '../src/openmct/OpenMctConfigurationDocument.ts');
   
   try {
     const ts = await compileFromFile(schemaPath, {
