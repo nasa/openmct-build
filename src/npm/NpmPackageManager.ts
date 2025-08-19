@@ -1,15 +1,16 @@
 import { PackageJSON } from "@npm/types";
-import OpenMctConfiguration from "../../openmct/OpenMctConfiguration";
+import OpenMctConfiguration from "../openmct/OpenMctConfiguration";
 import path from "path";
 import * as fs from 'fs';
 import * as child_process from 'child_process';
+import NpmPackage from "./NpmPackage";
 
 const PACKAGE_DEFAULTS = {
     private: true,
     license: 'UNLICESNSED'
 } as PackageJSON;
 
-export default class NpmPackage {
+export default class NpmPackageManager {
     #fullInstancePath: string;
     #packageJsonObject: PackageJSON | undefined;
     #config: OpenMctConfiguration;
@@ -42,8 +43,12 @@ export default class NpmPackage {
 
         child_process.spawnSync('npm', ['install'], { cwd: this.#fullInstancePath });
     }
-    static getOrCreateNodePackage({fullInstancePath, config}: {fullInstancePath: string, config: OpenMctConfiguration}): NpmPackage {
-        const npmPackage = new NpmPackage({fullInstancePath, config});
+    getPackage(packageName: string): NpmPackage {
+        return new NpmPackage({fullInstancePath: this.#fullInstancePath, nameAsConfigured: packageName});
+    }
+
+    static getNodePackageManagerForInstance({fullInstancePath, config}: {fullInstancePath: string, config: OpenMctConfiguration}): NpmPackageManager {
+        const npmPackage = new NpmPackageManager({fullInstancePath, config});
         
         return npmPackage;
     }

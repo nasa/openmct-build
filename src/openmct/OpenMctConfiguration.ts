@@ -26,6 +26,11 @@ export default class OpenMctConfiguration {
             return plugin.getSource() !== 'builtin';
         });
     }
+    getBuiltinPlugins() {
+        return this.getPlugins().filter((plugin: OpenMctPlugin) => {
+            return plugin.getSource() === 'builtin';
+        });
+    }
     addPlugin(plugin: OpenMctPlugin) {
         if (this.#configuration.openmct.plugins === undefined) {
             this.#configuration.openmct.plugins = [];

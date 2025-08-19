@@ -4,7 +4,8 @@ import * as fs from 'fs';
 import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
 import IndexFileCreator from "../../html/IndexFileCreator";
 import OpenMctConfiguration, { INSTANCE_PATH, CONFIGURATION_YAML } from "../../openmct/OpenMctConfiguration";
-import NpmPackage from "../npm/NpmPackage";
+import NpmPackageManager from "../../npm/NpmPackageManager";
+import OpenMctPlugin from "../../openmct/OpenMctPlugin";
 
 export default class BuildCommand extends Command {
     execute(verb: undefined, name: undefined, {instance}: {instance: string}) {
@@ -13,9 +14,10 @@ export default class BuildCommand extends Command {
         const configurator = new MctYamlConfigurator();
 
         let config: OpenMctConfiguration = this.#getConfiguration({configPath, fullInstancePath, configurator});
-
-        this.#installNpmPackages({config, fullInstancePath});
-        this.#generateHtmlDocument({config, fullInstancePath});
+        const npmPackage = NpmPackageManager.getNodePackageManagerForInstance({fullInstancePath, config});
+        
+        this.#installNpmPackages({config, npmPackage});
+        this.#generateHtmlDocument({config, fullInstancePath, npmPackage});
     }
 
     #getConfiguration({configPath, fullInstancePath, configurator}: {configPath: string, fullInstancePath: string, configurator: MctYamlConfigurator}):OpenMctConfiguration {
@@ -33,16 +35,17 @@ export default class BuildCommand extends Command {
 
     }
 
-    #generateHtmlDocument({config, fullInstancePath}: {config: OpenMctConfiguration, fullInstancePath: string}) {
-        const indexFileCreator = new IndexFileCreator(config);
+    #generateHtmlDocument({config, fullInstancePath, npmPackage}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackage: NpmPackageManager}) {
+        const indexFileCreator = new IndexFileCreator(config, npmPackage);
         const indexFile = indexFileCreator.generateDocument();
 
-        fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.innerHTML);
+        fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.outerHTML);
     }
 
-    #installNpmPackages({config, fullInstancePath}: {config: OpenMctConfiguration, fullInstancePath: string}) {
-        const npmPackage = NpmPackage.getOrCreateNodePackage({fullInstancePath, config});
+    #installNpmPackages({config, npmPackage}: {config: OpenMctConfiguration, npmPackage: NpmPackageManager}) {
         const nodePackages = config.getNodePlugins();
-        npmPackage.install();
+        nodePackages.forEach((nodePackage: OpenMctPlugin) => {
+            npmPackage.installPackage(nodePackage.getInstallFunctionName());
+        });
     }
 }

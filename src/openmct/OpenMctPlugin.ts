@@ -1,4 +1,9 @@
 import { Plugin, PluginMap } from "./OpenMctConfigurationDocument";
+import * as path from 'path';
+import * as fs from 'fs';
+import NpmPackageManager from "../npm/NpmPackageManager";
+
+const DEFAULT_PLUGIN_SOURCE = 'builtin';
 
 export default class OpenMctPlugin {
     #pluginDefinition: Plugin;
@@ -7,7 +12,9 @@ export default class OpenMctPlugin {
     constructor(pluginName: string, pluginDefinition?: Plugin) {
         this.#installFunctionName = pluginName;
         if (pluginDefinition === undefined) {
-            this.#pluginDefinition = {} as PluginMap;
+            this.#pluginDefinition = {
+                source: DEFAULT_PLUGIN_SOURCE
+            } as Plugin;
         } else {
             this.#pluginDefinition = pluginDefinition;
         }
@@ -57,6 +64,6 @@ export default class OpenMctPlugin {
     }
 
     getSource(): string {
-        return this.#pluginDefinition.source || 'builtin';
+        return this.#pluginDefinition.source ?? DEFAULT_PLUGIN_SOURCE;
     }
 }
