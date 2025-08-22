@@ -12,7 +12,7 @@ export default class IndexFileCreator {
         this.#configuration = configuration;
         this.#npmPackageManager = npmPackage;
     }
-    #buildIncludeBlock(document: Document): HTMLScriptElement[] {
+    #buildIncludeOpenMctBlock(document: Document): HTMLScriptElement[] {
         const scriptElement = document.createElement('script');
         scriptElement.src = 'node_modules/openmct/dist/openmct.js';
 
@@ -34,10 +34,7 @@ export default class IndexFileCreator {
             scriptElement.textContent += `openmct.install((await loadUmd('/${src}'))(${JSON.stringify(plugin.getOptions())}));\r\n`;
         });
 
-        //Start Open MCT which has to happen after all dynamic imports have resolved.
-        scriptElement.textContent += `
-            openmct.start();
-        `;
+        scriptElement.textContent += `document.dispatchEvent(new Event("OpenMCTPluginsInstalled"));`;
 
         return scriptElement;
     }
@@ -49,17 +46,27 @@ export default class IndexFileCreator {
             pluginInstallFunctionBody += `openmct.install(${plugin.generateInstallFunctionCall()});\n`;
         });
         const pluginInstallFunction = `(() => {${pluginInstallFunctionBody}})();`;
+
         const scriptElement = document.createElement('script');
         scriptElement.textContent = pluginInstallFunction;
-        
         return scriptElement;
     }
+
+    #buildInitializationBlock(document: Document): HTMLScriptElement {
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = `
+        openmct.time.setTimeSystem('utc');
+        openmct.time.setClock('local');
+        openmct.time.setMode('realtime', {start: -60000, end: 0});
+        `;
+
+        return scriptElement;
+    }
+
     #buildStartBlock(document: Document): HTMLScriptElement {
         const scriptElement = document.createElement('script');
         scriptElement.defer = true;
-        scriptElement.textContent = `document.addEventListener("DOMContentLoaded", function () {
-            openmct.time.setTimeSystem('utc');
-            openmct.time.setClock('local', {start: -900000, end: 0});
+        scriptElement.textContent = `document.addEventListener("OpenMCTPluginsInstalled", function () {
             openmct.start();
         });`;
         return scriptElement;
@@ -68,12 +75,13 @@ export default class IndexFileCreator {
         const template = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
         const dom = new JSDOM(template);
         const document = dom.window.document;
-        const scripts = this.#buildIncludeBlock(document);
+        const scripts = this.#buildIncludeOpenMctBlock(document);
         scripts.forEach(script => document.head.appendChild(script));
         const umdLoadBlock = this.#buildUmdLoadBlock(document);
         document.head.appendChild(this.#buildBuiltinsInstallBlock(document))
         document.head.appendChild(umdLoadBlock);
-        //document.head.appendChild(this.#buildStartBlock(document));
+        document.head.appendChild(this.#buildInitializationBlock(document));
+        document.head.appendChild(this.#buildStartBlock(document));
 
         return document;
     }

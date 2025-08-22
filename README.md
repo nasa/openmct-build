@@ -3,11 +3,12 @@
 This tool helps configure OpenMCT applications using YAML configuration files.
 
 ## TODO
-- [ ] Support single Open MCT instance of latest stable with built-in plugins
+- [X] Support single Open MCT instance of latest stable with built-in plugins
+- [ ] Support initialization of an instance from scratch
+- [ ] Externalize initialization block to local plugin
+- [ ] Support adding and removing plugins via CLI
 - [ ] Support multiple Open MCT instances
-- [ ] Support post-hoc configuration of those instances after creation (each instance has a yaml file) 
-- [ ] Support custom plugins
-- [ ] Support different plugin sources (npm, github, local, builtin)
+- [ ] Tests
 
 ## Development
 

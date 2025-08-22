@@ -14,11 +14,3 @@ openmct:
             showAsView:
             - summary-widget
             - example.imagery
-    - openmct.plugins.ClearData:
-        options:
-            indicator: true
-            items:
-            - table
-            - telemetry.plot.overlay
-            - telemetry.plot.stacked
-            - example.imagery
