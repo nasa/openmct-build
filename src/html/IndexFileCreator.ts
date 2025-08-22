@@ -25,7 +25,7 @@ export default class IndexFileCreator {
         scriptElement.type = 'module';
         scriptElement.async = true;
         scriptElement.blocking = 'render';
-        scriptElement.textContent = `import loadUmd from './src/load-umd.js';\r\n`;
+        scriptElement.textContent = `import loadUmd from './assets/load-umd.js';\r\n`;
         this.#configuration.getNodePlugins().map(plugin => {
             const src = this.#npmPackageManager.getPackage(plugin.getInstallFunctionName()).getEntryPoint();
             if (src === undefined) {

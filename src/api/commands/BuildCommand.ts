@@ -18,6 +18,7 @@ export default class BuildCommand extends Command {
         
         this.#installNpmPackages({config, npmPackage});
         this.#generateHtmlDocument({config, fullInstancePath, npmPackage});
+        this.#copyAssets({fullInstancePath});
     }
 
     #getConfiguration({configPath, fullInstancePath, configurator}: {configPath: string, fullInstancePath: string, configurator: MctYamlConfigurator}):OpenMctConfiguration {
@@ -42,8 +43,13 @@ export default class BuildCommand extends Command {
         fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.outerHTML);
     }
 
+    #copyAssets({fullInstancePath}: {fullInstancePath: string}) {
+        fs.cpSync(path.join(__dirname, '..', '..', 'assets'), path.join(fullInstancePath, 'assets'), { recursive: true });
+    }
+
     #installNpmPackages({config, npmPackage}: {config: OpenMctConfiguration, npmPackage: NpmPackageManager}) {
         const nodePackages = config.getNodePlugins();
+        npmPackage.install();
         nodePackages.forEach((nodePackage: OpenMctPlugin) => {
             npmPackage.installPackage(nodePackage.getInstallFunctionName());
         });

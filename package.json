@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "scripts/mct-cli.js",
+  "bin": {
+    "mct-cli": "scripts/mct-cli.js"
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",

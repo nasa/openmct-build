@@ -1,0 +1,15 @@
+openmct:
+  version: '4.1.0'
+  plugins:
+  - akhenry/openmct-yamcs:
+      source: 'github'
+      library:
+        type: 'umd'
+        installFunctionName: 'openmctYamcs'
+      options:
+        yamcsDictionaryEndpoint: 'http://localhost:8090/'
+        yamcsHistoricalEndpoint: 'http://localhost:8090/'
+        yamcsInstance: 'myproject'
+        yamcsFolder: 'myproject'
+        yamcsProcessor: 'realtime'
+        yamcsWebsocketEndpoint: 'http://localhost:8090/api/websocket'
