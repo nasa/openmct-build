@@ -37,7 +37,7 @@ export default class OpenMctPlugin {
     }
 
     toYamlPluginMapOrString(): PluginMap | string {
-        if (this.#pluginDefinition !== undefined) {
+        if (this.#hasDefinition()) {
             const pluginMap = {} as PluginMap;
             pluginMap[this.#installFunctionName] = this.#pluginDefinition;
 
@@ -45,6 +45,10 @@ export default class OpenMctPlugin {
         } else {
             return this.#installFunctionName;
         }
+    }
+
+    #hasDefinition(): boolean {
+        return this.#pluginDefinition !== undefined;
     }
 
     generateInstallFunctionCall(): string {

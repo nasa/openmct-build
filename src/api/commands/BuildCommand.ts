@@ -12,24 +12,8 @@ export default class BuildCommand extends Command {
     async execute(verb: undefined, name: undefined, {instance, template: template}: {instance: string, template?: string}) {
         const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();
-        let configPath: string = path.join(fullInstancePath, CONFIGURATION_YAML);
+        const config:OpenMctConfiguration = await configurator.resolveConfiguration({template, instance});
 
-        if (template !== undefined) {
-            if (fs.existsSync(configPath)) {
-                const rl = readline.createInterface({
-                    input: process.stdin, //or fileStream 
-                    output: process.stdout
-                  });
-                const answer = await rl.question('You have specified a template. This will override any existing configuration for this instance. Are you sure? (y/n) ');
-                rl.close();
-                if (answer !== 'y') {
-                    return;
-                }
-            }
-            configPath = template;
-        }
-
-        const config:OpenMctConfiguration = this.#getConfiguration({configPath, configurator});
         this.#createDirectoryStructureIfNeeded(fullInstancePath);
         this.#copyAssets({fullInstancePath});
 
@@ -42,20 +26,6 @@ export default class BuildCommand extends Command {
         if (!fs.existsSync(fullInstancePath)) {
             fs.mkdirSync(fullInstancePath, { recursive: true });
         }
-    }
-
-    #getConfiguration({configPath, configurator}: {configPath?: string, configurator: MctYamlConfigurator}):OpenMctConfiguration {
-        let config: OpenMctConfiguration;
-
-        if (configPath !== undefined) {
-            const configString = fs.readFileSync(configPath, 'utf-8');
-            config = configurator.loadFromYaml(configString);
-        } else {
-            config = new OpenMctConfiguration(configurator.loadDefaultConfiguration());
-        }
-
-        return config;
-
     }
 
     #generateHtmlDocument({config, fullInstancePath, npmPackage}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackage: NpmPackageManager}) {
