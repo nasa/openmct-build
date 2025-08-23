@@ -6,7 +6,6 @@ import IndexFileCreator from "../../html/IndexFileCreator";
 import OpenMctConfiguration, { INSTANCE_PATH, CONFIGURATION_YAML } from "../../openmct/OpenMctConfiguration";
 import NpmPackageManager from "../../npm/NpmPackageManager";
 import OpenMctPlugin from "../../openmct/OpenMctPlugin";
-import readline from 'readline/promises';
 
 export default class BuildCommand extends Command {
     async execute(verb: undefined, name: undefined, {instance, template: template}: {instance: string, template?: string}) {

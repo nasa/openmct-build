@@ -34,7 +34,7 @@ export default class OpenMctConfiguration {
             this.#configuration.openmct.plugins = [];
         }
         if (this.hasPlugin(plugin)) {
-            this.removePlugin(plugin);
+            this.removePlugin(plugin.getInstallFunctionName());
         }
         this.#configuration.openmct.plugins.push(plugin.toYamlPluginMapOrString());
     }
@@ -43,9 +43,9 @@ export default class OpenMctConfiguration {
             return p.getInstallFunctionName() === plugin.getInstallFunctionName();
         });
     }
-    removePlugin(plugin: OpenMctPlugin) {
+    removePlugin(name: string) {
         this.#configuration.openmct.plugins = this.#configuration.openmct.plugins?.filter((p: PluginMap | string) => {
-            return OpenMctPlugin.fromYamlPluginMapOrString(p).getInstallFunctionName() !== plugin.getInstallFunctionName();
+            return OpenMctPlugin.fromYamlPluginMapOrString(p).getInstallFunctionName() !== name;
         });
     }
     getOpenMctVersion(): string {
