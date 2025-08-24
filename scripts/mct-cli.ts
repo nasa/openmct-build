@@ -26,11 +26,16 @@ function main() {
                 short: 't',
                 default: undefined,
             },
+            pluginOptions: {
+                type: 'string',
+                short: 'o',
+                default: undefined,
+            }
         },
         allowPositionals: true
     });
     const [noun, verb, name] = args.positionals;
-    console.log(`noun: ${noun}, verb: ${verb}, name: ${name}, instance: ${args.values.instance}, template: ${args.values.template}`);
+    console.log(`noun: ${noun}, verb: ${verb}, name: ${name}, instance: ${args.values.instance}, template: ${args.values.template}, pluginOptions: ${args.values.pluginOptions}`);
     const command = api.getCommandForNoun(noun);
     command.execute(verb, name, args.values);
 }
