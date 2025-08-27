@@ -17,16 +17,18 @@ This tool helps configure OpenMCT applications using YAML configuration files.
    - Start from scratch, create a new default instance
       - Use stable initially
       - Switch to latest
+      - HOLD FOR APPLAUSE
       - launch http-server to demonstrate
    - Customize it by enabling a another builtin plugin.
-      - SWG?
+      - openmct.plugins.example.Generator
       - launch http-server to demonstrate
+      - openmct.plugins.LADTable
    - Customize it by adding an npm plugin (openmct-yamcs)
+      - akhenry/openmct-yamcs#defaults
    - Now, this is all very manual, how do I define "recipes"?
-      - Discuss templates
-      - Open the default template
       - Open the yamcs.yaml template
       - Talk about the format and how options etc. are specified
+      - Open the default recipe
    - Talk about instances
       - Create a new instance named something else
       - Explain why this is important.
@@ -35,9 +37,14 @@ This tool helps configure OpenMCT applications using YAML configuration files.
       - Show our Open MCT custom schema and how it enables IDE support
       - All implemented in TypeScript
    - Roadmap and where this fits in it
+- [ ] Pugins remove needs to uninstall npm dependency
 - [ ] Tests
 - [ ] Error on version incompatibilities
+- [ ] In general better user feedback
 - [ ] Externalize initialization block to local plugin
+
+## Improvements to OMM
+- [ ] package.json should identify the source location.
 
 ## Development
 

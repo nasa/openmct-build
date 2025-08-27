@@ -27,6 +27,10 @@ export interface PluginMap {
 export interface Plugin {
   source?: 'npm' | 'github' | 'local' | 'builtin';
   /**
+   * Script that exports the install function
+   */
+  entryPoint?: string;
+  /**
    * Version of the plugin to use
    */
   version?: string;

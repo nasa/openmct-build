@@ -1,4 +1,5 @@
 import OpenMctConfiguration from "../openmct/OpenMctConfiguration";
+import OpenMctPlugin from "../openmct/OpenMctPlugin";
 import * as fs from 'fs';
 import * as path from 'path';
 import { JSDOM } from 'jsdom';
@@ -26,11 +27,8 @@ export default class IndexFileCreator {
         scriptElement.async = true;
         scriptElement.blocking = 'render';
         scriptElement.textContent = `import loadUmd from './assets/load-umd.js';\r\n`;
-        this.#configuration.getNodePlugins().map(plugin => {
-            const src = this.#npmPackageManager.getPackage(plugin.getName()).getEntryPoint();
-            if (src === undefined) {
-                throw new Error('Could not find entry point for plugin ' + plugin.getName());
-            }
+        this.#configuration.getNodePlugins().map((plugin: OpenMctPlugin) => {
+            const src = this.#npmPackageManager.getPackage(plugin.getName()).getResolvedEntryPoint(plugin);
             scriptElement.textContent += `openmct.install((await loadUmd('../${src}'))(${JSON.stringify(plugin.getOptions())}));\r\n`;
         });
 

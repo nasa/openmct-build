@@ -74,4 +74,8 @@ export default class OpenMctPlugin {
     getSource(): string {
         return this.#pluginDefinition.source ?? DEFAULT_PLUGIN_SOURCE;
     }
+
+    getEntryPoint(): string | undefined {
+        return this.#pluginDefinition.entryPoint;
+    }
 }

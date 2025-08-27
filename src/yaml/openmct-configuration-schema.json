@@ -19,6 +19,10 @@
                     "enum": ["npm", "github", "local", "builtin"],
                     "default": "builtin"
                 },
+                "entryPoint": {
+                    "type": "string",
+                    "description": "Script that exports the install function"
+                },
                 "version": {
                     "type": "string",
                     "description": "Version of the plugin to use"
