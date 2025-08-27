@@ -2,6 +2,7 @@
 
 import { parseArgs } from "util";
 import Api from "../src/api/api";
+import { DEFAULT_OPEN_MCT_VERSION } from "../src/constants";
 
 const DEFAULT_INSTANCE = 'default';
 
@@ -19,23 +20,29 @@ function main() {
         options: {
             instance: {
                 type: 'string',
+                short: 'i',
                 default: DEFAULT_INSTANCE,
             },
-            template: {
+            recipe: {
                 type: 'string',
-                short: 't',
+                short: 'r',
                 default: undefined,
             },
             pluginOptions: {
                 type: 'string',
                 short: 'o',
                 default: undefined,
+            },
+            version: {
+                type: 'string',
+                short: 'v',
+                default: undefined,
             }
         },
         allowPositionals: true
     });
     const [noun, verb, name] = args.positionals;
-    console.log(`noun: ${noun}, verb: ${verb}, name: ${name}, instance: ${args.values.instance}, template: ${args.values.template}, pluginOptions: ${args.values.pluginOptions}`);
+    console.log(`noun: ${noun}, verb: ${verb}, name: ${name}, instance: ${args.values.instance}, recipe: ${args.values.recipe}, pluginOptions: ${args.values.pluginOptions}, version: ${args.values.version}`);
     const command = api.getCommandForNoun(noun);
     command.execute(verb, name, args.values);
 }

@@ -5,7 +5,6 @@ import { OpenMctConfigurationSchema, Plugin, PluginMap } from "../openmct/OpenMc
 import * as path from 'path';
 import * as fs from 'fs';
 import merge from 'lodash.merge';
-import readline from "readline/promises";
 
 const SCHEMA_LOCATION = path.join(__dirname, 'openmct-configuration-schema.json');
 const BASE_CONFIG_LOCATION = path.join(__dirname, 'openmct-base.yaml');
@@ -59,23 +58,12 @@ export default class MctYamlConfigurator {
         return new OpenMctConfiguration(baseConfigDoc);
     }
 
-    async resolveConfiguration({template, instance}: {template?: string, instance: string}): Promise<OpenMctConfiguration> {
+    async resolveConfiguration({recipe, instance}: {recipe?: string, instance: string}): Promise<OpenMctConfiguration> {
         let config:OpenMctConfiguration;
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();
 
-        if (template !== undefined) {
-            if (configurator.instanceConfigExists(instance)) {
-                const rl = readline.createInterface({
-                    input: process.stdin, //or fileStream 
-                    output: process.stdout
-                    });
-                const answer = await rl.question('You have specified a template. This will override any existing configuration for this instance. Are you sure? (y/n) ');
-                rl.close();
-                if (answer !== 'y') {
-                    throw new Error('User canceled');
-                }
-            }
-            const templateYaml = fs.readFileSync(template, 'utf-8');
+        if (recipe !== undefined) {
+            const templateYaml = fs.readFileSync(recipe, 'utf-8');
             config = configurator.loadFromYaml(templateYaml);
         } else {
             if (configurator.instanceConfigExists(instance)) {

@@ -7,10 +7,10 @@ const DEFAULT_PLUGIN_SOURCE = 'builtin';
 
 export default class OpenMctPlugin {
     #pluginDefinition: Plugin;
-    #installFunctionName: string;
+    #name: string;
 
     constructor(pluginName: string, pluginDefinition?: Plugin) {
-        this.#installFunctionName = pluginName;
+        this.#name = pluginName;
 
         if (pluginDefinition === undefined) {
             this.#pluginDefinition = {} as Plugin;
@@ -43,11 +43,11 @@ export default class OpenMctPlugin {
     toYamlPluginMapOrString(): PluginMap | string {
         if (this.#hasDefinition()) {
             const pluginMap = {} as PluginMap;
-            pluginMap[this.#installFunctionName] = this.#pluginDefinition;
+            pluginMap[this.#name] = this.#pluginDefinition;
 
             return pluginMap;
         } else {
-            return this.#installFunctionName;
+            return this.#name;
         }
     }
 
@@ -60,11 +60,11 @@ export default class OpenMctPlugin {
         if (this.#pluginDefinition.options !== undefined) {
             serializedOptions = JSON.stringify(this.#pluginDefinition.options);
         }
-        return `${this.#installFunctionName}(${serializedOptions})`;
+        return `${this.#name}(${serializedOptions})`;
     }
 
-    getInstallFunctionName(): string {
-        return this.#installFunctionName;
+    getName(): string {
+        return this.#name;
     }
 
     getOptions(): object | undefined {

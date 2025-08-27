@@ -3,9 +3,6 @@ openmct:
   plugins:
   - akhenry/openmct-yamcs:
       source: 'github'
-      library:
-        type: 'umd'
-        installFunctionName: 'openmctYamcs'
       options:
         yamcsDictionaryEndpoint: 'http://localhost:8090/'
         yamcsHistoricalEndpoint: 'http://localhost:8090/'

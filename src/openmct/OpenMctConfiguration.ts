@@ -2,11 +2,10 @@ import OpenMctPlugin from "./OpenMctPlugin";
 import {OpenMctConfigurationSchema, Plugin, PluginMap} from "./OpenMctConfigurationDocument";
 import path from "path";
 import appRootPath from 'app-root-path';
+import { DEFAULT_OPEN_MCT_VERSION } from "../constants";
 
 export const INSTANCE_PATH = path.join(appRootPath.path, 'instances');
 export const CONFIGURATION_YAML = "instance.yaml";
-
-const DEFAULT_OPEN_MCT_VERSION = 'stable';
 
 export default class OpenMctConfiguration {
     #configuration: OpenMctConfigurationSchema;
@@ -34,22 +33,25 @@ export default class OpenMctConfiguration {
             this.#configuration.openmct.plugins = [];
         }
         if (this.hasPlugin(plugin)) {
-            this.removePlugin(plugin.getInstallFunctionName());
+            this.removePlugin(plugin.getName());
         }
         this.#configuration.openmct.plugins.push(plugin.toYamlPluginMapOrString());
     }
     hasPlugin(plugin: OpenMctPlugin): boolean {
         return this.getPlugins().some((p: OpenMctPlugin) => {
-            return p.getInstallFunctionName() === plugin.getInstallFunctionName();
+            return p.getName() === plugin.getName();
         });
     }
     removePlugin(name: string) {
         this.#configuration.openmct.plugins = this.#configuration.openmct.plugins?.filter((p: PluginMap | string) => {
-            return OpenMctPlugin.fromYamlPluginMapOrString(p).getInstallFunctionName() !== name;
+            return OpenMctPlugin.fromYamlPluginMapOrString(p).getName() !== name;
         });
     }
     getOpenMctVersion(): string {
         return this.#configuration.openmct.version || DEFAULT_OPEN_MCT_VERSION;
+    }
+    setOpenMctVersion(version: string) {
+        this.#configuration.openmct.version = version;
     }
 
     getConfigurationDocument(): OpenMctConfigurationSchema {

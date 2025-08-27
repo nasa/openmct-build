@@ -8,16 +8,20 @@ import NpmPackageManager from "../../npm/NpmPackageManager";
 import OpenMctPlugin from "../../openmct/OpenMctPlugin";
 
 export default class BuildCommand extends Command {
-    async execute(verb: undefined, name: undefined, {instance, template: template}: {instance: string, template?: string}) {
+    async execute(verb: undefined, name: undefined, {instance, recipe, version}: {instance: string, recipe?: string, version?: string}) {
         const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();
-        const config:OpenMctConfiguration = await configurator.resolveConfiguration({template, instance});
+        const config:OpenMctConfiguration = await configurator.resolveConfiguration({recipe, instance});
 
         this.#createDirectoryStructureIfNeeded(fullInstancePath);
         this.#copyAssets({fullInstancePath});
+        if (version !== undefined) {    
+            config.setOpenMctVersion(version);
+            configurator.saveForInstance(instance, config);
+        }
 
         const npmPackage:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({fullInstancePath, config});
-        this.#installNpmPackages({config, npmPackage});
+        this.#installNpmPackages({config, npmPackageManager: npmPackage});
         this.#generateHtmlDocument({config, fullInstancePath, npmPackage});
     }
 
@@ -38,11 +42,11 @@ export default class BuildCommand extends Command {
         fs.cpSync(path.join(__dirname, '..', '..', 'assets'), path.join(fullInstancePath, 'assets'), { recursive: true });
     }
 
-    #installNpmPackages({config, npmPackage}: {config: OpenMctConfiguration, npmPackage: NpmPackageManager}) {
+    #installNpmPackages({config, npmPackageManager}: {config: OpenMctConfiguration, npmPackageManager: NpmPackageManager}) {
         const nodePackages = config.getNodePlugins();
-        npmPackage.install();
+        npmPackageManager.install();
         nodePackages.forEach((nodePackage: OpenMctPlugin) => {
-            npmPackage.installPackage(nodePackage.getInstallFunctionName());
+            npmPackageManager.installPackage(nodePackage.getName());
         });
     }
 }

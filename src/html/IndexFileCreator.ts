@@ -27,11 +27,11 @@ export default class IndexFileCreator {
         scriptElement.blocking = 'render';
         scriptElement.textContent = `import loadUmd from './assets/load-umd.js';\r\n`;
         this.#configuration.getNodePlugins().map(plugin => {
-            const src = this.#npmPackageManager.getPackage(plugin.getInstallFunctionName()).getEntryPoint();
+            const src = this.#npmPackageManager.getPackage(plugin.getName()).getEntryPoint();
             if (src === undefined) {
-                throw new Error('Could not find entry point for plugin ' + plugin.getInstallFunctionName());
+                throw new Error('Could not find entry point for plugin ' + plugin.getName());
             }
-            scriptElement.textContent += `openmct.install((await loadUmd('/${src}'))(${JSON.stringify(plugin.getOptions())}));\r\n`;
+            scriptElement.textContent += `openmct.install((await loadUmd('../${src}'))(${JSON.stringify(plugin.getOptions())}));\r\n`;
         });
 
         scriptElement.textContent += `document.dispatchEvent(new Event("OpenMCTPluginsInstalled"));`;

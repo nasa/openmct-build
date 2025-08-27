@@ -9,11 +9,34 @@ This tool helps configure OpenMCT applications using YAML configuration files.
 - [X] Support multiple Open MCT instances
 - [X] Support adding builtin plugins via CLI
 - [X] Support removing builtin plugins via CLI
-- [] Support adding npm plugins via CLI
-- [] Support removing npm plugins via CLI
+- [X] Support adding npm plugins via CLI
+- [X] Support removing npm plugins via CLI
 
 - [ ] Demo
+   - Start with context, show a diagram
+   - Start from scratch, create a new default instance
+      - Use stable initially
+      - Switch to latest
+      - launch http-server to demonstrate
+   - Customize it by enabling a another builtin plugin.
+      - SWG?
+      - launch http-server to demonstrate
+   - Customize it by adding an npm plugin (openmct-yamcs)
+   - Now, this is all very manual, how do I define "recipes"?
+      - Discuss templates
+      - Open the default template
+      - Open the yamcs.yaml template
+      - Talk about the format and how options etc. are specified
+   - Talk about instances
+      - Create a new instance named something else
+      - Explain why this is important.
+   - Talk about the codebase
+      - Yaml schema and how Yaml files get validated
+      - Show our Open MCT custom schema and how it enables IDE support
+      - All implemented in TypeScript
+   - Roadmap and where this fits in it
 - [ ] Tests
+- [ ] Error on version incompatibilities
 - [ ] Externalize initialization block to local plugin
 
 ## Development
