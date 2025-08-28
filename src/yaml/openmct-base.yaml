@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../../src/yaml/openmct-configuration-schema.json
 openmct:
-    version: latest
+    version: stable
     plugins:
     - openmct.plugins.Espresso
     - openmct.plugins.MyItems
