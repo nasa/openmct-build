@@ -4,6 +4,7 @@ import OpenMctPlugin from "../../openmct/OpenMctPlugin";
 import { PluginMap } from "../../openmct/OpenMctConfigurationDocument";
 import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
 import BuildCommand from "./BuildCommand";
+import NpmPackageManager from "../../npm/NpmPackageManager";
 
 export default class PluginsCommand extends Command {
     #configurator:MctYamlConfigurator;
@@ -31,7 +32,17 @@ export default class PluginsCommand extends Command {
     async remove(name:string, {instance}: {instance: string}) {
         console.log(`Removing plugin ${name} for instance ${instance}`);
         const config = await this.#configurator.resolveConfiguration({instance});
+        const plugin = config.getPlugin(name);
+        if (plugin === undefined) {
+            throw new Error(`Plugin ${name} not found for instance ${instance}`);
+        }
         config.removePlugin(name);
+
+        if (!plugin.isBuiltin()) {
+            const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
+            npmPackageManager.uninstallPackage(name);    
+        }
+
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);
     }

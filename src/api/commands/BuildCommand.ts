@@ -20,9 +20,9 @@ export default class BuildCommand extends Command {
             configurator.saveForInstance(instance, config);
         }
 
-        const npmPackage:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({fullInstancePath, config});
-        this.#installNpmPackages({config, npmPackageManager: npmPackage});
-        this.#generateHtmlDocument({config, fullInstancePath, npmPackage});
+        const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance: instance, config});
+        this.#installNpmPackages({config, npmPackageManager: npmPackageManager});
+        this.#generateHtmlDocument({config, fullInstancePath, npmPackage: npmPackageManager});
     }
 
     #createDirectoryStructureIfNeeded(fullInstancePath:string) {
