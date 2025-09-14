@@ -3,8 +3,9 @@ import {OpenMctConfigurationSchema, Plugin, PluginMap} from "./OpenMctConfigurat
 import path from "path";
 import appRootPath from 'app-root-path';
 import { DEFAULT_OPEN_MCT_VERSION } from "../constants";
+import { env } from "process";
 
-export const INSTANCE_PATH = path.join(appRootPath.path, 'instances');
+export const INSTANCE_PATH = env.MCT_BUILD_API_INSTANCE_PATH || path.join(appRootPath.path, 'instances');
 export const CONFIGURATION_YAML = "instance.yaml";
 
 export default class OpenMctConfiguration {

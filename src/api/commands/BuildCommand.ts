@@ -20,9 +20,9 @@ export default class BuildCommand extends Command {
             configurator.saveForInstance(instance, config);
         }
 
-        const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance: instance, config});
-        this.#installNpmPackages({config, npmPackageManager: npmPackageManager});
-        this.#generateHtmlDocument({config, fullInstancePath, npmPackage: npmPackageManager});
+        const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
+        this.#installNpmPackages({config, npmPackageManager});
+        this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
     }
 
     #createDirectoryStructureIfNeeded(fullInstancePath:string) {
@@ -31,8 +31,8 @@ export default class BuildCommand extends Command {
         }
     }
 
-    #generateHtmlDocument({config, fullInstancePath, npmPackage}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackage: NpmPackageManager}) {
-        const indexFileCreator = new IndexFileCreator(config, npmPackage);
+    #generateHtmlDocument({config, fullInstancePath, npmPackageManager}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackageManager: NpmPackageManager}) {
+        const indexFileCreator = new IndexFileCreator(config, npmPackageManager);
         const indexFile = indexFileCreator.generateDocument();
 
         fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.outerHTML);

@@ -12,7 +12,7 @@ This tool helps configure OpenMCT applications using YAML configuration files.
 - [X] Support adding npm plugins via CLI
 - [X] Support removing npm plugins via CLI
 
-- [ ] Demo
+- [x] Demo
    - Start with context, show a diagram
    - Start from scratch, create a new default instance
       - Use stable initially
@@ -37,10 +37,10 @@ This tool helps configure OpenMCT applications using YAML configuration files.
       - Show our Open MCT custom schema and how it enables IDE support
       - All implemented in TypeScript
    - Roadmap and where this fits in it
-- [ ] Plugins remove needs to uninstall npm dependency
-- [ ] Should be able to reference plugins by their configured or resolved name. (eg. akhenry/openmct-yamcs OR openmct-yamcs)
+- [x] Plugins remove needs to uninstall npm dependency
 - [ ] Tests
 - [ ] Externalize initialization block to local plugin
+- [ ] Should be able to reference plugins by their configured or resolved name. (eg. akhenry/openmct-yamcs OR openmct-yamcs)
 - [ ] In general better user feedback
 - [ ] Error on version incompatibilities
 
