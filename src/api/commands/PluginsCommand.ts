@@ -1,9 +1,9 @@
 import Command from "./Command";
-import OpenMctConfiguration from "../../openmct/OpenMctConfiguration";
 import OpenMctPlugin from "../../openmct/OpenMctPlugin";
 import { PluginMap } from "../../openmct/OpenMctConfigurationDocument";
 import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
 import BuildCommand from "./BuildCommand";
+import path from "path";
 
 export default class PluginsCommand extends Command {
     #configurator:MctYamlConfigurator;
@@ -20,6 +20,11 @@ export default class PluginsCommand extends Command {
         plugins.forEach((plugin: OpenMctPlugin) => console.log(plugin));
     }
     async add(name:string, {instance, pluginDefinition}: {instance: string, pluginDefinition: PluginMap}) {
+        if (name.startsWith('file:')) {
+            const absolutePath = path.resolve(name.substring(5));
+            name = `file:${absolutePath}`;
+        }
+
         console.log(`Installing plugin ${name} for instance ${instance}`);
         const config = await this.#configurator.resolveConfiguration({instance});
         const plugin = new OpenMctPlugin(name, pluginDefinition);
