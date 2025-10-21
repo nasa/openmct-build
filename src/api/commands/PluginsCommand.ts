@@ -5,6 +5,8 @@ import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
 import BuildCommand from "./BuildCommand";
 import path from "path";
 import NpmPackageManager from "../../npm/NpmPackageManager";
+import NpmPackage from "../../npm/NpmPackage";
+import { ParseArgsConfig } from "util";
 
 export default class PluginsCommand extends Command {
     #configurator:MctYamlConfigurator;
@@ -20,15 +22,46 @@ export default class PluginsCommand extends Command {
         console.log(`Plugins for instance ${instance}:`);
         plugins.forEach((plugin: OpenMctPlugin) => console.log(plugin));
     }
-    async add(name:string, {instance, pluginDefinition}: {instance: string, pluginDefinition: PluginMap}) {
-        if (name.startsWith('file:')) {
-            const absolutePath = path.resolve(name.substring(5));
-            name = `file:${absolutePath}`;
-        }
+    getArgsForVerb(verb: string): ParseArgsConfig {
+        const additionalArgs:ParseArgsConfig = {
+            options: {}
+        };
 
-        console.log(`Installing plugin ${name} for instance ${instance}`);
+        switch (verb) {
+            case 'add':
+            additionalArgs.options = {
+                npmPackage: {
+                    type: 'string',
+                    short: 'p',
+                    default: undefined,
+                }
+            };
+        };
+
+        return {
+            options: {
+                ...super.getArgsForVerb(verb).options,
+                ...additionalArgs.options
+        }};
+    }
+    async add(name:string, {instance, npmPackage}: {instance: string, npmPackage: string}) {
+
         const config = await this.#configurator.resolveConfiguration({instance});
-        const plugin = new OpenMctPlugin(name, pluginDefinition);
+        const plugin = new OpenMctPlugin(name, {npmPackage});
+        // Standardize names. Use NPM package name as plugin name, but preserve the specifier for how the package should be resolved.
+        if (plugin.isNpmPackage()) {
+            let npmPackageName = plugin.getNpmPackageName();
+            if (npmPackageName.startsWith('file:')) {
+                const absolutePath = path.resolve(npmPackageName.substring(5));
+                plugin.setNpmPackageName(`file:${absolutePath}`);
+
+            }
+            const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
+            const npmPackage:NpmPackage = npmPackageManager.getPackage(plugin.getNpmPackageName());
+            name = npmPackage.getResolvedPackageName();
+            plugin.setName(name);
+        }
+        console.log(`Installing plugin ${plugin.getName()} for instance ${instance}`);
         config.addPlugin(plugin);
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);

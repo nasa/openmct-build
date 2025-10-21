@@ -19,6 +19,9 @@ export default class OpenMctPlugin {
         }
 
         this.#pluginDefinition.source = this.#pluginDefinition.source ?? (this.isBuiltin() ? DEFAULT_PLUGIN_SOURCE : 'npm');
+        if (this.isNpmPackage()) {
+            this.#pluginDefinition.npmPackage = this.#pluginDefinition.npmPackage ?? this.#name;
+        }
     }
 
     static fromYamlPluginMapOrString(pluginMapOrString: PluginMap | string): OpenMctPlugin {
@@ -38,6 +41,10 @@ export default class OpenMctPlugin {
 
     isBuiltin(): boolean {
         return this.#name.startsWith('openmct.');
+    }
+
+    isNpmPackage(): boolean {
+        return this.#pluginDefinition.source === 'npm';
     }
 
     toYamlPluginMapOrString(): PluginMap | string {
@@ -65,6 +72,18 @@ export default class OpenMctPlugin {
 
     getName(): string {
         return this.#name;
+    }
+
+    setName(name: string) {
+        this.#name = name;
+    }
+
+    getNpmPackageName(): string {
+        return this.#pluginDefinition.npmPackage ?? this.getName();
+    }
+
+    setNpmPackageName(npmPackageName: string): void {
+        this.#pluginDefinition.npmPackage = npmPackageName;
     }
 
     getOptions(): object | undefined {

@@ -46,7 +46,7 @@ export default class BuildCommand extends Command {
         const nodePackages = config.getNodePlugins();
         npmPackageManager.install();
         nodePackages.forEach((nodePackage: OpenMctPlugin) => {
-            npmPackageManager.installPackage(nodePackage.getName());
+            npmPackageManager.installPackage(nodePackage.getNpmPackageName());
         });
     }
 }

@@ -3,6 +3,7 @@
 import { parseArgs } from "util";
 import Api from "../src/api/api";
 import { DEFAULT_INSTANCE } from "../src/constants";
+import Command from "../src/api/commands/Command";
 
 /**
     mct-cli plugins list
@@ -14,34 +15,22 @@ import { DEFAULT_INSTANCE } from "../src/constants";
 
 function main() {
     const api = new Api();
-    const args = parseArgs({
-        options: {
-            instance: {
-                type: 'string',
-                short: 'i',
-                default: DEFAULT_INSTANCE,
-            },
-            recipe: {
-                type: 'string',
-                short: 'r',
-                default: undefined,
-            },
-            pluginOptions: {
-                type: 'string',
-                short: 'o',
-                default: undefined,
-            },
-            version: {
-                type: 'string',
-                short: 'v',
-                default: undefined,
-            }
-        },
-        allowPositionals: true
+
+    let args = parseArgs({
+        args: process.argv.slice(2),
+        allowPositionals: true,
+        strict: false,
+        ...Command.getDefaultArgs()
     });
     const [noun, verb, name] = args.positionals;
-    console.log(`noun: ${noun}, verb: ${verb}, name: ${name}, instance: ${args.values.instance}, recipe: ${args.values.recipe}, pluginOptions: ${args.values.pluginOptions}, version: ${args.values.version}`);
     const command = api.getCommandForNoun(noun);
+    const argsForVerb = command.getArgsForVerb(verb);
+    args = parseArgs({
+        args: process.argv.slice(2),
+        allowPositionals: true,
+        strict: true,
+        ...argsForVerb
+    });
     command.execute(verb, name, args.values);
 }
 
