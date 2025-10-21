@@ -194,9 +194,9 @@ npm run test:coverage
     }
 
    ```
-- [ ] Remove plugins should work on name-as-installed or package name.
-    - [ ] Should be able to remove locally install openmct-yamcs without having to specify the entire path.
-    - [ ] Once again plugins remove openmct-yamcs is not working for openmct-yamcs#defaults
+- [X] Remove plugins should work on ~~name-as-installed or~~ package name only for now.
+    - [X] Should be able to remove locally install openmct-yamcs without having to specify the entire path.
+    - [X] Once again plugins remove openmct-yamcs is not working for openmct-yamcs#defaults
 - [ ] Define the requirements for a plugin in README.md
 - [X] Install plugins from local file system
 - [ ] Remove all Open MCT internal plugins from loader.js and move them to a recipe

@@ -1,7 +1,4 @@
 import { Plugin, PluginMap } from "./OpenMctConfigurationDocument";
-import * as path from 'path';
-import * as fs from 'fs';
-import NpmPackageManager from "../npm/NpmPackageManager";
 
 const DEFAULT_PLUGIN_SOURCE = 'builtin';
 
