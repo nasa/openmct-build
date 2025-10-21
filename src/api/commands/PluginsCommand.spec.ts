@@ -15,7 +15,7 @@ describe('PluginsCommand', () => {
     });
 
     it('Supports adding a new plugin', () => {
-        expect(() => pluginsCommand.execute('add', 'test plugin', {instance: 'default'})).not.toThrow();
+        expect(() => pluginsCommand.execute('add', 'test-plugin', {instance: 'default'})).not.toThrow();
     });
 
     it('rejects unknown verbs', () => {

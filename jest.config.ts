@@ -1,4 +1,11 @@
-module.exports = {
+import type {Config} from 'jest';
+import path from 'path';
+import appRootPath from "app-root-path";
+
+const INSTANCES_PATH = path.join(appRootPath.path, 'temp-tests');
+process.env.MCT_BUILD_API_INSTANCE_PATH = INSTANCES_PATH;
+
+const config: Config = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     moduleFileExtensions: ['ts', 'js', 'json'],
@@ -15,3 +22,5 @@ module.exports = {
     ],
     collectCoverage: true
 };
+
+export default config;

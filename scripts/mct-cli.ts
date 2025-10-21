@@ -2,9 +2,7 @@
 
 import { parseArgs } from "util";
 import Api from "../src/api/api";
-import { DEFAULT_OPEN_MCT_VERSION } from "../src/constants";
-
-const DEFAULT_INSTANCE = 'default';
+import { DEFAULT_INSTANCE } from "../src/constants";
 
 /**
     mct-cli plugins list
