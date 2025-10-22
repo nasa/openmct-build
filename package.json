@@ -10,9 +10,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "generate:types": "tsx scripts/generate-types.ts",
+    "generate:types": "npx tsx scripts/generate-types.ts",
     "postinstall": "npm run generate:types",
-    "mct-cli": "tsx scripts/mct-cli.ts"
+    "mct-cli": "npx tsx scripts/mct-cli.ts"
   },
   "author": "National Aeronautics and Space Administration",
   "license": "UNLICENSED",
