@@ -8,7 +8,7 @@
 - [X] Support adding npm plugins via CLI
 - [X] Support removing npm plugins via CLI
 
-- [ ] Demo
+- [X] Demo
    - Start with context, show a diagram
    - Start from scratch, create a new default instance
       - Use stable initially
@@ -89,10 +89,11 @@
 - [X] Remove plugins should work on ~~name-as-installed or~~ package name only for now.
     - [X] Should be able to remove locally install openmct-yamcs without having to specify the entire path.
     - [X] Once again plugins remove openmct-yamcs is not working for openmct-yamcs#defaults
-- [x] Document the requirements for a plugin.
-- [ ] Add some docs for building and previewing a basic open mct instance.
-- [ ] List plugins installed for a given instance.
+- [X] Document the requirements for a plugin.
+- [X] Add some docs for building and previewing a basic open mct instance.
 - [X] Install plugins from local file system
+- [ ] Ensure it can be compiled and run as a cli tool
+- [ ] List plugins installed for a given instance.
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
 - [ ] Externalize initialization block to local plugin
