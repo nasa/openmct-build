@@ -7,7 +7,7 @@
     "mctcli": "dist/scripts/mct-cli.js"
   },
   "scripts": {
-    "prepare": "npx tsc",
+    "prepare": "npx --package typescript tsc",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
