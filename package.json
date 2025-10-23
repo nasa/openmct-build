@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/scripts/mct-cli.js",
   "bin": {
-    "mct-cli": "dist/scripts/mct-cli.js"
+    "mctcli": "dist/scripts/mct-cli.js"
   },
   "scripts": {
     "test": "jest",
