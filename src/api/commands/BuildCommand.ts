@@ -3,7 +3,7 @@ import path from "path";
 import * as fs from 'fs';
 import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
 import IndexFileCreator from "../../html/IndexFileCreator";
-import OpenMctConfiguration, { INSTANCE_PATH, CONFIGURATION_YAML } from "../../openmct/OpenMctConfiguration";
+import OpenMctConfiguration, { INSTANCE_PATH } from "../../openmct/OpenMctConfiguration";
 import NpmPackageManager from "../../npm/NpmPackageManager";
 import OpenMctPlugin from "../../openmct/OpenMctPlugin";
 

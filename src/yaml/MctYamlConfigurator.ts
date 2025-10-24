@@ -5,17 +5,14 @@ import { OpenMctConfigurationSchema, Plugin, PluginMap } from "../openmct/OpenMc
 import * as path from 'path';
 import * as fs from 'fs';
 import merge from 'lodash.merge';
+import jsonSchemaFile from './openmct-configuration-schema.json';
 
-const SCHEMA_LOCATION = path.join(__dirname, 'openmct-configuration-schema.json');
 const BASE_CONFIG_LOCATION = path.join(__dirname, 'openmct-base.yaml');
 
 export default class MctYamlConfigurator {
-    #jsonSchema: object;
     #validator: Validator;
 
     constructor() {
-        const jsonSchema = fs.readFileSync(SCHEMA_LOCATION, 'utf-8');
-        this.#jsonSchema = JSON.parse(jsonSchema);
         this.#validator = new Validator();
     }
 
@@ -84,7 +81,7 @@ export default class MctYamlConfigurator {
     #loadYaml(yaml: string): OpenMctConfigurationSchema {
         let doc = yamllib.load(yaml) as OpenMctConfigurationSchema;
 
-        const result = this.#validator.validate(doc, this.#jsonSchema);
+        const result = this.#validator.validate(doc, jsonSchemaFile);
         if (result.errors.length > 0) {
             const errorMessages = result.errors.map(err => 
                 `[${err.property}] ${err.message}`

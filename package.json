@@ -2,17 +2,15 @@
   "name": "openmct-configurator",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/scripts/mct-cli.js",
+  "main": "src/scripts/mct-cli.js",
   "bin": {
-    "mctcli": "dist/scripts/mct-cli.js"
+    "mct-cli": "src/scripts/mct-cli.js"
   },
   "scripts": {
-    "prepare": "npx --package typescript tsc",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "generate:types": "npx tsx scripts/generate-types.ts",
-    "mct-cli": "tsx scripts/mct-cli.ts"
+    "generate:types": "npx tsx scripts/generate-types.ts"
   },
   "author": "National Aeronautics and Space Administration",
   "license": "UNLICENSED",
@@ -24,6 +22,7 @@
     "@types/node": "^20.11.0",
     "jest": "^30.0.3",
     "json-schema-to-typescript": "^15.0.4",
+    "test-plugin": "^0.0.2",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
@@ -37,7 +36,7 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^26.1.0",
     "jsonschema": "^1.5.0",
-    "tsx": "^4.7.1",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "tsx": "^4.7.1"
   }
 }

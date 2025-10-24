@@ -5,7 +5,7 @@ The `mct-cli` is a command-line interface for building a packaged Open MCT insta
 ## Installation
 
 ```bash
-npm install -g akhenry/openmct-configurator
+npm link
 ```
 
 ## Quick start
