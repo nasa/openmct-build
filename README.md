@@ -8,6 +8,8 @@ The `mct-cli` is a command-line interface for building a packaged Open MCT insta
 npm link
 ```
 
+This will install `mct-cli` as a global command line tool that can be run from any directory. Open MCT instances will be created an the `instances` directory relative to the current working directory.
+
 ## Quick start
 
 The following will build a new Open MCT instance and start a local server to preview it.
