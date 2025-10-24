@@ -92,21 +92,24 @@
 - [X] Document the requirements for a plugin.
 - [X] Add some docs for building and previewing a basic open mct instance.
 - [X] Install plugins from local file system
-- [ ] List plugins installed for a given instance.
+- [X] List plugins installed for a given instance.
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
 - [ ] Externalize initialization block to local plugin
-- [ ] Need to be able to specify plugin version via command line.
+- [X] Need to be able to specify plugin version via command line.
+    - This is handled by npm conventions
 - [ ] Need to be able to specify configuration options from command line
 - [ ] Tests
 - [ ] In general better user feedback
-- [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Hand over to PDP
-
-- [ ] List all available plugins, as well as installed plugins.
+- [ ] Figure out how the hell this will be compiled and run as a cli tool
+- [ ] Get VIPER building with this tool
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
+- [ ] List all available plugins, as well as installed plugins.
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
 - [ ] Support importing multiple plugins from a single source file
+
+EOY scope
 
 ## Improvements to OMM
 - [ ] package.json should identify the source location.
