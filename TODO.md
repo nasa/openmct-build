@@ -96,6 +96,7 @@
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
 - [ ] Externalize initialization block to local plugin
+- [ ] Support disabling plugins.
 - [X] Need to be able to specify plugin version via command line.
     - This is handled by npm conventions
 - [ ] Need to be able to specify configuration options from command line

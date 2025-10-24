@@ -47,11 +47,11 @@ mct-cli plugins list
 ### Install a plugin
 
 ```bash
-mct-cli plugins install <plugin or npm package specifier>
+mct-cli plugins add <plugin or npm package specifier>
 ```
 
 ```bash
-mct-cli plugins install <plugin name> --npmPackage <npm package specifier>
+mct-cli plugins add <plugin name> --npmPackage <npm package specifier>
 ```
 
 ### Remove a plugin
