@@ -12,7 +12,6 @@ const PACKAGE_DEFAULTS = {
 
 export default class NpmPackageManager {
     #fullInstancePath: string;
-    #packageJsonObject: PackageJSON | undefined;
     #config: OpenMctConfiguration;
 
     constructor({fullInstancePath, config}: {fullInstancePath: string, config: OpenMctConfiguration}) {
@@ -20,19 +19,11 @@ export default class NpmPackageManager {
         this.#config = config;
         this.#loadOrCreate();
     }
-    #loadOrCreate() {
+    async #loadOrCreate() {
         const packageJsonPath = path.join(this.#fullInstancePath, 'package.json');
         if (!fs.existsSync(packageJsonPath)) {
             child_process.spawnSync('npm', ['init', '-y'], { cwd: this.#fullInstancePath });
         }
-
-        const packageOnDisk = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PackageJSON;
-        this.#packageJsonObject = this.#applyDefaults(packageOnDisk);
-    }
-    #applyDefaults(packageObject: PackageJSON) {
-        packageObject = Object.assign(packageObject, PACKAGE_DEFAULTS);
-
-        return packageObject;
     }
     installPackage(packageName: string){
         child_process.spawnSync('npm', ['install', '--save-dev', packageName], { cwd: this.#fullInstancePath });

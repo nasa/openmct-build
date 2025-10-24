@@ -15,10 +15,11 @@ export default class BuildCommand extends Command {
 
         this.#createDirectoryStructureIfNeeded(fullInstancePath);
         this.#copyAssets({fullInstancePath});
+        
         if (version !== undefined) {    
             config.setOpenMctVersion(version);
-            configurator.saveForInstance(instance, config);
         }
+        configurator.saveForInstance(instance, config);
 
         const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
         this.#installNpmPackages({config, npmPackageManager});
