@@ -1,7 +1,6 @@
 import OpenMctPlugin from "./OpenMctPlugin";
-import {OpenMctConfigurationSchema, Plugin, PluginMap} from "./OpenMctConfigurationDocument";
+import {OpenMctConfigurationSchema, PluginMap} from "./OpenMctConfigurationDocument";
 import path from "path";
-import appRootPath from 'app-root-path';
 import { DEFAULT_OPEN_MCT_VERSION } from "../constants";
 import { env } from "process";
 
