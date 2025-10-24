@@ -15,13 +15,6 @@ export default class PluginsCommand extends Command {
         super();
         this.#configurator = new MctYamlConfigurator();
     }
-    list(name:undefined, {instance}: {instance: string}) {
-        console.log(`Listing plugins for instance ${instance}`);
-        const config = this.#configurator.loadForInstance(instance);
-        const plugins = config.getPlugins();
-        console.log(`Plugins for instance ${instance}:`);
-        plugins.forEach((plugin: OpenMctPlugin) => console.log(plugin));
-    }
     getArgsForVerb(verb: string): ParseArgsConfig {
         const additionalArgs:ParseArgsConfig = {
             options: {}
@@ -66,7 +59,19 @@ export default class PluginsCommand extends Command {
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);
     }
+    list(name:undefined, {instance}: {instance: string}) {
+        console.log(`Listing plugins for instance ${instance}`);
+        const config = this.#configurator.loadForInstance(instance);
+        const plugins = config.getPlugins();
+        console.log(`Plugins for ${instance} instance:`);
+        plugins.forEach((plugin: OpenMctPlugin) => {
+            const pluginName = plugin.getName();
+            const pluginOptions = plugin.getOptions() ? JSON.stringify(plugin.getOptions()) : '';
+            const pluginNpmPackageName = plugin.getNpmPackageName();
 
+            console.log(`- ${pluginName}(${pluginOptions}) ${plugin.isNpmPackage() ? `[${pluginNpmPackageName}]` : ''}`);
+        });
+    }
     async remove(name:string, {instance}: {instance: string}) {
         console.log(`Removing plugin ${name} for instance ${instance}`);
         const config = await this.#configurator.resolveConfiguration({instance});

@@ -92,7 +92,6 @@
 - [X] Document the requirements for a plugin.
 - [X] Add some docs for building and previewing a basic open mct instance.
 - [X] Install plugins from local file system
-- [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] List plugins installed for a given instance.
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
@@ -101,6 +100,7 @@
 - [ ] Need to be able to specify configuration options from command line
 - [ ] Tests
 - [ ] In general better user feedback
+- [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Hand over to PDP
 
 - [ ] List all available plugins, as well as installed plugins.
