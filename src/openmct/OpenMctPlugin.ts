@@ -98,4 +98,12 @@ export default class OpenMctPlugin {
     isEnabled(): boolean {
         return this.#pluginDefinition?.enabled === false ? false : true;
     }
+
+    setOptions(options:object) {
+        this.#pluginDefinition.options = options;
+    }
+
+    setEnabled(enabled:boolean) {
+        this.#pluginDefinition.enabled = enabled;
+    }
 }

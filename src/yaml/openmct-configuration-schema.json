@@ -16,7 +16,7 @@
             "properties": {
                 "source": {
                     "type": "string",
-                    "enum": ["npm", "github", "local", "builtin"],
+                    "enum": ["npm", "builtin"],
                     "default": "builtin"
                 },
                 "npmPackage": {
@@ -26,10 +26,6 @@
                 "entryPoint": {
                     "type": "string",
                     "description": "Script that exports the install function"
-                },
-                "version": {
-                    "type": "string",
-                    "description": "Version of the plugin to use"
                 },
                 "enabled": {
                     "type": "boolean",

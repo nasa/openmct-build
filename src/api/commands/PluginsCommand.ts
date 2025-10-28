@@ -22,13 +22,33 @@ export default class PluginsCommand extends Command {
 
         switch (verb) {
             case 'add':
-            additionalArgs.options = {
-                npmPackage: {
-                    type: 'string',
-                    short: 'p',
-                    default: undefined,
-                }
-            };
+                additionalArgs.options = {
+                    npmPackage: {
+                        type: 'string',
+                        short: 'p',
+                        default: undefined,
+                    }
+                };
+                break;
+            case 'configure':
+                additionalArgs.options = {
+                    enabled: {
+                        type: 'boolean',
+                        short: 'e',
+                        default: undefined,
+                    },
+                    npmPackage: {
+                        type: 'string',
+                        short: 'p',
+                        default: undefined,
+                    },
+                    options: {
+                        type: 'string',
+                        short: 'o',
+                        default: undefined,
+                    }
+                };
+                break;
         };
 
         return {
@@ -86,6 +106,27 @@ export default class PluginsCommand extends Command {
             npmPackageManager.uninstallPackage(name);    
         }
 
+        this.#configurator.saveForInstance(instance, config);
+        this.#rebuild(instance);
+    }
+
+    async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: any}) {
+        console.log(`Configuring plugin ${name} for instance ${instance}`);
+        const config = await this.#configurator.resolveConfiguration({instance});
+        const plugin = config.getPlugin(name);
+        if (plugin === undefined) {
+            throw new Error(`Plugin ${name} not found for instance ${instance}`);
+        }
+        if (enabled !== undefined) {
+            plugin.setEnabled(enabled);
+        }
+        if (npmPackage !== undefined) {
+            plugin.setNpmPackageName(npmPackage);
+        }
+        if (options !== undefined) {
+            const parsedOptions = JSON.parse(options);
+            plugin.setOptions(parsedOptions);
+        }
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);
     }
