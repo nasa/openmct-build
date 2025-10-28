@@ -60,6 +60,12 @@ mct-cli plugins add <plugin name> --npmPackage <npm package specifier>
 mct-cli plugins remove <plugin-name>
 ```
 
+### Configure an installed plugin
+
+```bash
+mct-cli plugins configure <plugin-name> --enabled <true|false> --npmPackage <npm package specifier> --options <options>
+```
+
 ## Options
 * `-i`, `--instance` <instance-name>: Specify an instance name (default: 'default')
 * `-r`, `--recipe` <recipe>: Specify a recipe for plugin installation
@@ -88,6 +94,16 @@ mct-cli plugins list
 6. List plugins installed for a specific instance:
 ```bash
 mct-cli -i my-instance plugins list
+```
+7. Configure an installed plugin:
+```bash
+mct-cli plugins configure openmct.plugins.PlanLayout --enabled true --options '{"creatable": true}'
+```
+8. Override a default plugin:
+```bash
+mct-cli plugins configure openmct.plugins.Espresso --enabled false
+# With espresso disabled some theme needs to be applied. Apply the snow theme.
+mct-cli plugins add openmct.plugins.Snow
 ```
 
 ## Development
