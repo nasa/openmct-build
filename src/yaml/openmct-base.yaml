@@ -14,3 +14,10 @@ openmct:
             showAsView:
             - summary-widget
             - example.imagery
+    - mct-bootstrap-plugin:
+        npmPackage: file:./assets/mct-bootstrap-plugin
+        options:
+            timeSystem: utc
+            clock: local
+            startOffset: -60000
+            endOffset: 0

@@ -10,7 +10,7 @@ mct-cli allows developers to build an Open MCT deployment and install and manage
 
 Your plugin should be published as an npm package with a clear entry point that exports an install function. It is also good practice to include a peerDependencies field in your package.json to specify the version(s) of Open MCT your plugin is compatible with.
 
-mct-cli is compatible with UMD and ES6 modules.
+mct-cli is compatible with UMD and ES6 modules. To specify that your plugin is an ES6 module, include a "type": "module" field in your package.json. The default type is "commonjs", but this can also be specified manually.
 
 ### Basic Plugin Package.json
 
@@ -20,6 +20,7 @@ mct-cli is compatible with UMD and ES6 modules.
   "version": "1.0.0",
   "description": "My awesome Open MCT plugin",
   "main": "dist/index.js",
+  "type": "module",
   "peerDependencies": {
     "openmct": "^3.0.0"
   }

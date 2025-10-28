@@ -25,7 +25,7 @@ export default class OpenMctConfiguration {
     }
     getNodePlugins() {
         return this.getPlugins().filter((plugin: OpenMctPlugin) => {
-            return plugin.getSource() !== 'builtin';
+            return plugin.getSource() !== 'builtin'
         });
     }
     getBuiltinPlugins() {

@@ -97,9 +97,13 @@
    - @Jamie
 - [ ] Externalize initialization block to local plugin
 - [ ] Support disabling plugins.
+- [ ] Support configuring plugins via cli
+    ```JavaScript
+    mct-cli plugins configure openmct-yamcs enabled=false
+    mct-cli plugins configure openmct-yamcs options='{devMode: true}'
+    ```
 - [X] Need to be able to specify plugin version via command line.
     - This is handled by npm conventions
-- [ ] Need to be able to specify configuration options from command line
 - [ ] Tests
 - [ ] In general better user feedback
 - [ ] Hand over to PDP

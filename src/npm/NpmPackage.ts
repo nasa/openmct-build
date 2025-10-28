@@ -55,6 +55,10 @@ export default class NpmPackage {
         }
         
     }
+    getPackageType(): string {
+        const packageTypeDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'type'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
+        return packageTypeDetails.stdout?.trim() ?? 'commonjs';
+    }
     getNpmEntryPoint(): string {
         if (this.#entryPoint === undefined) {
             const entryPointDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'main'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
