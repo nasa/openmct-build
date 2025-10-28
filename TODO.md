@@ -95,7 +95,7 @@
 - [X] List plugins installed for a given instance.
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
-- [ ] Externalize initialization block to local plugin
+- [X] Externalize initialization block to local plugin
 - [ ] Support disabling plugins.
 - [ ] Support configuring plugins via cli
     ```JavaScript
@@ -105,6 +105,8 @@
 - [X] Need to be able to specify plugin version via command line.
     - This is handled by npm conventions
 - [ ] Tests
+- [ ] Rename "mct-bootstrap-plugin" to "mct-configure-time"
+- [ ] Support "now" and basic time math in "mct-configure-time" AND time conductor plugins.
 - [ ] In general better user feedback
 - [ ] Hand over to PDP
 - [ ] Figure out how the hell this will be compiled and run as a cli tool
