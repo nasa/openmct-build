@@ -28,7 +28,7 @@ export default class IndexFileCreator {
         scriptElement.blocking = 'render';
         this.#configuration.getNodePlugins().map((plugin: OpenMctPlugin) => {
             const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName());
-            if (npmPackage.getPackageType() === 'module') {
+            if (npmPackage.getPackageType() === 'module' && plugin.isEnabled()) {
                 const src = npmPackage.getResolvedEntryPoint(plugin);
                 const installFunctionName = `install${(Math.random() * 10000000).toFixed(0)}`;
                 scriptElement.textContent += `import { default as ${installFunctionName} } from './${src}';\r\n`;
@@ -46,7 +46,7 @@ export default class IndexFileCreator {
         scriptElement.textContent = `import loadUmd from './assets/load-umd.js';\r\n`;
         this.#configuration.getNodePlugins().map((plugin: OpenMctPlugin) => {
             const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName());
-            if (npmPackage.getPackageType() === 'commonjs') {
+            if (npmPackage.getPackageType() === 'commonjs' && plugin.isEnabled()) {
                 const src = npmPackage.getResolvedEntryPoint(plugin);
                 scriptElement.textContent += `openmct.install((await loadUmd('../${src}'))(${JSON.stringify(plugin.getOptions())}));\r\n`;
             }
@@ -61,7 +61,9 @@ export default class IndexFileCreator {
         let pluginInstallFunctionBody = 'openmct.setAssetPath("node_modules/openmct/dist");\n';
 
         this.#configuration.getBuiltinPlugins().forEach(plugin => {
-            pluginInstallFunctionBody += `openmct.install(${plugin.generateInstallFunctionCall()});\n`;
+            if (plugin.isEnabled()) {
+                pluginInstallFunctionBody += `openmct.install(${plugin.generateInstallFunctionCall()});\n`;
+            }
         });
         const pluginInstallFunction = `(() => {${pluginInstallFunctionBody}})();`;
 

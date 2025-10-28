@@ -39,6 +39,10 @@ export interface Plugin {
    */
   version?: string;
   /**
+   * Whether the plugin should be enabled. By setting this to false you can override default plugins
+   */
+  enabled?: boolean;
+  /**
    * The options to be passed to the plugin at install time
    */
   options?: {};

@@ -31,6 +31,10 @@
                     "type": "string",
                     "description": "Version of the plugin to use"
                 },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the plugin should be enabled. By setting this to false you can override default plugins"
+                },
                 "options": {
                     "type": "object",
                     "description": "The options to be passed to the plugin at install time"

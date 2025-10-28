@@ -97,11 +97,15 @@
    - @Jamie
 - [X] Externalize initialization block to local plugin
 - [ ] Support disabling plugins.
+- [ ] Confirm that overriding default plugins works.
+    * "enabled" flag, options, etc.
+    * Write a test for it.
 - [ ] Support configuring plugins via cli
     ```JavaScript
     mct-cli plugins configure openmct-yamcs enabled=false
     mct-cli plugins configure openmct-yamcs options='{devMode: true}'
     ```
+- [ ] Generated instance.yaml should include the Open MCT Yaml schema to make them easier to edit.
 - [X] Need to be able to specify plugin version via command line.
     - This is handled by npm conventions
 - [ ] Tests

@@ -94,4 +94,8 @@ export default class OpenMctPlugin {
     getEntryPoint(): string | undefined {
         return this.#pluginDefinition.entryPoint;
     }
+
+    isEnabled(): boolean {
+        return this.#pluginDefinition?.enabled === false ? false : true;
+    }
 }
