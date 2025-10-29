@@ -29,8 +29,7 @@ export default class NpmPackageManager {
         child_process.spawnSync('npm', ['install', '--save-dev', packageName], { cwd: this.#fullInstancePath });
     }
     install() {
-        const openMctPackageName = `openmct@${this.#config.getOpenMctVersion()}`;
-        this.installPackage(openMctPackageName);
+        this.installPackage(this.#config.getNpmPackage());
 
         child_process.spawnSync('npm', ['install'], { cwd: this.#fullInstancePath });
     }

@@ -12,6 +12,7 @@ export default class OpenMctConfiguration {
 
     constructor(configuration: OpenMctConfigurationSchema) {
         this.#configuration = configuration;
+        this.setNpmPackage(`openmct@${this.getOpenMctVersion()}`);
     }
     getPlugins() {
         return this.#configuration.openmct.plugins?.map((plugin: PluginMap | string) => {
@@ -55,8 +56,18 @@ export default class OpenMctConfiguration {
     getOpenMctVersion(): string {
         return this.#configuration.openmct.version || DEFAULT_OPEN_MCT_VERSION;
     }
+
     setOpenMctVersion(version: string) {
         this.#configuration.openmct.version = version;
+        this.setNpmPackage(`openmct@${version}`);
+    }
+
+    getNpmPackage(): string {
+        return this.#configuration.openmct.npmPackage || DEFAULT_OPEN_MCT_VERSION;
+    }
+
+    setNpmPackage(npmPackage: string) {
+        this.#configuration.openmct.npmPackage = npmPackage;
     }
 
     getConfigurationDocument(): OpenMctConfigurationSchema {

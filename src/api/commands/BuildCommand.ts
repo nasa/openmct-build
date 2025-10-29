@@ -6,9 +6,38 @@ import IndexFileCreator from "../../html/IndexFileCreator";
 import OpenMctConfiguration, { INSTANCE_PATH } from "../../openmct/OpenMctConfiguration";
 import NpmPackageManager from "../../npm/NpmPackageManager";
 import OpenMctPlugin from "../../openmct/OpenMctPlugin";
+import { ParseArgsConfig } from "util";
 
 export default class BuildCommand extends Command {
-    async execute(verb: undefined, name: undefined, {instance, recipe, version}: {instance: string, recipe?: string, version?: string}) {
+
+    getArgsForVerb(verb: string): ParseArgsConfig {
+        const additionalArgs:ParseArgsConfig = {
+            options: {
+                npmPackage: {
+                    type: 'string',
+                    short: 'p',
+                    default: undefined,
+                },
+                recipe: {
+                    type: 'string',
+                    short: 'r',
+                    default: undefined,
+                },
+                version: {
+                    type: 'string',
+                    short: 'v',
+                    default: undefined,
+                }
+            }
+        };
+
+        return {
+            options: {
+                ...super.getArgsForVerb(verb).options,
+                ...additionalArgs.options
+        }};
+    }
+    async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
         const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();
         const config:OpenMctConfiguration = await configurator.resolveConfiguration({recipe, instance});
@@ -18,6 +47,9 @@ export default class BuildCommand extends Command {
         
         if (version !== undefined) {    
             config.setOpenMctVersion(version);
+        }
+        if (npmPackage !== undefined) {
+            config.setNpmPackage(npmPackage);
         }
         configurator.saveForInstance(instance, config);
 

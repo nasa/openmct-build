@@ -93,33 +93,39 @@
 - [X] Add some docs for building and previewing a basic open mct instance.
 - [X] Install plugins from local file system
 - [X] List plugins installed for a given instance.
-- [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
-   - @Jamie
 - [X] Externalize initialization block to local plugin
-- [ ] Support disabling plugins.
-- [ ] Confirm that overriding default plugins works.
+- [X] Support disabling plugins.
+- [X] Confirm that overriding default plugins works.
     * "enabled" flag, options, etc.
-    * Write a test for it.
-- [ ] Support configuring plugins via cli
+- [X] Support configuring plugins via cli
     ```JavaScript
     mct-cli plugins configure openmct-yamcs enabled=false
     mct-cli plugins configure openmct-yamcs options='{devMode: true}'
     ```
-- [ ] Generated instance.yaml should include the Open MCT Yaml schema to make them easier to edit.
 - [X] Need to be able to specify plugin version via command line.
     - This is handled by npm conventions
-- [ ] Tests
-- [ ] Rename "mct-bootstrap-plugin" to "mct-configure-time"
+- [ ] Need to be able to support Open MCT branches
+    - [ ] Figure out how to make it so that instance.yaml only contains Open MCT version OR package name, and not both.
+- [ ] Generated instance.yaml should include the Open MCT Yaml schema to make them easier to edit.
+- [ ] Usage docs for all defined commands
 - [ ] Support "now" and basic time math in "mct-configure-time" AND time conductor plugins.
+- [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
+   - @Jamie
+- [ ] Tests
+    - [ ] Default plugins can be disabled
+    - [ ] An already installed plugin can be configured
+    - [ ] Options for default plugins can be overridden
+- [ ] Rename "mct-bootstrap-plugin" to "mct-configure-time"
 - [ ] In general better user feedback
 - [ ] Hand over to PDP
 - [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Get VIPER building with this tool
+    - @Dave
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
 - [ ] List all available plugins, as well as installed plugins.
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
 - [ ] Support importing multiple plugins from a single source file
-
+- [ ] Man entries for all defined commands
 EOY scope
 
 ## Improvements to OMM

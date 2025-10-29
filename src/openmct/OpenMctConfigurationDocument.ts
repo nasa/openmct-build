@@ -14,6 +14,10 @@ export interface OpenMctConfigurationSchema {
      * Version of OpenMCT to use
      */
     version?: string;
+    /**
+     * NPM package that provides Open MCT. If present this will override any Open MCT version specified.
+     */
+    npmPackage?: string;
     plugins?: (string | PluginMap)[];
   };
 }
@@ -25,7 +29,7 @@ export interface PluginMap {
  * via the `patternProperty` "^.*$".
  */
 export interface Plugin {
-  source?: 'npm' | 'github' | 'local' | 'builtin';
+  source?: 'npm' | 'builtin';
   /**
    * NPM package that provides this plugin.
    */
@@ -34,10 +38,6 @@ export interface Plugin {
    * Script that exports the install function
    */
   entryPoint?: string;
-  /**
-   * Version of the plugin to use
-   */
-  version?: string;
   /**
    * Whether the plugin should be enabled. By setting this to false you can override default plugins
    */

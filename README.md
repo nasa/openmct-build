@@ -38,6 +38,20 @@ mct-cli build --instance <instance-name>
 
 If no instance is specified, the default instance will be used.
 
+### Build a particular version of Open MCT
+
+```bash
+mct-cli build --version <version>
+```
+
+### Build a particular package of Open MCT
+
+This can be used to build github branches, local, or custom npm packages of Open MCT
+
+```bash
+mct-cli build --npmPackage <npm package specifier>
+```
+
 ### List available plugins configured for a given instance
 
 ```bash
@@ -71,35 +85,56 @@ mct-cli plugins configure <plugin-name> --enabled <true|false> --npmPackage <npm
 * `-r`, `--recipe` <recipe>: Specify a recipe for plugin installation
 
 ## Examples
-1. Install a plugin to the default instance:
+
+1. Deploy a new default instance of Open MCT
+```bash
+mct-cli build
+```
+
+2. Deploy a new named instance of Open MCT
+```bash
+mct-cli build --instance <instance-name>
+```
+
+3. Deploy a new default instance of Open MCT using a specific version
+```bash
+mct-cli build --version <version>
+```
+
+4. Deploy a new default instance of Open MCT using a specific npm package
+```bash
+mct-cli build --npmPackage <npm package specifier>
+```
+
+5. Install a plugin to the default instance:
 ```bash
 mct-cli plugins add akhenry/openmct-yamcs
 ```
-2. Install a plugin to a specific instance:
+6. Install a plugin to a specific instance:
 ```bash
 mct-cli -i my-instance plugins add akhenry/openmct-mcws
 ```
-3. Remove a plugin from the default instance:
+7. Remove a plugin from the default instance:
 ```bash
 mct-cli plugins remove openmct-yamcs
 ```
-4. Install a plugin from a specific instance:
+8. Install a plugin from a specific instance:
 ```bash
 mct-cli -i my-instance plugins remove openmct-mcws
 ```
-5. List plugins installed for the default instance:
+9. List plugins installed for the default instance:
 ```bash
 mct-cli plugins list
 ```
-6. List plugins installed for a specific instance:
+10. List plugins installed for a specific instance:
 ```bash
 mct-cli -i my-instance plugins list
 ```
-7. Configure an installed plugin:
+11. Configure an installed plugin:
 ```bash
 mct-cli plugins configure openmct.plugins.PlanLayout --enabled true --options '{"creatable": true}'
 ```
-8. Override a default plugin:
+12. Override a default plugin:
 ```bash
 mct-cli plugins configure openmct.plugins.Espresso --enabled false
 # With espresso disabled some theme needs to be applied. Apply the snow theme.

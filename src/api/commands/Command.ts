@@ -21,16 +21,6 @@ export default class Command {
                     type: 'string',
                     short: 'i',
                     default: DEFAULT_INSTANCE,
-                },
-                recipe: {
-                    type: 'string',
-                    short: 'r',
-                    default: undefined,
-                },
-                version: {
-                    type: 'string',
-                    short: 'v',
-                    default: undefined,
                 }
             }
         };
