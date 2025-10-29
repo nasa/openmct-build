@@ -47,7 +47,7 @@ mct-cli build --version <version>
 
 ### Build a particular package of Open MCT
 
-This can be used to build github branches, local, or custom npm packages of Open MCT
+If you want to use a custom build of Open MCT, you can specify an npm package specifier. This can be used to build github branches, local, or custom npm packages of Open MCT
 
 ```bash
 mct-cli build --npmPackage <npm package specifier>
@@ -94,17 +94,17 @@ mct-cli build
 
 2. Deploy a new named instance of Open MCT
 ```bash
-mct-cli build --instance <instance-name>
+mct-cli build --instance my-instance
 ```
 
 3. Deploy a new default instance of Open MCT using a specific version
 ```bash
-mct-cli build --version <version>
+mct-cli build --version latest
 ```
 
 4. Deploy a new default instance of Open MCT using a specific npm package
 ```bash
-mct-cli build --npmPackage <npm package specifier>
+mct-cli build --npmPackage nasa/openmct#gold
 ```
 
 5. Install a plugin to the default instance:
@@ -153,9 +153,9 @@ This project uses [json-schema-to-typescript](https://github.com/bcherny/json-sc
 Types are automatically generated:
 1. When you run `npm install` (via the `postinstall` hook)
 2. Manually by running:
-   ```bash
-   npm run generate:types
-   ```
+```bash
+npm run generate:types
+```
 
 The generated types will be available in `src/openmct/types.ts`.
 
