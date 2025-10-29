@@ -1,7 +1,6 @@
 import OpenMctPlugin from "./OpenMctPlugin";
 import {OpenMctConfigurationSchema, PluginMap} from "./OpenMctConfigurationDocument";
 import path from "path";
-import { DEFAULT_OPEN_MCT_VERSION } from "../constants";
 import { env } from "process";
 
 export const INSTANCE_PATH = env.MCT_BUILD_API_INSTANCE_PATH || path.join(process.cwd(), 'instances');
@@ -12,7 +11,6 @@ export default class OpenMctConfiguration {
 
     constructor(configuration: OpenMctConfigurationSchema) {
         this.#configuration = configuration;
-        this.setNpmPackage(`openmct@${this.getOpenMctVersion()}`);
     }
     getPlugins() {
         return this.#configuration.openmct.plugins?.map((plugin: PluginMap | string) => {
@@ -53,21 +51,31 @@ export default class OpenMctConfiguration {
             return OpenMctPlugin.fromYamlPluginMapOrString(p).getName() !== name;
         });
     }
-    getOpenMctVersion(): string {
-        return this.#configuration.openmct.version || DEFAULT_OPEN_MCT_VERSION;
+    getOpenMctVersion(): string | undefined {
+        if ('version' in this.#configuration.openmct) {
+            return this.#configuration.openmct.version;
+        } else {
+            // This is a tricky one. I'm not quite sure what to do here.
+            return undefined;
+        }
     }
 
     setOpenMctVersion(version: string) {
-        this.#configuration.openmct.version = version;
-        this.setNpmPackage(`openmct@${version}`);
+        this.#configuration.openmct = {version, plugins: this.#configuration.openmct.plugins};
     }
 
     getNpmPackage(): string {
-        return this.#configuration.openmct.npmPackage || DEFAULT_OPEN_MCT_VERSION;
+        if ('npmPackage' in this.#configuration.openmct) {
+            return this.#configuration.openmct.npmPackage;
+        } else if ('version' in this.#configuration.openmct) {
+            return `openmct@${this.getOpenMctVersion()}`;
+        } else {
+            throw new Error('Invalid configuration. Please ensure it complies with the provided schema.');
+        }
     }
 
     setNpmPackage(npmPackage: string) {
-        this.#configuration.openmct.npmPackage = npmPackage;
+        this.#configuration.openmct = {npmPackage, plugins: this.#configuration.openmct.plugins};
     }
 
     getConfigurationDocument(): OpenMctConfigurationSchema {

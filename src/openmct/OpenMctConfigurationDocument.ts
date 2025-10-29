@@ -9,17 +9,21 @@
  * Schema for OpenMCT configuration YAML
  */
 export interface OpenMctConfigurationSchema {
-  openmct: {
-    /**
-     * Version of OpenMCT to use
-     */
-    version?: string;
-    /**
-     * NPM package that provides Open MCT. If present this will override any Open MCT version specified.
-     */
-    npmPackage?: string;
-    plugins?: (string | PluginMap)[];
-  };
+  openmct:
+    | {
+        /**
+         * Version of OpenMCT to use
+         */
+        version: string;
+        plugins?: (string | PluginMap)[];
+      }
+    | {
+        /**
+         * NPM package that provides Open MCT. If present this will override any Open MCT version specified.
+         */
+        npmPackage: string;
+        plugins?: (string | PluginMap)[];
+      };
 }
 export interface PluginMap {
   [k: string]: Plugin;
