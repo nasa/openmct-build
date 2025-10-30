@@ -5,7 +5,7 @@ import { OpenMctConfigurationSchema, Plugin, PluginMap } from "../openmct/OpenMc
 import * as path from 'path';
 import * as fs from 'fs';
 import merge from 'lodash.merge';
-import jsonSchemaFile from './openmct-configuration-schema.json';
+import jsonSchemaFile from '../assets/openmct-configuration-schema.json';
 
 const BASE_CONFIG_LOCATION = path.join(__dirname, 'openmct-base.yaml');
 
@@ -38,7 +38,8 @@ export default class MctYamlConfigurator {
     }
 
     saveForInstance(instance: string, config: OpenMctConfiguration) {
-        const configString = this.serializeToYaml(config);
+        let configString = this.serializeToYaml(config);
+        configString = '# yaml-language-server: $schema=assets/openmct-configuration-schema.json\n' + configString;
         fs.writeFileSync(path.join(INSTANCE_PATH, instance, CONFIGURATION_YAML), configString);
     }
 

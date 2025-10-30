@@ -104,23 +104,26 @@
     ```
 - [X] Need to be able to specify plugin version via command line.
     - This is handled by npm conventions
-- [ ] Need to be able to support Open MCT branches
-    - [ ] Figure out how to make it so that instance.yaml only contains Open MCT version OR package name, and not both.
+- [X] Need to be able to support Open MCT branches
+    - [X] Figure out how to make it so that instance.yaml only contains Open MCT version OR package name, and not both.
 - [ ] Generated instance.yaml should include the Open MCT Yaml schema to make them easier to edit.
-- [ ] Usage docs for all defined commands
 - [ ] Support "now" and basic time math in "mct-configure-time" AND time conductor plugins.
-- [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
-   - @Jamie
+    - start: 'now - 90000'
+    - end: 'now + 90000'
+- [ ] Move start block and asset path to bootstrap plugin.
+- [ ] Usage docs for all defined commands
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
-- [ ] Rename "mct-bootstrap-plugin" to "mct-configure-time"
-- [ ] In general better user feedback
-- [ ] Hand over to PDP
-- [ ] Figure out how the hell this will be compiled and run as a cli tool
+- [ ] Better error handling and feedback
+- [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
+   - @Jamie
 - [ ] Get VIPER building with this tool
     - @Dave
+- [ ] Hand over to PDP
+- [ ] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
+- [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
 - [ ] List all available plugins, as well as installed plugins.
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
