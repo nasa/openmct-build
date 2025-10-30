@@ -1,10 +1,31 @@
-const simpleTimeMathRegex = /^now\s+([-+]\s*\d+)$/;
+const simpleTimeMathRegex = /^(now)?\s*([-+]?\s*\d+)?$/;
 
+function getEpochTime(timeExpression) {
+    const now = Date.now();
+    const regexResult = simpleTimeMathRegex.exec(timeExpression);
+    if (regexResult) {
+        const isOffsetFromNow = regexResult[1] === 'now';
+        if (isOffsetFromNow) {
+            const offsetString = regexResult[2] || '0';
+            const offset = parseInt(offsetString.replaceAll(' ', ''), 10);
+            return now + offset;
 
-export default function mctBootstrapPlugin({timeSystem, clock, startOffset, endOffset} = {timeSystem: 'utc', clock: 'local', startOffset: -60000, endOffset: 0}) {
-    return function install(openmct){
+        }
+        return timeExpression;
+    }
+    return timeExpression;
+}
+export default function mctBootstrapPlugin({timeSystem, clock, start, end, startOffset, endOffset, mode} = {timeSystem: 'utc', clock: 'local', start: 'now - 900000', end: 'now', startOffset: -60000, endOffset: 0, mode: 'realtime'}) {
+    return function install(openmct) {
         openmct.time.setTimeSystem(timeSystem);
         openmct.time.setClock(clock);
-        openmct.time.setMode('realtime', {start: startOffset, end: endOffset});
+
+        if (mode === 'fixed') {
+            start = getEpochTime(start);
+            end = getEpochTime(end);
+            openmct.time.setMode(mode, {start, end});
+        } else {
+            openmct.time.setMode(mode, {start: startOffset, end: endOffset});
+        }
     }
 }

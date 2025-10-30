@@ -21,3 +21,4 @@ openmct:
             clock: local
             startOffset: -60000
             endOffset: 0
+            mode: realtime
