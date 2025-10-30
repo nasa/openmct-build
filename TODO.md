@@ -132,7 +132,7 @@
 EOY scope
 
 ## Bugs
-- [ ] 
+- [ ] Figure out how to build parseArgs options programmatically from commands. Need the superset of options for all commands for the first pass.
 
 ## Improvements to OMM
 - [ ] package.json should identify the source location.

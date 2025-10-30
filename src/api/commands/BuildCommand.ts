@@ -14,9 +14,9 @@ export default class BuildCommand extends Command {
         const additionalArgs:ParseArgsConfig = {
             options: {
                 npmPackage: {
-                    type: 'string',
-                    short: 'p',
-                    default: undefined,
+                        type: 'string',
+                        short: 'p',
+                        default: undefined,
                 },
                 recipe: {
                     type: 'string',
