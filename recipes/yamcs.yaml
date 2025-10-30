@@ -1,8 +1,8 @@
+# yaml-language-server: $schema=../src/assets/openmct-configuration-schema.json
 openmct:
   version: '4.1.0'
   plugins:
   - akhenry/openmct-yamcs:
-      source: 'github'
       options:
         yamcsDictionaryEndpoint: 'http://localhost:8090/'
         yamcsHistoricalEndpoint: 'http://localhost:8090/'
