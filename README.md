@@ -9,7 +9,7 @@ npm install
 npm link
 ```
 
-`npm link` will install `mct-cli` as a global command line tool that can be run from any directory. Open MCT instances will be created an the `instances` directory relative to the current working directory. `npm install` installs the `mct-cli` dependencies.
+`npm link` will install `mct-cli` as a global command line tool that can be run from any directory. Open MCT instances will be created in the `instances` directory relative to the current working directory. `npm install` installs the `mct-cli` dependencies.
 
 ## Quick start
 
