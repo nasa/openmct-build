@@ -9,7 +9,7 @@ npm install
 npm link
 ```
 
-`npm link` will install `mct-cli` as a global command line tool that can be run from any directory. Open MCT instances will be created an the `instances` directory relative to the current working directory. `npm install` installs the `mct-cli` dependencies.
+`npm link` will install `mct-cli` as a global command line tool that can be run from any directory. Open MCT instances will be created in the `instances` directory relative to the current working directory. `npm install` installs the `mct-cli` dependencies.
 
 ## Quick start
 
@@ -119,7 +119,7 @@ mct-cli -i my-instance plugins add akhenry/openmct-mcws
 ```bash
 mct-cli plugins remove openmct-yamcs
 ```
-8. Install a plugin from a specific instance:
+8. Remove a plugin from a specific instance:
 ```bash
 mct-cli -i my-instance plugins remove openmct-mcws
 ```
