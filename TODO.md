@@ -106,11 +106,12 @@
     - This is handled by npm conventions
 - [X] Need to be able to support Open MCT branches
     - [X] Figure out how to make it so that instance.yaml only contains Open MCT version OR package name, and not both.
-- [ ] Generated instance.yaml should include the Open MCT Yaml schema to make them easier to edit.
-- [ ] Support "now" and basic time math in "mct-configure-time" AND time conductor plugins.
+- [X] Generated instance.yaml should include the Open MCT Yaml schema to make them easier to edit.
+- [X] Support "now" and basic time math in "mct-configure-time" AND time conductor plugins.
     - start: 'now - 90000'
     - end: 'now + 90000'
-- [ ] Move start block and asset path to bootstrap plugin.
+- [X] Move start block and asset path to bootstrap plugin.
+- [ ] Do validation of plugin names. Reject plugins that we can't match, and do not add them to instance.yaml.
 - [ ] Usage docs for all defined commands
 - [ ] Tests
     - [ ] Default plugins can be disabled

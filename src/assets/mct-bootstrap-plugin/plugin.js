@@ -27,5 +27,9 @@ export default function mctBootstrapPlugin({timeSystem, clock, start, end, start
         } else {
             openmct.time.setMode(mode, {start: startOffset, end: endOffset});
         }
+
+        document.addEventListener("OpenMCTPluginsInstalled", function () {
+            openmct.start();
+        });
     }
 }

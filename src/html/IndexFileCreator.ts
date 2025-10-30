@@ -72,14 +72,6 @@ export default class IndexFileCreator {
         return scriptElement;
     }
 
-    #buildStartBlock(document: Document): HTMLScriptElement {
-        const scriptElement = document.createElement('script');
-        scriptElement.defer = true;
-        scriptElement.textContent = `document.addEventListener("OpenMCTPluginsInstalled", function () {
-            openmct.start();
-        });`;
-        return scriptElement;
-    }
     generateDocument(): Document {
         const template = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
         const dom = new JSDOM(template);
@@ -91,7 +83,6 @@ export default class IndexFileCreator {
         document.head.appendChild(this.#buildBuiltinsInstallBlock(document))
         document.head.appendChild(es6LoadBlock);
         document.head.appendChild(commonJsLoadBlock);
-        document.head.appendChild(this.#buildStartBlock(document));
 
         return document;
     }
