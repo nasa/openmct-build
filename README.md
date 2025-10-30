@@ -119,7 +119,7 @@ mct-cli -i my-instance plugins add akhenry/openmct-mcws
 ```bash
 mct-cli plugins remove openmct-yamcs
 ```
-8. Install a plugin from a specific instance:
+8. Remove a plugin from a specific instance:
 ```bash
 mct-cli -i my-instance plugins remove openmct-mcws
 ```
