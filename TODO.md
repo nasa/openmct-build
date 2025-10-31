@@ -112,6 +112,10 @@
     - end: 'now + 90000'
 - [X] Move start block and asset path to bootstrap plugin.
 - [ ] Do validation of plugin names. Reject plugins that we can't match, and do not add them to instance.yaml.
+    - [ ] validate builtins against installed version of open mct
+    - [ ] define a plugin registry for external plugins
+    - [ ] file:// packages always bypass plugin registry for validation
+    - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 - [ ] Usage docs for all defined commands
 - [ ] Tests
     - [ ] Default plugins can be disabled
@@ -123,6 +127,8 @@
 - [ ] Get VIPER building with this tool
     - @Dave
 - [ ] Hand over to PDP
+- [ ] Add "instances list" command to list local instances.
+- [ ] Add "plugins describe" to list plugin options and default values. NO idea how this will work.
 - [ ] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
 - [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
