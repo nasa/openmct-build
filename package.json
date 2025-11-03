@@ -2,9 +2,9 @@
   "name": "openmct-configurator",
   "version": "0.0.1",
   "description": "",
-  "main": "scripts/mct-cli.ts",
+  "main": "scripts/mct.ts",
   "bin": {
-    "mct-cli": "scripts/mct-cli.ts"
+    "mct": "scripts/mct.ts"
   },
   "scripts": {
     "test": "jest",
