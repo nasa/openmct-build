@@ -112,7 +112,7 @@
     - end: 'now + 90000'
 - [X] Move start block and asset path to bootstrap plugin.
 - [ ] Do validation of plugin names. Reject plugins that we can't match, and do not add them to instance.yaml.
-    - [ ] validate builtins against installed version of open mct
+    - [X] validate builtins against installed version of open mct
     - [ ] define a plugin registry for external plugins
     - [ ] file:// packages always bypass plugin registry for validation
     - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
@@ -134,9 +134,11 @@
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
 - [ ] List all available plugins, as well as installed plugins.
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
-- [ ] Support importing multiple plugins from a single source file
+EOY scope ends here.
+
+- [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
 - [ ] Man entries for all defined commands
-EOY scope
+- [ ] Support importing multiple plugins from a single source file
 
 ## Bugs
 - [ ] Figure out how to build parseArgs options programmatically from commands. Need the superset of options for all commands for the first pass.

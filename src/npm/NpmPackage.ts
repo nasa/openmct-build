@@ -41,7 +41,7 @@ export default class NpmPackage {
     }
     getResolvedEntryPoint(plugin: OpenMctPlugin): string {
         const configuredEntryPoint = plugin.getEntryPoint();
-        let resolvedEntryPoint: string;
+        let resolvedEntryPoint: string | undefined;
 
         if (configuredEntryPoint !== undefined) {
             resolvedEntryPoint = configuredEntryPoint;
@@ -55,11 +55,11 @@ export default class NpmPackage {
         }
         
     }
-    getPackageType(): string {
+    getPackageType(): string | undefined {
         const packageTypeDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'type'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
-        return packageTypeDetails.stdout?.trim() ?? 'commonjs';
+        return packageTypeDetails.stdout?.trim();
     }
-    getNpmEntryPoint(): string {
+    getNpmEntryPoint(): string | undefined {
         if (this.#entryPoint === undefined) {
             const entryPointDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'main'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
             this.#entryPoint = entryPointDetails.stdout?.trim();

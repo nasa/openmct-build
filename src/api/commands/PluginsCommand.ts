@@ -59,6 +59,9 @@ export default class PluginsCommand extends Command {
         }};
     }
     async add(name:string, {instance, npmPackage}: {instance: string, npmPackage?: string}) {
+        if (npmPackage === undefined) {
+            npmPackage = name;
+        }
         const config = await this.#configurator.resolveConfiguration({instance});
         const plugin = await this.#getMatchingPlugin(name, instance, npmPackage);
         if (!plugin) {
@@ -87,10 +90,9 @@ export default class PluginsCommand extends Command {
     async #getMatchingPlugin(name: string, instance: string, npmPackage?: string): Promise<OpenMctPlugin | undefined> {
         if (name.startsWith('openmct.')) {
             return this.#getMatchingBuiltinPlugin(name, instance);
-        } else if (npmPackage !== undefined) {
-            return this.#getMatchingNpmPlugin(name, npmPackage);
         } else {
-            throw new Error(`Unknown plugin ${name}`);
+            // Attempt to treat it as an npm package. Will fail later if no NPM package matches.
+            return this.#getMatchingNpmPlugin(name, npmPackage);
         }
     }
     #getPluginPathCaseInsensitive(object: any, propertyPath: string, resolvedPath: string[] = []): string | undefined {
