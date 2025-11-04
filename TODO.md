@@ -113,15 +113,12 @@
 - [X] Move start block and asset path to bootstrap plugin.
 - [ ] Do validation of plugin names. Reject plugins that we can't match, and do not add them to instance.yaml.
     - [X] validate builtins against installed version of open mct
-    - [ ] define a plugin registry for external plugins
-    - [ ] file:// packages always bypass plugin registry for validation
-    - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 - [ ] Usage docs for all defined commands
+- [ ] Better error handling and feedback
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
-- [ ] Better error handling and feedback
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
 - [ ] Get VIPER building with this tool
@@ -135,6 +132,9 @@
 - [ ] List all available plugins, as well as installed plugins.
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
 EOY scope ends here.
+- [ ] define a plugin registry for external plugins
+- [ ] file:// packages always bypass plugin registry for validation
+- [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 
 - [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
 - [ ] Man entries for all defined commands

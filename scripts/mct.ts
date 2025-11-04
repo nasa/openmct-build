@@ -3,6 +3,7 @@
 import { parseArgs } from "util";
 import Api from "../src/api/api";
 import { DEFAULT_INSTANCE } from "../src/constants";
+import Command from "../src/api/commands/Command";
 
 function main() {
     const api = new Api();
@@ -44,7 +45,14 @@ function main() {
         }
     });
     const [noun, verb, name] = args.positionals;
-    const command = api.getCommandForNoun(noun);
+    let command: Command;
+    try {
+        command = api.getCommandForNoun(noun);
+    } catch (e: any) {
+        console.error(e.message);
+        process.exit(1);
+    }
+
     const argsForVerb = command.getArgsForVerb(verb);
 
     args = parseArgs({
