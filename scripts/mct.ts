@@ -4,8 +4,9 @@ import { parseArgs } from "util";
 import Api from "../src/api/api";
 import { DEFAULT_INSTANCE } from "../src/constants";
 import Command from "../src/api/commands/Command";
+import InvalidCommandError from "../src/api/commands/InvalidCommandError";
 
-function main() {
+async function main() {
     const api = new Api();
 
     let args = parseArgs({
@@ -55,12 +56,29 @@ function main() {
 
     const argsForVerb = command.getArgsForVerb(verb);
 
-    args = parseArgs({
-        allowPositionals: true,
-        strict: true,
-        ...argsForVerb
-    });
-    command.execute(verb, name, args.values);
+
+    try {
+        args = parseArgs({
+            allowPositionals: true,
+            strict: true,
+            ...argsForVerb
+        });
+        await command.execute(verb, name, args.values);
+    } catch (e: any) {
+        if (e instanceof InvalidCommandError) {
+            console.error(e.message);
+            console.info(command.getUsageForVerb(verb));
+        } else {
+            if (Reflect.has(e, 'code') && e.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') {
+                console.error(e.message);
+                console.info(command.getUsageForVerb(verb));
+            } else {
+                console.error(`An error occurred while executing this command: ${e.message}`);
+            }
+        }
+    } finally {
+        process.exit(1);
+    }
 }
 
 main();

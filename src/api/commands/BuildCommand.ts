@@ -37,6 +37,11 @@ export default class BuildCommand extends Command {
                 ...additionalArgs.options
         }};
     }
+
+    getUsageForVerb(verb: string): string {
+        return 'Usage: mct build [--instance <instance-name>] [--recipe <recipe-name>] [--version <version>] [--npm-package <npm-package-name>]';
+    }
+
     async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
         const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();

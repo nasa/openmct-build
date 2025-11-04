@@ -8,6 +8,7 @@ import NpmPackage from "../../npm/NpmPackage";
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { ParseArgsConfig } from "util";
 import { INSTANCE_PATH } from "../../openmct/OpenMctConfiguration";
+import InvalidCommandError from "./InvalidCommandError";
 
 export default class PluginsCommand extends Command {
     #configurator:MctYamlConfigurator;
@@ -58,7 +59,23 @@ export default class PluginsCommand extends Command {
                 ...additionalArgs.options
         }};
     }
+    getUsageForVerb(verb: string): string {
+        switch (verb) {
+            case 'add':
+                return 'Usage: mct plugins add <plugin-name> [--instance <instance-name>] [--npm-package <npm-package-name>]';
+            case 'remove':
+                return 'Usage: mct plugins remove <plugin-name> [--instance <instance-name>]';
+            case 'configure':
+                return 'Usage: mct plugins configure <plugin-name> [--instance <instance-name>] [--enabled <true|false>] [--npm-package <npm-package-name>] [--options <options>]';
+            default:
+                return 'Usage: mct plugins <add|remove|configure>';
+        }
+    }
     async add(name:string, {instance, npmPackage}: {instance: string, npmPackage?: string}) {
+        if (name === undefined) {
+            throw new InvalidCommandError('Plugin name is required');
+        }
+        
         if (npmPackage === undefined) {
             npmPackage = name;
         }
@@ -163,6 +180,9 @@ export default class PluginsCommand extends Command {
         });
     }
     async remove(name:string, {instance}: {instance: string}) {
+        if (name === undefined) {
+            throw new InvalidCommandError('Plugin name is required');
+        }
         console.log(`Removing plugin ${name} for ${instance} instance`);
         const config = await this.#configurator.resolveConfiguration({instance});
         const matchingPlugin = await this.#getMatchingPlugin(name, instance);
@@ -184,6 +204,9 @@ export default class PluginsCommand extends Command {
     }
 
     async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: any}) {
+        if (name === undefined) {
+            throw new InvalidCommandError('Plugin name is required');
+        }
         console.log(`Configuring plugin ${name} for instance ${instance}`);
         const config = await this.#configurator.resolveConfiguration({instance});
         const plugin = config.getPlugin(name);

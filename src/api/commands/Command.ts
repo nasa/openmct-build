@@ -5,9 +5,11 @@ export default class Command {
     getArgsForVerb(verb: string): ParseArgsConfig {
         return Command.getDefaultArgs();
     }
+    getUsageForVerb(verb: string): string {
+        throw new Error(`Usage for verb ${verb} not implemented`);
+    }
 
-    execute(verb: string | undefined, ...args: any[]) {
-        console.log(`Executing ${verb} with args ${JSON.stringify(args)}`);
+    async execute(verb: string | undefined, ...args: any[]) {
         if (this[verb as keyof typeof this] === undefined) {
             throw new Error(`Unknown verb: ${verb}`);
         }
