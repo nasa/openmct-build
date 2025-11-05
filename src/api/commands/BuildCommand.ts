@@ -38,7 +38,7 @@ export default class BuildCommand extends Command {
         }};
     }
 
-    getUsageForVerb(verb: string): string {
+    getUsageForVerb(): string {
         return 'Usage: mct build [--instance <instance-name>] [--recipe <recipe-name>] [--version <version>] [--npm-package <npm-package-name>]';
     }
 

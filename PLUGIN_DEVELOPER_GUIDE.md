@@ -6,6 +6,15 @@ This guide explains how to prepare your Open MCT plugin for use with **mct-cli**
 
 mct-cli allows developers to build an Open MCT deployment and install and manage Open MCT plugins through a command-line interface. To make your plugin compatible with mct-cli, you need to follow a few key conventions.
 
+## TL;DR
+
+1. Open MCT plugins are npm packages
+2. Your plugin needs to have a `package.json` file, per the npm standard
+3. Your package.json should define a `main` field that points to the entry point of your plugin. This should be a file that exports an Open MCT install function.
+4. Your package.json should define a `type` field that is either "commonjs" or "module" depending on whether you are using CommonJS or ES6 modules respectively.
+5. Your package.json should define a `peerDependencies` field that lists the version(s) of Open MCT your plugin is compatible with.
+6. Your plugin should export an install function that takes an Open MCT instance and, optionally, an options object as arguments.
+
 ## Plugin Structure
 
 Your plugin should be published as an npm package with a clear entry point that exports an install function. It is also good practice to include a peerDependencies field in your package.json to specify the version(s) of Open MCT your plugin is compatible with.
@@ -133,6 +142,44 @@ Each plugin in the configuration can have the following properties:
 
 - **enabled** (boolean): Whether the plugin is enabled (default: true). This can be used to override plugins that are enabled by default.
 - **options** (object): Configuration options passed to the plugin at install time (optional). These will be converted to a JavaScript object and passed into the object install function as a second argument.
+
+#### Specifying Options
+
+Options can be specified in the YAML configuration file or via the command line.
+
+```Yaml
+openmct:
+  version: stable
+  plugins:
+    - akhenry/openmct-yamcs:
+        options:
+          customSetting: "my-value"
+```
+
+```bash
+mct-cli plugins configure openmct-my-plugin --options '{"customMessage": "value"}'
+```
+
+Note: An options object with named properties is the preferred approach for reasons of user friendliness, but for legacy support an array of JavaScript primitives and / or objects may also be specified here.
+
+```Yaml
+openmct:
+  version: stable
+  plugins:
+    - akhenry/openmct-yamcs:
+        options:
+          - true
+          - "my-value"
+          - 1234
+          - 
+            - An Array
+            - Of Values
+```
+
+```bash
+mct-cli plugins configure openmct-my-plugin --options '[true, "my-value", 1234, ["An Array", "Of Values"]]'
+```
+
 
 ### Example Instance Configuration specifying a combination of builtin and npm plugins
 

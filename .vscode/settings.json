@@ -1,0 +1,5 @@
+{
+    "search.exclude": {
+        "**/instances/**/node_modules": true
+    }
+}

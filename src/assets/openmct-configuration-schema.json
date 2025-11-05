@@ -32,8 +32,17 @@
                     "description": "Whether the plugin should be enabled. By setting this to false you can override default plugins"
                 },
                 "options": {
-                    "type": "object",
-                    "description": "The options to be passed to the plugin at install time"
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "description": "Options to configure the plugin"
+                        },
+                        {
+                            "type": "array",
+                            "description": "Arguments to be provided to a plugin install function"
+                        }
+                    ],
+                    "description": "The options to be passed to the plugin at install time. Can be either an object or an array. If an array is provided, each member will be treated as an argument to the plugin install function."
                 }
             },
             "additionalProperties": true

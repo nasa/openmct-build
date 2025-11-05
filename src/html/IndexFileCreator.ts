@@ -33,7 +33,7 @@ export default class IndexFileCreator {
                 const src = npmPackage.getResolvedEntryPoint(plugin);
                 const installFunctionName = `install${(Math.random() * 10000000).toFixed(0)}`;
                 scriptElement.textContent += `import { default as ${installFunctionName} } from './${src}';\r\n`;
-                scriptElement.textContent += `openmct.install(${installFunctionName}(${JSON.stringify(plugin.getOptions())}));\r\n`;
+                scriptElement.textContent += `openmct.install(${installFunctionName}(${plugin.serializeInstallOptions()}));\r\n`;
             }
         });
 
@@ -50,7 +50,7 @@ export default class IndexFileCreator {
             const packageType = npmPackage.getPackageType() || 'commonjs';
             if (packageType === 'commonjs' && plugin.isEnabled()) {
                 const src = npmPackage.getResolvedEntryPoint(plugin);
-                scriptElement.textContent += `openmct.install((await loadUmd('../${src}'))(${JSON.stringify(plugin.getOptions())}));\r\n`;
+                scriptElement.textContent += `openmct.install((await loadUmd('../${src}'))(${plugin.serializeInstallOptions()}));\r\n`;
             }
         });
 
@@ -64,7 +64,7 @@ export default class IndexFileCreator {
 
         this.#configuration.getBuiltinPlugins().forEach(plugin => {
             if (plugin.isEnabled()) {
-                pluginInstallFunctionBody += `openmct.install(${plugin.generateInstallFunctionCall()});\n`;
+                pluginInstallFunctionBody += `openmct.install(${plugin.generateBuiltinInstallFunctionCall()});\n`;
             }
         });
         const pluginInstallFunction = `(() => {${pluginInstallFunctionBody}})();`;

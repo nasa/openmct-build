@@ -13,14 +13,20 @@ npm link
 
 ## Quick start
 
-The following will build a new Open MCT instance and start a local server to preview it.
+The following will build a new Open MCT instance -
 
 ```bash
 mct build
-npx http-server instances/default
 ```
 
-Now navigate a web browser to `http://localhost:8080` to preview your Open MCT instance. This is intended for preview purposes only. For production deployments, Open MCT should be deployed to a web server that meets your security and traffic needs. Open MCT is tested with Apache.
+To preview the instance, we can use a development server like `http-server`:
+
+eg.
+```bash
+npx http-server instances/default -o
+```
+
+For production deployments Open MCT should be deployed to a web server that meets your security and traffic needs. Open MCT is tested with Apache.
 
 
 ## Commands
@@ -39,6 +45,12 @@ mct build --instance <instance-name>
 
 If no instance is specified, the default instance will be used.
 
+### Build a new instance from a recipe
+
+```bash
+mct build --recipe <recipe> [-i <instance-name>]
+```
+
 ### Build a particular version of Open MCT
 
 ```bash
@@ -56,34 +68,30 @@ mct build --npmPackage <npm package specifier>
 ### List available plugins configured for a given instance
 
 ```bash
-mct plugins list
+mct plugins list [-i <instance-name>]
 ```
 
 ### Install a plugin
 
 ```bash
-mct plugins add <plugin or npm package specifier>
+mct plugins add <plugin or npm package specifier> [-i <instance-name>]
 ```
 
 ```bash
-mct plugins add <plugin name> --npmPackage <npm package specifier>
+mct plugins add <plugin name> --npmPackage <npm package specifier> [-i <instance-name>]
 ```
 
 ### Remove a plugin
 
 ```bash
-mct plugins remove <plugin-name>
+mct plugins remove <plugin-name> [-i <instance-name>]
 ```
 
 ### Configure an installed plugin
 
 ```bash
-mct plugins configure <plugin-name> --enabled <true|false> --npmPackage <npm package specifier> --options <options>
+mct plugins configure <plugin-name> --enabled <true|false> --npmPackage <npm package specifier> --options <options> [-i <instance-name>]
 ```
-
-## Options
-* `-i`, `--instance` <instance-name>: Specify an instance name (default: 'default')
-* `-r`, `--recipe` <recipe>: Specify a recipe for plugin installation
 
 ## Examples
 

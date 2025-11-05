@@ -21,7 +21,7 @@ describe('YamlConfigurator', () => {
                     creatable: true
         `;
 
-        configuration = configurator.loadFromYaml(yamlString);
+        configuration = configurator.#loadExistingConfiguration(yamlString);
     });
 
     describe('IndexFileCreator', () => {

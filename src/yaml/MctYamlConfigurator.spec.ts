@@ -20,7 +20,7 @@ describe('MctYamlConfigurator', () => {
                             creatable: true
             `;
 
-            const configDoc = configurator.loadFromYaml(yamlString);
+            const configDoc = configurator.#loadExistingConfiguration(yamlString);
 
             expect(configDoc).toBeDefined();
         });
@@ -34,7 +34,7 @@ describe('MctYamlConfigurator', () => {
                   autoSave: true
             `;
 
-            expect(() => configurator.loadFromYaml(yamlString)).toThrow();
+            expect(() => configurator.#loadExistingConfiguration(yamlString)).toThrow();
         });
 
         it('Should reject YAML that does not conform to the Open MCT configuration schema', () => {
@@ -46,7 +46,7 @@ describe('MctYamlConfigurator', () => {
                   autoSave: true
             `;
 
-            expect(() => configurator.loadFromYaml(yamlString)).toThrow();
+            expect(() => configurator.#loadExistingConfiguration(yamlString)).toThrow();
         });
     });
 });

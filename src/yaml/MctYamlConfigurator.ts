@@ -16,14 +16,18 @@ export default class MctYamlConfigurator {
         this.#validator = new Validator();
     }
 
-    loadFromYaml(yaml: string): OpenMctConfiguration {
+    loadFromRecipe(recipe: string): OpenMctConfiguration {
         let doc: OpenMctConfigurationSchema;
-        if (yaml === undefined || yaml.length === 0) {
-            doc = this.#loadDefaultConfigurationDocument();
-        } else {
-            doc = this.#loadYaml(yaml);
-            doc = this.#applyBaseConfiguration(doc);
-        }
+        doc = this.#loadYaml(recipe);
+        doc = this.#applyBaseConfiguration(doc);
+
+        const openmctConfiguration = new OpenMctConfiguration(doc);
+
+        return openmctConfiguration;
+    }
+
+    #loadExistingConfiguration(yaml: string): OpenMctConfiguration {
+        let doc: OpenMctConfigurationSchema = this.#loadYaml(yaml);
 
         const openmctConfiguration = new OpenMctConfiguration(doc);
 
@@ -32,7 +36,7 @@ export default class MctYamlConfigurator {
 
     loadForInstance(instance: string): OpenMctConfiguration {
         const configString = fs.readFileSync(path.join(INSTANCE_PATH, instance, CONFIGURATION_YAML), 'utf-8');
-        const config = this.loadFromYaml(configString);
+        const config = this.#loadExistingConfiguration(configString);
 
         return config;
     }
@@ -62,7 +66,7 @@ export default class MctYamlConfigurator {
 
         if (recipe !== undefined) {
             const templateYaml = fs.readFileSync(recipe, 'utf-8');
-            config = configurator.loadFromYaml(templateYaml);
+            config = configurator.loadFromRecipe(templateYaml);
         } else {
             if (configurator.instanceConfigExists(instance)) {
                 config = configurator.loadForInstance(instance);

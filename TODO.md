@@ -113,8 +113,12 @@
 - [X] Move start block and asset path to bootstrap plugin.
 - [ ] Do validation of plugin names. Reject plugins that we can't match, and do not add them to instance.yaml.
     - [X] validate builtins against installed version of open mct
-- [ ] Usage docs for all defined commands
-- [ ] Better error handling and feedback
+- [X] Usage docs for all defined commands
+- [X] Better error handling and feedback
+- [ ] Support "arguments" for plugins
+- [ ] Plugins add should support options
+- [ ] List all plugins
+- [ ] Add "instances list" command to list local instances.
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured

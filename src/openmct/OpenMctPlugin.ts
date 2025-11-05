@@ -59,14 +59,26 @@ export default class OpenMctPlugin {
         return this.#pluginDefinition !== undefined;
     }
 
-    generateInstallFunctionCall(): string {
-        let serializedOptions:string = '';
-        if (this.#pluginDefinition.options !== undefined) {
-            serializedOptions = JSON.stringify(this.#pluginDefinition.options);
+    generateBuiltinInstallFunctionCall(): string {
+        if (!this.isBuiltin()) {
+            throw new Error('Plugin is not a builtin plugin');
         }
-        return `${this.#name}(${serializedOptions})`;
+        return `${this.#name}(${this.serializeInstallOptions()})`;
     }
 
+   serializeInstallOptions(): string {
+        let serializedArguments:string = '';
+        if (this.#pluginDefinition.options !== undefined) {
+            if (Array.isArray(this.#pluginDefinition.options)) {
+                serializedArguments = this.#pluginDefinition.options.map((arg: any) => {
+                    return JSON.stringify(arg);
+                }).join(', ');
+            } else {
+                serializedArguments = JSON.stringify(this.#pluginDefinition.options);
+            }
+        }
+        return serializedArguments;
+    }
     getName(): string {
         return this.#name;
     }
