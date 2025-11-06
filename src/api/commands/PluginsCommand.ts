@@ -56,6 +56,15 @@ export default class PluginsCommand extends Command {
                     }
                 };
                 break;
+            case 'list':
+                additionalArgs.options = {
+                    available: {
+                        type: 'boolean',
+                        short: 'a',
+                        default: false,
+                    }
+                };
+                break;
         };
 
         return {
@@ -145,6 +154,46 @@ export default class PluginsCommand extends Command {
         }
         return this.#getPluginPathCaseInsensitive(property, properties.slice(1).join('.'), resolvedPath);
     }
+    async #generateListOfBuiltinPlugins(instance: string) {
+        const virtualConsole = new VirtualConsole();
+        virtualConsole.sendTo(console);
+        const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
+        const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {virtualConsole, runScripts: 'dangerously', resources: 'usable'});
+        const scriptElement = dom.window.document.createElement('script');
+        
+        await new Promise((resolve, reject) => {
+            try {
+                scriptElement.addEventListener('load', resolve);
+                scriptElement.addEventListener('error', reject);
+                scriptElement.src = `file://${fullInstancePath}/node_modules/openmct/dist/openmct.js`;
+                dom.window.document.head.appendChild(scriptElement);
+            } catch (error) {
+                console.error(error);
+                reject(error);
+            }
+        }).catch((error) => {
+            throw error;
+        });
+        
+        const installedOpenMct = dom.window.openmct;
+        const plugins = installedOpenMct.plugins;
+        const pluginList = this.#enumerateBuiltinPlugins(plugins);
+
+        return pluginList;
+    }
+
+    #enumerateBuiltinPlugins(pluginObject: any, arrayOfPluginNames: string[] = [], prefix:string = 'openmct.plugins') {
+        Object.keys(pluginObject).forEach((objectKey) => {
+            if (typeof(pluginObject[objectKey]) === 'object') {
+                arrayOfPluginNames.concat(this.#enumerateBuiltinPlugins(pluginObject[objectKey], arrayOfPluginNames, `${prefix}.${objectKey}`));
+            }
+            else {
+                const pluginName = objectKey;
+                arrayOfPluginNames.push(`${prefix}.${pluginName}`);
+            }
+        });
+        return arrayOfPluginNames.sort((a, b) => a.localeCompare(b));
+    }
     async #getMatchingBuiltinPlugin(name: string, instance: string) {
         const virtualConsole = new VirtualConsole();
         virtualConsole.sendTo(console);
@@ -180,8 +229,21 @@ export default class PluginsCommand extends Command {
     async #getMatchingNpmPlugin(name: string, npmPackage?: string) {
         return new OpenMctPlugin(name, {npmPackage});
     }
-    
-    list(name:undefined, {instance}: {instance: string}) {
+    async listAll(instance:string) {
+        console.log(`Listing all available plugins for ${instance} instance`);
+        const pluginList = await this.#generateListOfBuiltinPlugins(instance);
+        pluginList.forEach((pluginName: string) => {
+            console.log(`- ${pluginName}`);
+        });
+    }
+    async list(name: undefined, {instance, available}: {instance: string, available?: boolean}) {
+        if (available) {
+            return this.listAll(instance);
+        } else {
+            return this.listInstalled(name, {instance});
+        }
+    }
+    listInstalled(name:undefined, {instance}: {instance: string}) {
         console.log(`Listing plugins for instance ${instance}`);
         const config = this.#configurator.loadForInstance(instance);
         const plugins = config.getPlugins();

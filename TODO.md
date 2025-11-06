@@ -116,9 +116,10 @@
 - [X] Usage docs for all defined commands
 - [X] Better error handling and feedback
 - [X] Support "arguments" for plugins
-- [ ] Plugins add should support options
+- [X] Plugins add should support options
 - [ ] List all plugins
 - [ ] Add "instances list" command to list local instances.
+- [ ] List and list all should return JavaScript objects that are then printed to console in a human readable format from mct.js.
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured

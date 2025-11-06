@@ -42,6 +42,11 @@ async function main() {
                 type: 'string',
                 short: 'o',
                 default: undefined,
+            },
+            available: {
+                type: 'boolean',
+                short: 'a',
+                default: false,
             }
         }
     });
