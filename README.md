@@ -81,6 +81,12 @@ mct plugins add <plugin or npm package specifier> [-i <instance-name>] [-o optio
 mct plugins add <plugin name> --npmPackage <npm package specifier> [-i <instance-name>] [-o <options>]
 ```
 
+### List all available plugins
+
+```bash
+mct plugins list -a [-i <instance-name>]
+```
+
 #### Specifying plugin options
 
 Options can be specified as a JSON object. The options will be passed to the plugin's install function. To support legacy plugins, options may also be specified as an array of JavaScript primitives and / or objects. Each member of the array will be passed to the plugin's install function as a separate argument.
@@ -282,11 +288,19 @@ mct plugins list
 ```bash
 mct -i my-instance plugins list
 ```
-12. Configure an installed plugin:
+12. List all available plugins for the default instance:
+```bash
+mct plugins list -a
+```
+13. List all available plugins for a specific instance:
+```bash
+mct -i my-instance plugins list -a
+```
+14. Configure an installed plugin:
 ```bash
 mct plugins configure openmct.plugins.PlanLayout --enabled true --options '{"creatable": true}'
 ```
-13. Override a default plugin:
+15. Override a default plugin:
 ```bash
 mct plugins configure openmct.plugins.Espresso --enabled false
 # With espresso disabled some theme needs to be applied. Apply the snow theme.
