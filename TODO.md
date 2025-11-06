@@ -115,7 +115,7 @@
     - [X] validate builtins against installed version of open mct
 - [X] Usage docs for all defined commands
 - [X] Better error handling and feedback
-- [ ] Support "arguments" for plugins
+- [X] Support "arguments" for plugins
 - [ ] Plugins add should support options
 - [ ] List all plugins
 - [ ] Add "instances list" command to list local instances.

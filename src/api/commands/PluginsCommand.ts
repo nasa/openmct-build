@@ -29,6 +29,11 @@ export default class PluginsCommand extends Command {
                         type: 'string',
                         short: 'p',
                         default: undefined,
+                    },
+                    options: {
+                        type: 'string',
+                        short: 'o',
+                        default: undefined,
                     }
                 };
                 break;
@@ -62,7 +67,7 @@ export default class PluginsCommand extends Command {
     getUsageForVerb(verb: string): string {
         switch (verb) {
             case 'add':
-                return 'Usage: mct plugins add <plugin-name> [--instance <instance-name>] [--npm-package <npm-package-name>]';
+                return 'Usage: mct plugins add <plugin-name> [--instance <instance-name>] [--npm-package <npm-package-name>] [--options <options>]';
             case 'remove':
                 return 'Usage: mct plugins remove <plugin-name> [--instance <instance-name>]';
             case 'configure':
@@ -71,11 +76,10 @@ export default class PluginsCommand extends Command {
                 return 'Usage: mct plugins <add|remove|configure>';
         }
     }
-    async add(name:string, {instance, npmPackage}: {instance: string, npmPackage?: string}) {
+    async add(name:string, {instance, npmPackage, options}: {instance: string, npmPackage?: string, options?: string}) {
         if (name === undefined) {
             throw new InvalidCommandError('Plugin name is required');
         }
-        
         if (npmPackage === undefined) {
             npmPackage = name;
         }
@@ -86,6 +90,10 @@ export default class PluginsCommand extends Command {
         }
         if (config.hasPlugin(plugin)) {
             throw new Error(`Plugin ${name} already installed in ${instance} instance`);
+        }
+        if (options !== undefined) {
+            const parsedOptions = this.#parseOptions(options);
+            plugin.setOptions(parsedOptions);
         }
         // Standardize names. Use NPM package name as plugin name, but preserve the specifier for how the package should be resolved.
         if (plugin.isNpmPackage()) {
@@ -103,6 +111,13 @@ export default class PluginsCommand extends Command {
         config.addPlugin(plugin);
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);
+    }
+    #parseOptions(options: string): object | any[] {
+        try {
+            return JSON.parse(options);
+        } catch (error) {
+            throw new InvalidCommandError('Invalid options');
+        }
     }
     async #getMatchingPlugin(name: string, instance: string, npmPackage?: string): Promise<OpenMctPlugin | undefined> {
         if (name.startsWith('openmct.')) {
@@ -203,7 +218,7 @@ export default class PluginsCommand extends Command {
         this.#rebuild(instance);
     }
 
-    async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: any}) {
+    async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: string}) {
         if (name === undefined) {
             throw new InvalidCommandError('Plugin name is required');
         }
@@ -220,7 +235,7 @@ export default class PluginsCommand extends Command {
             plugin.setNpmPackageName(npmPackage);
         }
         if (options !== undefined) {
-            const parsedOptions = JSON.parse(options);
+            const parsedOptions = this.#parseOptions(options);
             plugin.setOptions(parsedOptions);
         }
         this.#configurator.saveForInstance(instance, config);
