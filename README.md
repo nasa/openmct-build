@@ -74,13 +74,28 @@ mct plugins list [-i <instance-name>]
 ### Install a plugin
 
 ```bash
-mct plugins add <plugin or npm package specifier> [-i <instance-name>]
+mct plugins add <plugin or npm package specifier> [-i <instance-name>] [-o options]
 ```
 
 ```bash
-mct plugins add <plugin name> --npmPackage <npm package specifier> [-i <instance-name>]
+mct plugins add <plugin name> --npmPackage <npm package specifier> [-i <instance-name>] [-o <options>]
 ```
 
+#### Specifying plugin options
+
+Options can be specified as a JSON object. The options will be passed to the plugin's install function. To support legacy plugins, options may also be specified as an array of JavaScript primitives and / or objects. Each member of the array will be passed to the plugin's install function as a separate argument.
+
+```bash
+mct plugins add <plugin name> --options <options>
+```
+
+Example:
+```bash
+mct plugins add openmct.plugins.PlanLayout --options '{"creatable": true}'
+```
+```bash
+mct plugins add openmct.plugins.CouchDB --options '["http://localhost:5984/openmct"]'
+```
 ### Remove a plugin
 
 ```bash
@@ -92,6 +107,130 @@ mct plugins remove <plugin-name> [-i <instance-name>]
 ```bash
 mct plugins configure <plugin-name> --enabled <true|false> --npmPackage <npm package specifier> --options <options> [-i <instance-name>]
 ```
+
+
+## Understanding Instance Configuration
+
+### Instance Directory Structure
+
+When you build an instance using `mct build`, a new directory is created in the `instances/` folder. Each instance contains:
+
+```
+instances/
+└── <instance-name>/
+    ├── index.html          # The main HTML file to serve
+    ├── instance.yaml       # Configuration file for the instance
+    └── dist/               # Compiled Open MCT files
+```
+
+### instance.yaml Files
+
+The `instance.yaml` file is the configuration file for an Open MCT instance. It defines which version of Open MCT to use and which plugins to install.
+
+#### Structure
+
+An `instance.yaml` file has the following structure:
+
+```yaml
+openmct:
+  version: latest              # or a specific version like "3.0.0"
+  plugins:
+    - openmct.plugins.LocalStorage
+    - openmct.plugins.PlanLayout:
+        options:
+          creatable: true
+    - akhenry/openmct-yamcs:
+        npmPackage: akhenry/openmct-yamcs
+        options:
+          host: localhost
+          port: 8090
+```
+
+#### Key Fields
+
+- **version** (string): The version of Open MCT to use. Can be a specific version (e.g., "3.0.0"), a version range (e.g., "^3.0.0"), or "latest".
+- **plugins** (array): List of plugins to install. Each plugin can be:
+  - A string: The plugin identifier (for builtin plugins) or npm package name
+  - An object: A plugin configuration with the following properties:
+    - **npmPackage** (string, optional): The npm package specifier if different from the plugin name
+    - **enabled** (boolean, optional): Whether the plugin is enabled (default: true)
+    - **options** (object or array, optional): Configuration options passed to the plugin
+
+#### Plugin Options
+
+Plugin options can be specified in two ways:
+
+**As an object** (recommended for most plugins):
+```yaml
+openmct:
+  version: latest
+  plugins:
+    - openmct.plugins.PlanLayout:
+        options:
+          creatable: true
+          editable: false
+```
+
+**As an array** (for legacy plugins that accept positional arguments):
+```yaml
+openmct:
+  version: latest
+  plugins:
+    - openmct.plugins.CouchDB:
+        options:
+          - "http://localhost:5984/openmct"
+```
+
+### Modifying an Instance After Creation
+
+After creating an instance, you can modify any plugin configuration either by editing the `instance.yaml` file directly, or using the `mct plugins` commands.
+
+eg.
+```bash
+# Add a new plugin
+mct plugins add openmct.plugins.Snow -i demo-instance
+
+# Remove a plugin
+mct plugins remove openmct.plugins.PlanLayout -i demo-instance
+
+# Configure an existing plugin
+mct plugins configure openmct.plugins.CouchDB --options '["http://new-server:5984/openmct"]' -i demo-instance
+```
+
+These changes will be reflected in the instance's `instance.yaml` file.
+
+
+### Recipes
+
+Recipes are template `instance.yaml` files that can be used to quickly create new instances with a predefined set of plugins and configurations. Recipes are useful for:
+
+- Creating standardized instances across your organization
+- Sharing common configurations with team members
+- Quickly deploying instances with specific plugin combinations
+
+#### Using a Recipe
+
+To build an instance from a recipe:
+
+```bash
+mct build --recipe <path-to-recipe.yaml> [-i <instance-name>]
+```
+
+Example:
+```bash
+mct build --recipe recipes/demo.yaml -i demo-instance
+```
+
+#### Creating a Recipe
+
+Recipes are simply YAML files with the same structure as `instance.yaml`. As such, building a new recipe is as simple as creating a new instance, configuring it to meet your needs, and copying out it's `instance.yaml` file. It can then be referenced as a recipe when creating subseqent instances.
+
+##### Recipe Examples
+
+See the `recipes/` directory for example recipes:
+
+- `recipes/demo.yaml` - A demo configuration with common builtin plugins
+- `recipes/yamcs.yaml` - A configuration for YAMCS integration
 
 ## Examples
 
@@ -123,32 +262,37 @@ mct plugins add akhenry/openmct-yamcs
 ```bash
 mct -i my-instance plugins add akhenry/openmct-mcws
 ```
-7. Remove a plugin from the default instance:
+7. Install a builtin plugin with arguments:
+```bash
+mct plugins add openmct.plugins.CouchDB -o '["http://localhost:5984/openmct"]'
+```
+8. Remove a plugin from the default instance:
 ```bash
 mct plugins remove openmct-yamcs
 ```
-8. Remove a plugin from a specific instance:
+9. Remove a plugin from a specific instance:
 ```bash
 mct -i my-instance plugins remove openmct-mcws
 ```
-9. List plugins installed for the default instance:
+10. List plugins installed for the default instance:
 ```bash
 mct plugins list
 ```
-10. List plugins installed for a specific instance:
+11. List plugins installed for a specific instance:
 ```bash
 mct -i my-instance plugins list
 ```
-11. Configure an installed plugin:
+12. Configure an installed plugin:
 ```bash
 mct plugins configure openmct.plugins.PlanLayout --enabled true --options '{"creatable": true}'
 ```
-12. Override a default plugin:
+13. Override a default plugin:
 ```bash
 mct plugins configure openmct.plugins.Espresso --enabled false
 # With espresso disabled some theme needs to be applied. Apply the snow theme.
 mct plugins add openmct.plugins.Snow
 ```
+
 
 ## Development
 
