@@ -87,6 +87,8 @@ mct plugins add <plugin name> --npmPackage <npm package specifier> [-i <instance
 mct plugins list -a [-i <instance-name>]
 ```
 
+By default the `mct` build tool will rely upon the plugins index published by the Open MCT team. If you want to use a different plugins index, you can specify it using the `--pluginsIndex` option. This can be used for maintaining a private plugins index.
+
 #### Specifying plugin options
 
 Options can be specified as a JSON object. The options will be passed to the plugin's install function. To support legacy plugins, options may also be specified as an array of JavaScript primitives and / or objects. Each member of the array will be passed to the plugin's install function as a separate argument.

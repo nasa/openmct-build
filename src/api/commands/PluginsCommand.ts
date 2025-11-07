@@ -67,7 +67,7 @@ export default class PluginsCommand extends Command {
                     indexUrl: {
                         type: 'string',
                         short: 'u',
-                        default: 'https://raw.githubusercontent.com/akhenry/openmct-configurator/refs/heads/main/src/npm/openmct-plugins-index.json',
+                        default: 'https://nasa.github.io/openmct/openmct-plugins-index.json',
                     }
                 };
                 break;
