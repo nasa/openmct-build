@@ -118,10 +118,11 @@
 - [X] Support "arguments" for plugins
 - [X] Plugins add should support options
 - [X] List all builtin plugins
-- [ ] List all external plugins
+- [X] List all external plugins
 - [ ] List and list all should return JavaScript objects that are then printed to console in a human readable format from mct.js.
 - [ ] Add "instances list" command to list local instances.
 - [ ] implement `mct plugins info <plugin name>`
+    - For npm packages, get a description of the package from from the package.json. Options are a little trickier.
     - This could be a starting point for figuring out how to get type information out of the plugin - https://github.com/ccontrols/structured-types?tab=readme-ov-file
 - [ ] Tests
     - [ ] Default plugins can be disabled
@@ -132,8 +133,6 @@
 - [ ] Get VIPER building with this tool
     - @Dave
 - [ ] Hand over to PDP
-- [ ] Add "instances list" command to list local instances.
-- [ ] Add "plugins describe" to list plugin options and default values. NO idea how this will work.
 - [ ] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
 - [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.

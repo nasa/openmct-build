@@ -68,7 +68,14 @@ async function main() {
             strict: true,
             ...argsForVerb
         });
-        await command.execute(verb, name, args.values);
+        const response = await command.execute(verb, name, args.values);
+        if (response instanceof Array) {
+            response.forEach((obj) => {
+                console.log(obj.toString());
+            })
+        } else {
+            console.log(response.toString());
+        }
     } catch (e: any) {
         if (e instanceof InvalidCommandError) {
             console.error(e.message);

@@ -118,4 +118,15 @@ export default class OpenMctPlugin {
     setEnabled(enabled:boolean) {
         this.#pluginDefinition.enabled = enabled;
     }
+
+    toJSON(): Plugin {
+        return {
+            name: this.#name,
+            ...this.#pluginDefinition
+        }
+    }
+
+    toString(): string {
+        return this.#name;
+    }
 }

@@ -13,6 +13,10 @@ export default class NpmPackage {
         this.cwdForNpmCommands = process.cwd();
     }
 
+    getConfiguredPackageName(): string {
+        return this.nameAsConfigured;
+    }
+
     getResolvedPackageName(): string {
         if (this.nameAsResolved === undefined) {
             const resolvedPackageDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'name'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });

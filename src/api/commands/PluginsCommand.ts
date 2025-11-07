@@ -67,7 +67,7 @@ export default class PluginsCommand extends Command {
                     indexUrl: {
                         type: 'string',
                         short: 'u',
-                        default: 'https://github.com/akhenry/openmct-configurator/raw/main/src/npm/openmct-plugins-index.json',
+                        default: 'https://raw.githubusercontent.com/akhenry/openmct-configurator/refs/heads/main/src/npm/openmct-plugins-index.json',
                     }
                 };
                 break;
@@ -196,20 +196,21 @@ export default class PluginsCommand extends Command {
     async #getMatchingNpmPlugin(name: string, npmPackage?: string) {
         return new OpenMctPlugin(name, {npmPackage});
     }
-    async listAll(instance:string, indexUrl:string) {
-        console.log(`Listing all available plugins for ${instance} instance`);
+    async listAll(instance:string, indexUrl:string): Promise<OpenMctPlugin[]> {
+        const listOfAllPlugins: OpenMctPlugin[] = [];
+        console.info(`Listing all available plugins for ${instance} instance`);
         const config = await this.#configurator.resolveConfiguration({instance});
         const pluginList = await config.generateListOfBuiltinPlugins(instance);
         pluginList.forEach((pluginName: string) => {
-            console.log(`- ${pluginName}`);
+            listOfAllPlugins.push(new OpenMctPlugin(pluginName));
         });
-        const npmPluginList = await NpmPackageManager.generateListOfAvailableNpmPlugins(indexUrl);
-        npmPluginList.forEach((plugin: any) => {
-            const npmPackage = plugin.getResolvedPackageName();
-            console.log(`- ${npmPackage}`);
+        const npmPackageList = await NpmPackageManager.generateListOfAvailableNpmPlugins(indexUrl);
+        npmPackageList.forEach((pkg: NpmPackage) => {
+            listOfAllPlugins.push(new OpenMctPlugin(pkg.getResolvedPackageName(), {npmPackage: pkg.getConfiguredPackageName()}));
         });
+        return listOfAllPlugins;
     }
-    async list(name: undefined, {instance, available, indexUrl}: {instance: string, available?: boolean, indexUrl: string}) {
+    async list(name: undefined, {instance, available, indexUrl}: {instance: string, available?: boolean, indexUrl: string}): Promise<OpenMctPlugin[]> {
         if (available) {
             return this.listAll(instance, indexUrl);
         } else {
@@ -220,14 +221,8 @@ export default class PluginsCommand extends Command {
         console.log(`Listing plugins for instance ${instance}`);
         const config = this.#configurator.loadForInstance(instance);
         const plugins = config.getPlugins();
-        console.log(`Plugins for ${instance} instance:`);
-        plugins.forEach((plugin: OpenMctPlugin) => {
-            const pluginName = plugin.getName();
-            const pluginOptions = plugin.getOptions() ? JSON.stringify(plugin.getOptions()) : '';
-            const pluginNpmPackageName = plugin.getNpmPackageName();
 
-            console.log(`- ${pluginName}(${pluginOptions}) ${plugin.isNpmPackage() ? `[${pluginNpmPackageName}]` : ''}`);
-        });
+        return plugins;
     }
     async remove(name:string, {instance}: {instance: string}) {
         if (name === undefined) {
