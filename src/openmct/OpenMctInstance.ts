@@ -1,4 +1,5 @@
 import OpenMctConfiguration from "./OpenMctConfiguration";
+import OpenMctPlugin from "./OpenMctPlugin";
 
 export default class OpenMctInstance {
     #name:string;
@@ -22,8 +23,21 @@ export default class OpenMctInstance {
     getConfig() {
         return this.#config;
     }
-
     toString() {
+        return this.toStringLimited();
+    }
+    toStringLimited() {
         return `${this.#name} (version '${this.#config.getOpenMctVersion()}') at ${this.#path}`;
+    }
+    
+    toStringDetailed() {
+        let description:string = `name: ${this.#name}\n`
+        + `version: ${this.#config.getOpenMctVersion()}\n`
+        + `location: ${this.#path}\n`
+        + `plugins:\n`;
+        this.#config.getPlugins().forEach((plugin: OpenMctPlugin) => {
+            description += `    - ${plugin.getName()}\n`;
+        });
+        return description;
     }
 }

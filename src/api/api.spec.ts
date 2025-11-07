@@ -1,6 +1,6 @@
 import Api from "./api";
-import BuildCommand from "./commands/BuildCommand";
-import PluginsCommand from "./commands/PluginsCommand";
+import BuildCommand from "../cli/BuildCommand";
+import PluginsCommand from "../cli/PluginsCommand";
 
 describe('API', () => {
     let api:Api;

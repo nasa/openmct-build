@@ -1,47 +1,13 @@
-import Command from "./Command";
 import path from "path";
 import * as fs from 'fs';
-import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
-import IndexFileCreator from "../../html/IndexFileCreator";
-import OpenMctConfiguration, { INSTANCE_PATH } from "../../openmct/OpenMctConfiguration";
-import NpmPackageManager from "../../npm/NpmPackageManager";
-import OpenMctPlugin from "../../openmct/OpenMctPlugin";
-import { ParseArgsConfig } from "util";
-import OpenMctInstance from "../../openmct/OpenMctInstance";
+import MctYamlConfigurator from "../yaml/MctYamlConfigurator";
+import IndexFileCreator from "../html/IndexFileCreator";
+import OpenMctConfiguration, { INSTANCE_PATH } from "../openmct/OpenMctConfiguration";
+import NpmPackageManager from "../npm/NpmPackageManager";
+import OpenMctPlugin from "../openmct/OpenMctPlugin";
+import OpenMctInstance from "../openmct/OpenMctInstance";
 
-export default class BuildCommand extends Command {
-
-    getArgsForVerb(verb: string): ParseArgsConfig {
-        const additionalArgs:ParseArgsConfig = {
-            options: {
-                npmPackage: {
-                        type: 'string',
-                        short: 'p',
-                        default: undefined,
-                },
-                recipe: {
-                    type: 'string',
-                    short: 'r',
-                    default: undefined,
-                },
-                version: {
-                    type: 'string',
-                    short: 'v',
-                    default: undefined,
-                }
-            }
-        };
-
-        return {
-            options: {
-                ...super.getArgsForVerb(verb).options,
-                ...additionalArgs.options
-        }};
-    }
-
-    getUsageForVerb(): string {
-        return 'Usage: mct build [--instance <instance-name>] [--recipe <recipe-name>] [--version <version>] [--npm-package <npm-package-name>]';
-    }
+export default class Build {
 
     async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
         const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
@@ -62,7 +28,6 @@ export default class BuildCommand extends Command {
         const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
         this.#installNpmPackages({config, npmPackageManager});
         this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
-        console.log(`Succesfully built Open MCT`);
 
         return new OpenMctInstance({name: instance, path: fullInstancePath, config});
     }
@@ -81,7 +46,7 @@ export default class BuildCommand extends Command {
     }
 
     #copyAssets({fullInstancePath}: {fullInstancePath: string}) {
-        fs.cpSync(path.join(__dirname, '..', '..', 'assets'), path.join(fullInstancePath, 'assets'), { recursive: true });
+        fs.cpSync(path.join(__dirname, '..', 'assets'), path.join(fullInstancePath, 'assets'), { recursive: true });
     }
 
     #installNpmPackages({config, npmPackageManager}: {config: OpenMctConfiguration, npmPackageManager: NpmPackageManager}) {

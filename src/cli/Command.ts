@@ -1,4 +1,4 @@
-import { DEFAULT_INSTANCE } from "../../constants";
+import { DEFAULT_INSTANCE } from "../constants";
 import { ParseArgsConfig } from "util";
 
 export default class Command {

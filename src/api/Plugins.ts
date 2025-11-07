@@ -1,100 +1,21 @@
-import Command from "./Command";
-import OpenMctPlugin from "../../openmct/OpenMctPlugin";
-import MctYamlConfigurator from "../../yaml/MctYamlConfigurator";
-import BuildCommand from "./BuildCommand";
+import OpenMctPlugin from "../openmct/OpenMctPlugin";
+import MctYamlConfigurator from "../yaml/MctYamlConfigurator";
+import BuildCommand from "./Build";
 import path from "path";
-import fs from "fs";
-import NpmPackageManager from "../../npm/NpmPackageManager";
-import NpmPackage from "../../npm/NpmPackage";
+import NpmPackageManager from "../npm/NpmPackageManager";
+import NpmPackage from "../npm/NpmPackage";
 import { JSDOM, VirtualConsole } from 'jsdom';
-import { ParseArgsConfig } from "util";
-import { INSTANCE_PATH } from "../../openmct/OpenMctConfiguration";
-import InvalidCommandError from "./InvalidCommandError";
+import { INSTANCE_PATH } from "../openmct/OpenMctConfiguration";
+import InvalidApiCallError from "./InvalidApiCallError";
 
-export default class PluginsCommand extends Command {
+export default class PluginsApi{
     #configurator:MctYamlConfigurator;
 
     constructor() {
-        super();
         this.#configurator = new MctYamlConfigurator();
     }
-    getArgsForVerb(verb: string): ParseArgsConfig {
-        const additionalArgs:ParseArgsConfig = {
-            options: {}
-        };
 
-        switch (verb) {
-            case 'add':
-                additionalArgs.options = {
-                    npmPackage: {
-                        type: 'string',
-                        short: 'p',
-                        default: undefined,
-                    },
-                    options: {
-                        type: 'string',
-                        short: 'o',
-                        default: undefined,
-                    }
-                };
-                break;
-            case 'configure':
-                additionalArgs.options = {
-                    enabled: {
-                        type: 'boolean',
-                        short: 'e',
-                        default: undefined,
-                    },
-                    npmPackage: {
-                        type: 'string',
-                        short: 'p',
-                        default: undefined,
-                    },
-                    options: {
-                        type: 'string',
-                        short: 'o',
-                        default: undefined,
-                    }
-                };
-                break;
-            case 'list':
-                additionalArgs.options = {
-                    available: {
-                        type: 'boolean',
-                        short: 'a',
-                        default: false,
-                    },
-                    indexUrl: {
-                        type: 'string',
-                        short: 'u',
-                        default: 'https://nasa.github.io/openmct/openmct-plugins-index.json',
-                    }
-                };
-                break;
-        };
-
-        return {
-            options: {
-                ...super.getArgsForVerb(verb).options,
-                ...additionalArgs.options
-        }};
-    }
-    getUsageForVerb(verb: string): string {
-        switch (verb) {
-            case 'add':
-                return 'Usage: mct plugins add <plugin-name> [--instance <instance-name>] [--npm-package <npm-package-name>] [--options <options>]';
-            case 'remove':
-                return 'Usage: mct plugins remove <plugin-name> [--instance <instance-name>]';
-            case 'configure':
-                return 'Usage: mct plugins configure <plugin-name> [--instance <instance-name>] [--enabled <true|false>] [--npm-package <npm-package-name>] [--options <options>]';
-            default:
-                return 'Usage: mct plugins <add|remove|configure>';
-        }
-    }
-    async add(name:string, {instance, npmPackage, options}: {instance: string, npmPackage?: string, options?: string}) {
-        if (name === undefined) {
-            throw new InvalidCommandError('Plugin name is required');
-        }
+    async add(name:string, {instance, npmPackage, options}: {instance: string, npmPackage?: string, options?: any}) {
         if (npmPackage === undefined) {
             npmPackage = name;
         }
@@ -107,8 +28,7 @@ export default class PluginsCommand extends Command {
             throw new Error(`Plugin ${name} already installed in ${instance} instance`);
         }
         if (options !== undefined) {
-            const parsedOptions = this.#parseOptions(options);
-            plugin.setOptions(parsedOptions);
+            plugin.setOptions(options);
         }
         // Standardize names. Use NPM package name as plugin name, but preserve the specifier for how the package should be resolved.
         if (plugin.isNpmPackage()) {
@@ -122,17 +42,9 @@ export default class PluginsCommand extends Command {
             name = npmPackage.getResolvedPackageName();
             plugin.setName(name);
         }
-        console.log(`Installing plugin ${plugin.getName()} for instance ${instance}`);
         config.addPlugin(plugin);
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);
-    }
-    #parseOptions(options: string): object | any[] {
-        try {
-            return JSON.parse(options);
-        } catch (error) {
-            throw new InvalidCommandError('Invalid options');
-        }
     }
     async #getMatchingPlugin(name: string, instance: string, npmPackage?: string): Promise<OpenMctPlugin | undefined> {
         if (name.startsWith('openmct.')) {
@@ -226,7 +138,7 @@ export default class PluginsCommand extends Command {
     }
     async remove(name:string, {instance}: {instance: string}) {
         if (name === undefined) {
-            throw new InvalidCommandError('Plugin name is required');
+            throw new InvalidApiCallError('Plugin name is required');
         }
         console.log(`Removing plugin ${name} for ${instance} instance`);
         const config = await this.#configurator.resolveConfiguration({instance});
@@ -248,9 +160,9 @@ export default class PluginsCommand extends Command {
         this.#rebuild(instance);
     }
 
-    async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: string}) {
+    async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: any}) {
         if (name === undefined) {
-            throw new InvalidCommandError('Plugin name is required');
+            throw new InvalidApiCallError('Plugin name is required');
         }
         console.log(`Configuring plugin ${name} for instance ${instance}`);
         const config = await this.#configurator.resolveConfiguration({instance});
@@ -265,8 +177,7 @@ export default class PluginsCommand extends Command {
             plugin.setNpmPackageName(npmPackage);
         }
         if (options !== undefined) {
-            const parsedOptions = this.#parseOptions(options);
-            plugin.setOptions(parsedOptions);
+            plugin.setOptions(options);
         }
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);

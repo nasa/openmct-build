@@ -1,4 +1,4 @@
-import Api from "../api";
+import Api from "../api/api";
 import PluginsCommand from "./PluginsCommand";
 import BuildCommand from "./BuildCommand";
 import * as fs from 'fs';

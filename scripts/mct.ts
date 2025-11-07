@@ -3,8 +3,8 @@
 import { parseArgs } from "util";
 import Api from "../src/api/api";
 import { DEFAULT_INSTANCE } from "../src/constants";
-import Command from "../src/api/commands/Command";
-import InvalidCommandError from "../src/api/commands/InvalidCommandError";
+import Command from "../src/cli/Command";
+import InvalidApiCallError from "../src/api/InvalidApiCallError";
 
 async function main() {
     const api = new Api();
@@ -77,7 +77,7 @@ async function main() {
             console.log(response.toString());
         }
     } catch (e: any) {
-        if (e instanceof InvalidCommandError) {
+        if (e instanceof InvalidApiCallError) {
             console.error(e.message);
             console.info(command.getUsageForVerb(verb));
         } else {

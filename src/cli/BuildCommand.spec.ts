@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import Api from "../api";
+import Api from "../api/api";
 import BuildCommand from "./BuildCommand";
 import { randomUUID } from "crypto";
 

@@ -60,6 +60,10 @@ export default class MctYamlConfigurator {
         return new OpenMctConfiguration(baseConfigDoc);
     }
 
+    exists(instance: string): boolean {
+        return fs.existsSync(path.join(INSTANCE_PATH, instance, CONFIGURATION_YAML));
+    }
+
     async resolveConfiguration({recipe, instance}: {recipe?: string, instance: string}): Promise<OpenMctConfiguration> {
         let config:OpenMctConfiguration;
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();

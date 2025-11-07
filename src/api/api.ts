@@ -1,7 +1,7 @@
-import BuildCommand from "./commands/BuildCommand";
-import Command from "./commands/Command";
-import InstancesCommand from "./commands/InstancesCommand";
-import PluginsCommand from "./commands/PluginsCommand";
+import BuildCommand from "../cli/BuildCommand";
+import Command from "../cli/Command";
+import InstancesCommand from "../cli/InstancesCommand";
+import PluginsCommand from "../cli/PluginsCommand";
 
 export default class Api {
     getCommandForNoun(noun: string): Command {
