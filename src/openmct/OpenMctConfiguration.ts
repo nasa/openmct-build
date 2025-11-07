@@ -123,4 +123,8 @@ export default class OpenMctConfiguration {
     getConfigurationDocument(): OpenMctConfigurationSchema {
         return this.#configuration;
     }
+
+    toString() {
+        return `Open MCT version: ${this.getOpenMctVersion()} Plugin count: ${this.getPlugins().length}`;
+    }
 }

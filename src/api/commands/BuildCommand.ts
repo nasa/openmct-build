@@ -7,6 +7,7 @@ import OpenMctConfiguration, { INSTANCE_PATH } from "../../openmct/OpenMctConfig
 import NpmPackageManager from "../../npm/NpmPackageManager";
 import OpenMctPlugin from "../../openmct/OpenMctPlugin";
 import { ParseArgsConfig } from "util";
+import OpenMctInstance from "../../openmct/OpenMctInstance";
 
 export default class BuildCommand extends Command {
 
@@ -61,8 +62,9 @@ export default class BuildCommand extends Command {
         const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
         this.#installNpmPackages({config, npmPackageManager});
         this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
+        console.log(`Succesfully built Open MCT`);
 
-        return `Succesfully built Open MCT ${config.getOpenMctVersion()} for instance '${instance}' to ${fullInstancePath}`;
+        return new OpenMctInstance({name: instance, path: fullInstancePath, config});
     }
 
     #createDirectoryStructureIfNeeded(fullInstancePath:string) {

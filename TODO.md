@@ -119,7 +119,7 @@
 - [X] Plugins add should support options
 - [X] List all builtin plugins
 - [X] List all external plugins
-- [ ] List and list all should return JavaScript objects that are then printed to console in a human readable format from mct.js.
+- [X] List and list all should return JavaScript objects that are then printed to console in a human readable format from mct.js.
 - [ ] Add "instances list" command to list local instances.
 - [ ] implement `mct plugins info <plugin name>`
     - For npm packages, get a description of the package from from the package.json. Options are a little trickier.
