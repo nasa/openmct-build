@@ -5,6 +5,9 @@ import * as fs from 'fs';
 import * as child_process from 'child_process';
 import NpmPackage from "./NpmPackage";
 import { StringDecoder } from "string_decoder";
+import { OpenMCTPluginsIndex } from "./OpenMctPluginsIndex";
+import { view } from "./NpmCommands";
+import InstalledNpmPackage from "./InstalledNpmPackage";
 
 const PACKAGE_DEFAULTS = {
     private: true,
@@ -68,7 +71,11 @@ export default class NpmPackageManager {
         child_process.spawnSync('npm', ['uninstall', npmPackage.getResolvedPackageName()], { cwd: this.#fullInstancePath });
     }
     getPackage(packageName: string): NpmPackage {
-        return new NpmPackage({fullInstancePath: this.#fullInstancePath, nameAsConfigured: packageName});
+        return new InstalledNpmPackage({fullInstancePath: this.#fullInstancePath, nameAsConfigured: packageName});
+    }
+
+    static getNpmPackageFromRegistry(packageName: string): NpmPackage {
+        return new NpmPackage({nameAsConfigured: packageName});
     }
 
     static getNodePackageManagerForInstance({instance, config}: {instance: string, config: OpenMctConfiguration}): NpmPackageManager {
@@ -77,6 +84,22 @@ export default class NpmPackageManager {
         const npmPackage = new NpmPackageManager({fullInstancePath: fullInstancePath, config});
         
         return npmPackage;
+    }
+
+    static async generateListOfAvailableNpmPlugins(indexUrl:string): Promise<NpmPackage[]> {
+        const indexJson = await httpOrLocalFileFetchAsJSON(indexUrl);
+        const npmPackageNames:string[] = indexJson.plugins.map((plugin) => plugin.npmPackageName);
+        const npmPackages = Promise.all(npmPackageNames.map((npmPackageName) => NpmPackageManager.getNpmPackageFromRegistry(npmPackageName)));
+        return npmPackages;
+    }
+}
+
+async function httpOrLocalFileFetchAsJSON(url:string): Promise<OpenMCTPluginsIndex> {
+    if (url.startsWith('file://')) {
+        const fileText = fs.readFileSync(url.substring(7), 'utf8');
+        return JSON.parse(fileText) as OpenMCTPluginsIndex;
+    } else {
+        return await (await fetch(url)).json() as OpenMCTPluginsIndex;
     }
 }
     

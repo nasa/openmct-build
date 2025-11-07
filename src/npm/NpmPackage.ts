@@ -3,42 +3,25 @@ import path from 'path';
 import OpenMctPlugin from '../openmct/OpenMctPlugin';
 
 export default class NpmPackage {
-    #fullInstancePath: string;
-    #nameAsConfigured: string;
-    #nameAsResolved: string | undefined;
+    protected cwdForNpmCommands: string;
+    protected nameAsConfigured: string;
+    protected nameAsResolved: string | undefined;
     #entryPoint: string | undefined;
 
-    constructor({fullInstancePath, nameAsConfigured}: {fullInstancePath: string, nameAsConfigured: string}) {
-        this.#fullInstancePath = fullInstancePath;
-        this.#nameAsConfigured = nameAsConfigured;
+    constructor({nameAsConfigured}: {nameAsConfigured: string}) {
+        this.nameAsConfigured = nameAsConfigured;
+        this.cwdForNpmCommands = process.cwd();
     }
 
     getResolvedPackageName(): string {
-        if (this.#nameAsResolved === undefined) {
-            // First attempt to resolve the package name via package dependencies
-            this.#nameAsResolved = this.#resolvePackageNameViaDependencies();
-            // If that fails, attempt to resolve it via the npm registry
-            if (this.#nameAsResolved === undefined || this.#nameAsResolved === '') {
-                this.#nameAsResolved = this.#resolvePackageNameFromRegistry();
-            }
+        if (this.nameAsResolved === undefined) {
+            const resolvedPackageDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'name'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });
+            this.nameAsResolved = resolvedPackageDetails.stdout?.trim() ?? this.nameAsConfigured;
         }
 
-        return this.#nameAsResolved ?? this.#nameAsConfigured;
+        return this.nameAsResolved;
     }
-    #resolvePackageNameFromRegistry(): string {
-        const resolvedPackageDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'name'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
-        return resolvedPackageDetails.stdout?.trim() ?? this.#nameAsConfigured;
-    }
-    #resolvePackageNameViaDependencies(): string | undefined {
-        const resolvedDependencies: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['pkg', 'get', 'devDependencies'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
-        const dependenciesObject = JSON.parse(resolvedDependencies.stdout?.trim() || '{}');
-        const resolvedDependency = Object.entries(dependenciesObject).find(
-            ([key, value]): boolean => {
-                return (value as string).includes(this.#nameAsConfigured);
-            })?.[0];
 
-        return resolvedDependency;
-    }
     getResolvedEntryPoint(plugin: OpenMctPlugin): string {
         const configuredEntryPoint = plugin.getEntryPoint();
         let resolvedEntryPoint: string | undefined;
@@ -56,12 +39,12 @@ export default class NpmPackage {
         
     }
     getPackageType(): string | undefined {
-        const packageTypeDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'type'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
+        const packageTypeDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'type'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });
         return packageTypeDetails.stdout?.trim();
     }
     getNpmEntryPoint(): string | undefined {
         if (this.#entryPoint === undefined) {
-            const entryPointDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.#nameAsConfigured, 'main'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
+            const entryPointDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'main'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });
             this.#entryPoint = entryPointDetails.stdout?.trim();
         }
         

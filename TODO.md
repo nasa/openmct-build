@@ -117,9 +117,12 @@
 - [X] Better error handling and feedback
 - [X] Support "arguments" for plugins
 - [X] Plugins add should support options
-- [ ] List all plugins
-- [ ] Add "instances list" command to list local instances.
+- [X] List all builtin plugins
+- [ ] List all external plugins
 - [ ] List and list all should return JavaScript objects that are then printed to console in a human readable format from mct.js.
+- [ ] Add "instances list" command to list local instances.
+- [ ] implement `mct plugins info <plugin name>`
+    - This could be a starting point for figuring out how to get type information out of the plugin - https://github.com/ccontrols/structured-types?tab=readme-ov-file
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
@@ -138,6 +141,7 @@
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
 EOY scope ends here.
 - [ ] define a plugin registry for external plugins
+    - Support a custom organizational plugin index eg. `-i https://trunk.ndc.nasa.gov/bitbucket/VIPERGDS/viper-openmct-nasa-internal-plugins.json`
 - [ ] file:// packages always bypass plugin registry for validation
 - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 
