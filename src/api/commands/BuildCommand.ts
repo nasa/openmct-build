@@ -62,7 +62,7 @@ export default class BuildCommand extends Command {
         this.#installNpmPackages({config, npmPackageManager});
         this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
 
-        return `Succesfully built Open MCT ${config.getOpenMctVersion()} instance ${instance}`;
+        return `Succesfully built Open MCT ${config.getOpenMctVersion()} for instance '${instance}' to ${fullInstancePath}`;
     }
 
     #createDirectoryStructureIfNeeded(fullInstancePath:string) {
