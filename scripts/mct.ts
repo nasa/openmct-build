@@ -73,7 +73,7 @@ async function main() {
             response.forEach((obj) => {
                 console.log(obj.toString());
             })
-        } else {
+        } else if (response!== undefined){
             console.log(response.toString());
         }
     } catch (e: any) {
