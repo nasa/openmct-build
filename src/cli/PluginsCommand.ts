@@ -121,6 +121,12 @@ export default class PluginsCommand extends Command {
         }
         return this.#pluginsApi.configure(name, {instance, enabled, npmPackage, options: parsedOptions});
     }
+
+    async info(name:string, {instance}: {instance: string}) {
+        const plugin = await this.#pluginsApi.info(name, {instance});
+        console.log(`Instance: ${instance}`);
+        console.log(plugin.toStringDetailed());
+    }
     #parseOptions(options: string): object | any[] {
         try {
             return JSON.parse(options);

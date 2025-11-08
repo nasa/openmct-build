@@ -108,6 +108,20 @@ export default class PluginsApi{
     async #getMatchingNpmPlugin(name: string, npmPackage?: string) {
         return new OpenMctPlugin(name, {npmPackage});
     }
+
+    async info(name:string, {instance}: {instance: string}) {
+        if (!this.#configurator.exists(instance)) {
+            throw new Error(`Instance ${instance} does not exist`);
+        }
+        const configuration = await this.#configurator.resolveConfiguration({instance});
+        const plugin = configuration.getPlugin(name);
+
+        if (!plugin) {
+            throw new Error(`No plugin with name ${name} registered in ${instance} instance`);
+        }
+        return plugin;
+    }
+
     async listAll(instance:string, indexUrl:string): Promise<OpenMctPlugin[]> {
         const listOfAllPlugins: OpenMctPlugin[] = [];
         console.info(`Listing all available plugins for ${instance} instance`);

@@ -121,13 +121,19 @@
 - [X] List all external plugins
 - [X] List and list all should return JavaScript objects that are then printed to console in a human readable format from mct.js.
 - [X] Add "instances list" command to list local instances.
-- [ ] Add "instances info <instance name>" command to get info about a specific instance.
-- [ ] Refactor all commands into services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
-- [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
+- [X] Add "instances info <instance name>" command to get info about a specific instance.
+- [X] Refactor all commands into services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
+- [ ] Support multiple exports (plugins) from a single npm package
+    - Just dedupe the npmPackage name, only import it once no matter how many times it's referenced
+    - const exportsFromPackage = await import('path/to/package'); // For es6 imports
+    - const exportsFromPackage = await loadUmd('path/to/package'); // For commonjs imports
+    - Use configured plugin name to access the correct export
+    - figure out how to support import default.
 - [ ] implement `mct plugins info <plugin name>`
     - For npm packages, get a description of the package from from the package.json. Options are a little trickier.
     - This could be a starting point for figuring out how to get type information out of the plugin     
         - https://github.com/ccontrols/structured-types?tab=readme-ov-file
+- [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured

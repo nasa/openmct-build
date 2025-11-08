@@ -129,4 +129,30 @@ export default class OpenMctPlugin {
     toString(): string {
         return this.#name;
     }
+
+    toStringDetailed(): string {
+        let pluginDescription:string = '';
+        pluginDescription += `Name: ${this.getName()}\n`;
+        const options = this.getOptions();
+        if (options !== undefined) {
+            pluginDescription += `Options:`;
+            if (Array.isArray(options)) {
+                for (const option of options) {
+                    pluginDescription += `\n  - ${JSON.stringify(option)}`;
+                }
+            } else if (typeof options === 'object') {
+                Object.keys(options).forEach((key) => {
+                    pluginDescription += `\n  - ${key}: ${JSON.stringify(options[key as keyof typeof options])}`;
+                });
+            }
+            pluginDescription += `\n`;
+        }
+        pluginDescription += `Source: ${this.getSource()}\n`;
+        const entryPoint = this.getEntryPoint();
+        if (entryPoint !== undefined) {
+            pluginDescription += `Entry point: ${entryPoint}\n`;
+        }
+        pluginDescription += `Enabled: ${this.isEnabled()}\n`;
+        return pluginDescription;
+    }
 }
