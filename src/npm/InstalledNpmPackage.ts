@@ -1,3 +1,4 @@
+import path from "path";
 import NpmPackage from "./NpmPackage";
 import * as child_process from 'child_process';
 

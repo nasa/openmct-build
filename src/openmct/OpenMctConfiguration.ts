@@ -3,6 +3,8 @@ import {OpenMctConfigurationSchema, PluginMap} from "./OpenMctConfigurationDocum
 import path from "path";
 import { env } from "process";
 import { JSDOM, VirtualConsole } from 'jsdom';
+import NpmPackage from "../npm/NpmPackage";
+import NpmPackageManager from "../npm/NpmPackageManager";
 
 export const INSTANCE_PATH = env.MCT_BUILD_API_INSTANCE_PATH || path.join(process.cwd(), 'instances');
 export const CONFIGURATION_YAML = "instance.yaml";
@@ -31,6 +33,16 @@ export default class OpenMctConfiguration {
     getBuiltinPlugins() {
         return this.getPlugins().filter((plugin: OpenMctPlugin) => {
             return plugin.getSource() === 'builtin';
+        });
+    }
+    getPluginsForNpmPackage(npmPackage: NpmPackage): OpenMctPlugin[] {
+        const npmPackageManager = new NpmPackageManager({fullInstancePath: INSTANCE_PATH, config: this});
+        return this.getPlugins().filter((plugin: OpenMctPlugin) => {
+            if (plugin.isBuiltin()) {
+                return false;
+            }
+            const npmPackageForPlugin = npmPackageManager.getPackage(plugin.getNpmPackageName());
+            return npmPackageForPlugin.getConfiguredPackageName() === npmPackage.getConfiguredPackageName();
         });
     }
     async generateListOfBuiltinPlugins(instance: string) {

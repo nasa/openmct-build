@@ -64,6 +64,15 @@ export default class PluginsCommand extends Command {
                     }
                 };
                 break;
+            case 'info':
+                additionalArgs.options = {
+                    instance: {
+                        type: 'string',
+                        short: 'i',
+                        default: undefined,
+                    }
+                };
+                break;
         };
 
         return {

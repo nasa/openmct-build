@@ -81,6 +81,9 @@ mct plugins add <plugin or npm package specifier> [-i <instance-name>] [-o optio
 mct plugins add <plugin name> --npmPackage <npm package specifier> [-i <instance-name>] [-o <options>]
 ```
 
+### Installing a plugin from a package that exports multiple plugins
+Multiple plugins may reference the same `npmPackage`, in which case they will be treated as being imported from the same module. The npmPackage referenced will assume to export functions with the same name as the plugin name.
+
 ### List all available plugins
 
 ```bash
@@ -308,7 +311,6 @@ mct plugins configure openmct.plugins.Espresso --enabled false
 # With espresso disabled some theme needs to be applied. Apply the snow theme.
 mct plugins add openmct.plugins.Snow
 ```
-
 
 ## Development
 

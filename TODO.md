@@ -129,21 +129,33 @@
     - const exportsFromPackage = await loadUmd('path/to/package'); // For commonjs imports
     - Use configured plugin name to access the correct export
     - figure out how to support import default.
-- [ ] implement `mct plugins info <plugin name>`
+- [X] implement `mct plugins info <plugin name> -i instance` for plugin configuration for a specific instance
+- [X] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
+- [ ] Support multiple plugins for same npm package
+    - Make sure this works with remove as well. Do NOT uninstall npm packages that still have references from other plugins.
+- [ ] Figure out how to support plugin-relative paths for assets
+- [ ] Ensure plugin order is preserved
+- [ ] Support cascading recipes
+- [ ] implement `mct plugins info <plugin name>` for just general available plugin configuration
     - For npm packages, get a description of the package from from the package.json. Options are a little trickier.
     - This could be a starting point for figuring out how to get type information out of the plugin     
         - https://github.com/ccontrols/structured-types?tab=readme-ov-file
+    - In brief, this will rely upon types being published for plugins.
 - [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
+    - [ ] 'entryPoint' works
+    - [ ] Different 'entryPoint's for the same npmPackage works.
 - [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
 - [ ] Get VIPER building with this tool
     - @Dave
 - [ ] Hand over to PDP
-- [ ] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
+- [ ] Plugin reorder command
+- [ ] How can plugins reference other installed plugins. eg. for the CouchDB / CouchDBSearchFolder plugin case
+
 - [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
 - [ ] List all available plugins, as well as installed plugins.

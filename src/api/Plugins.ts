@@ -109,17 +109,34 @@ export default class PluginsApi{
         return new OpenMctPlugin(name, {npmPackage});
     }
 
-    async info(name:string, {instance}: {instance: string}) {
+    async #asPublished(name:string) {
+        
+    }
+    async #asConfigured(name: string, {instance}: {instance: string}) {
         if (!this.#configurator.exists(instance)) {
-            throw new Error(`Instance ${instance} does not exist`);
+            throw new Error(`Instance ${instance} does not exist. Have you built it yet?`);
         }
         const configuration = await this.#configurator.resolveConfiguration({instance});
         const plugin = configuration.getPlugin(name);
 
-        if (!plugin) {
+        //Get info from typescript definitions for builtin types
+        // if (plugin !== undefined && plugin.getSource() === 'builtin') {
+        //     const docs = parseFiles([`${INSTANCE_PATH}/${instance}/node_modules/openmct/dist/types/index.d.ts`], {scope: 'all'});
+        //     console.log(docs);
+        // }
+
+        if (plugin === undefined) {
             throw new Error(`No plugin with name ${name} registered in ${instance} instance`);
         }
         return plugin;
+    }
+
+    async info(name:string, {instance}: {instance: string}) {
+        if (instance === undefined) {
+            return this.#asPublished(name);
+        } else {
+            return this.#asConfigured(name, {instance});
+        }
     }
 
     async listAll(instance:string, indexUrl:string): Promise<OpenMctPlugin[]> {

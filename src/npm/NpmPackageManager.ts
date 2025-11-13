@@ -29,6 +29,16 @@ export default class NpmPackageManager {
             child_process.spawnSync('npm', ['init', '-y'], { cwd: this.#fullInstancePath });
         }
     }
+    getDistinctPackages(): NpmPackage[] {
+        const distinctPackages = this.#config.getPlugins().reduce((acc, plugin) => {
+            if (!acc.has(plugin.getNpmPackageName())) {
+                acc.set(plugin.getNpmPackageName(), this.getPackage(plugin.getNpmPackageName()));
+            }
+            return acc;
+        }, new Map<string, NpmPackage>());
+
+        return Array.from(distinctPackages.values());
+    }
     installPackage(packageName: string){
         const result = child_process.spawnSync('npm', ['install', '--save-dev', packageName], { cwd: this.#fullInstancePath });
         if (result.status !== 0) {
