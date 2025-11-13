@@ -15,6 +15,13 @@ function getEpochTime(timeExpression) {
     }
     return timeExpression;
 }
+export function helloWorld() {
+    return function install(openmct) {
+        openmct.once('start', () => {
+            alert('hello world');
+        });
+    }
+}
 export function mctBootstrapPlugin({timeSystem, clock, start, end, startOffset, endOffset, mode} = {timeSystem: 'utc', clock: 'local', start: 'now - 900000', end: 'now', startOffset: -60000, endOffset: 0, mode: 'realtime'}) {
     return function install(openmct) {
         openmct.time.setTimeSystem(timeSystem);
