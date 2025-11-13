@@ -15,10 +15,10 @@ function getEpochTime(timeExpression) {
     }
     return timeExpression;
 }
-export function helloWorld() {
+export function helloPanda() {
     return function install(openmct) {
         openmct.once('start', () => {
-            alert('hello world');
+            alert('hello panda');
         });
     }
 }

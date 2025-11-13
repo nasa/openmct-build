@@ -91,6 +91,10 @@ export default class OpenMctPlugin {
         return this.#pluginDefinition.npmPackage ?? this.getName();
     }
 
+    getInstallFunction(): string | undefined {
+        return this.#pluginDefinition.installFunction;
+    }
+
     setNpmPackageName(npmPackageName: string): void {
         this.#pluginDefinition.npmPackage = npmPackageName;
     }

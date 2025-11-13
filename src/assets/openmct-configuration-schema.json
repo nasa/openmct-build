@@ -23,9 +23,13 @@
                     "type": "string",
                     "description": "NPM package that provides this plugin."
                 },
+                "installFunction": {
+                  "type": "string",
+                  "description": "Name of the function that is exported from the npm package and which provides this plugin."
+                },
                 "entryPoint": {
                     "type": "string",
-                    "description": "Script that exports the install function"
+                    "description": "Script that exports the install function(s)"
                 },
                 "enabled": {
                     "type": "boolean",

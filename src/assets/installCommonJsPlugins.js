@@ -7,18 +7,19 @@ export default async function installCommonJsPlugins({openmct, importPath, insta
         openmct.install(installFunction(installFunctionOption));
         return;
     } else if (typeof imports === 'object') {
+        const exportedFunctionNames = Object.keys(imports);
         if (installFunctionNames.length === 1) {
-            const installFunctionName = Object.keys(imports)[0];
+            const installFunctionName = exportedFunctionNames[0].toLowerCase().replaceAll(/[^a-z0-9]/g, '');
             const installFunctionOption = installFunctionOptions[0];
             const installFunction = imports[installFunctionName];
             openmct.install(installFunction(installFunctionOption));
         } else {
-            const exportedFunctionMap = Object.keys(imports).reduce((map, key) => {
-                map.set(key.toLowerCase(), imports[key]);
+            const exportedFunctionMap = exportedFunctionNames.reduce((map, key) => {
+                map.set(key.toLowerCase().replaceAll(/[^a-z0-9]/g, ''), imports[key]);
                 return map;
             }, new Map());
             installFunctionNames.forEach((installFunctionName, index) => {
-                const installFunction = exportedFunctionMap.get(installFunctionName.toLowerCase());
+                const installFunction = exportedFunctionMap.get(installFunctionName.toLowerCase().replaceAll(/[^a-z0-9]/g, ''));
                 const installFunctionOption = installFunctionOptions[index];
                 openmct.install(installFunction(installFunctionOption));
             });

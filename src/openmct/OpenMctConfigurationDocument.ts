@@ -39,7 +39,11 @@ export interface Plugin {
    */
   npmPackage?: string;
   /**
-   * Script that exports the install function
+   * Name of the function that is exported from the npm package and which provides this plugin.
+   */
+  installFunction?: string;
+  /**
+   * Script that exports the install function(s)
    */
   entryPoint?: string;
   /**

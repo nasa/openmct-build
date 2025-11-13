@@ -123,7 +123,7 @@
 - [X] Add "instances list" command to list local instances.
 - [X] Add "instances info <instance name>" command to get info about a specific instance.
 - [X] Refactor all commands into services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
-- [ ] Support multiple exports (plugins) from a single npm package
+- [X] Support multiple exports (plugins) from a single npm package
     - Just dedupe the npmPackage name, only import it once no matter how many times it's referenced
     - const exportsFromPackage = await import('path/to/package'); // For es6 imports
     - const exportsFromPackage = await loadUmd('path/to/package'); // For commonjs imports
