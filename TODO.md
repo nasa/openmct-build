@@ -133,6 +133,7 @@
 - [X] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
 - [ ] Support multiple plugins for same npm package
     - Make sure this works with remove as well. Do NOT uninstall npm packages that still have references from other plugins.
+- [ ] Support 'installFunctionName' from instance.yaml
 - [ ] Figure out how to support plugin-relative paths for assets
 - [ ] Ensure plugin order is preserved
 - [ ] Support cascading recipes
