@@ -164,6 +164,7 @@ openmct:
   - A string: The plugin identifier (for builtin plugins) or npm package name
   - An object: A plugin configuration with the following properties:
     - **npmPackage** (string, optional): The npm package specifier if different from the plugin name
+    - **installFunction** (string, optional): The name of the install function to use. By default the name of the plugin as specified in the YAML file will be used. Function name matching is always case-insensitive, and any non-alphanumeric characters will be ignored. eg. `installFunction: hello-world` will match an exported function named `helloWorld` or `helloworld` or `hello_world`.
     - **enabled** (boolean, optional): Whether the plugin is enabled (default: true)
     - **options** (object or array, optional): Configuration options passed to the plugin
 
