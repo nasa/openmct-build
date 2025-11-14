@@ -131,18 +131,16 @@
     - figure out how to support import default.
 - [X] implement `mct plugins info <plugin name> -i instance` for plugin configuration for a specific instance
 - [X] Refactor commands to services, and focus commands on CLI use cases (ie. remove all the console.logging etc.)
-- [ ] Support multiple plugins for same npm package
+- [X] Support multiple plugins for same npm package
     - Make sure this works with remove as well. Do NOT uninstall npm packages that still have references from other plugins.
-- [ ] Support 'installFunctionName' from instance.yaml
+- [X] Support 'installFunctionName' from instance.yaml
 - [ ] Figure out how to support plugin-relative paths for assets
 - [ ] Ensure plugin order is preserved
-- [ ] Support cascading recipes
-- [ ] implement `mct plugins info <plugin name>` for just general available plugin configuration
+- [X] implement `mct plugins info <plugin name>` for just general available plugin configuration
     - For npm packages, get a description of the package from from the package.json. Options are a little trickier.
     - This could be a starting point for figuring out how to get type information out of the plugin     
         - https://github.com/ccontrols/structured-types?tab=readme-ov-file
     - In brief, this will rely upon types being published for plugins.
-- [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
@@ -154,12 +152,12 @@
 - [ ] Get VIPER building with this tool
     - @Dave
 - [ ] Hand over to PDP
+- [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
+- [ ] Support cascading recipes
 - [ ] Plugin reorder command
 - [ ] How can plugins reference other installed plugins. eg. for the CouchDB / CouchDBSearchFolder plugin case
-
 - [ ] Figure out how the hell this will be compiled and run as a cli tool
 - [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
-- [ ] List all available plugins, as well as installed plugins.
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
 EOY scope ends here.
 - [ ] define a plugin registry for external plugins
@@ -167,9 +165,7 @@ EOY scope ends here.
 - [ ] file:// packages always bypass plugin registry for validation
 - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 
-- [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
-- [ ] Man entries for all defined commands
-- [ ] Support importing multiple plugins from a single source file
+- [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use Levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
 
 ## Bugs
 - [ ] Figure out how to build parseArgs options programmatically from commands. Need the superset of options for all commands for the first pass.

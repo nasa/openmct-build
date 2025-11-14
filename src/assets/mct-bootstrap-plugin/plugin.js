@@ -22,6 +22,15 @@ export function helloPanda() {
         });
     }
 }
+export function testRelativeAssetPaths({testAsset}) {
+    return function install(openmct) {
+        openmct.once('start', async () => {
+            const asset = await fetch(testAsset);
+            const assetText = await asset.text();
+            console.log(`Asset text: ${assetText}`);
+        });
+    }
+}
 export function mctBootstrapPlugin({timeSystem, clock, start, end, startOffset, endOffset, mode} = {timeSystem: 'utc', clock: 'local', start: 'now - 900000', end: 'now', startOffset: -60000, endOffset: 0, mode: 'realtime'}) {
     return function install(openmct) {
         openmct.time.setTimeSystem(timeSystem);

@@ -25,6 +25,14 @@ export default class InstalledNpmPackage extends NpmPackage {
         return this.#nameAsResolved ?? this.nameAsConfigured;
     }
 
+    getInstalledPath(): string {
+        return path.join(this.#fullInstancePath, this.getRelativeInstalledPath());
+    }
+
+    getRelativeInstalledPath(): string {
+        return path.join('node_modules', this.getResolvedPackageName());
+    }
+
     #resolvePackageNameViaDependencies(): string | undefined {
         const resolvedDependencies: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['pkg', 'get', 'devDependencies'], { cwd: this.#fullInstancePath, encoding: 'utf-8' });
         const dependenciesObject = JSON.parse(resolvedDependencies.stdout?.trim() || '{}');

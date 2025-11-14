@@ -79,6 +79,7 @@ export default class OpenMctPlugin {
         }
         return serializedArguments;
     }
+
     getName(): string {
         return this.#name;
     }

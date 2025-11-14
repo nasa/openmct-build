@@ -193,6 +193,22 @@ openmct:
           - "http://localhost:5984/openmct"
 ```
 
+#### Variable substitutions
+
+Variables can be used for plugin option values in order to substitute values from the environment. Currently the following variable is available:
+
+- `${pluginContextPath}`: The path to the plugin's directory relative to the instance. This allows you to provide URLs as options that are relative to the plugin's installed path. This can be useful for referencing assets that are packaged with the plugin.
+
+eg.
+```yaml
+openmct:
+  version: latest
+  plugins:
+    - my-map-plugin:
+        options:
+          baseMap: "${pluginContextPath}/maps/base-map.png"
+```
+
 ### Modifying an Instance After Creation
 
 After creating an instance, you can modify any plugin configuration either by editing the `instance.yaml` file directly, or using the `mct plugins` commands.

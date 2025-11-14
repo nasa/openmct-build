@@ -5,6 +5,7 @@ import * as path from 'path';
 import { JSDOM } from 'jsdom';
 import NpmPackageManager from "../npm/NpmPackageManager";
 import NpmPackage from "../npm/NpmPackage";
+import InstalledNpmPackage from "../npm/InstalledNpmPackage";
 
 export default class IndexFileCreator {
     #configuration: OpenMctConfiguration;
@@ -21,6 +22,18 @@ export default class IndexFileCreator {
         const includeScriptElements = [scriptElement];
 
         return includeScriptElements;
+    }
+    #substituteVariables(input?: object, variables?: object): object | undefined {
+        if (input === undefined || variables === undefined) {
+            return undefined;
+        }
+        return JSON.parse(JSON.stringify(input).replace(/\${(\w+)}/g, (match, variable) => {
+            if (variables[variable as keyof typeof variables] === undefined) {
+                return match;
+            } else {
+                return variables[variable as keyof typeof variables];
+            }
+        }));
     }
     #buildES6LoadBlock(document: Document): HTMLScriptElement {
         const scriptElement = document.createElement('script');
@@ -49,7 +62,9 @@ export default class IndexFileCreator {
             const installFunctionOptions:(object | undefined)[] = [];
             plugins.forEach((plugin: OpenMctPlugin) => {
                 installFunctionNames.push(plugin.getInstallFunction() || plugin.getName());
-                installFunctionOptions.push(plugin.getOptions());
+                const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName()) as InstalledNpmPackage;
+                const optionsWithSubstitutions = this.#substituteVariables(plugin.getOptions(), {pluginContextPath: npmPackage.getRelativeInstalledPath()});
+                installFunctionOptions.push(optionsWithSubstitutions);
             });
             scriptElement.textContent += `await installEs6Plugins({openmct: window.openmct, importPath: '../${entryPoint}', installFunctionNames: ${JSON.stringify(installFunctionNames)}, installFunctionOptions: ${JSON.stringify(installFunctionOptions)}});\r\n`;
         });
@@ -85,7 +100,9 @@ export default class IndexFileCreator {
             const installFunctionOptions:(object | undefined)[] = [];
             plugins.forEach((plugin: OpenMctPlugin) => {
                 installFunctionNames.push(plugin.getInstallFunction() || plugin.getName());
-                installFunctionOptions.push(plugin.getOptions());
+                const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName()) as InstalledNpmPackage;
+                const optionsWithSubstitutions = this.#substituteVariables(plugin.getOptions(), {pluginContextPath: npmPackage.getRelativeInstalledPath()});
+                installFunctionOptions.push(optionsWithSubstitutions);
             });
             scriptElement.textContent += `await installCommonJsPlugins({openmct: window.openmct, importPath: '../${entryPoint}', installFunctionNames: ${JSON.stringify(installFunctionNames)}, installFunctionOptions: ${JSON.stringify(installFunctionOptions)}});\r\n`;
         });
