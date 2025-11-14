@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { JSDOM } from 'jsdom';
 import NpmPackageManager from "../npm/NpmPackageManager";
-import NpmPackage from "../npm/NpmPackage";
 import InstalledNpmPackage from "../npm/InstalledNpmPackage";
 
 export default class IndexFileCreator {
@@ -35,144 +34,46 @@ export default class IndexFileCreator {
             }
         }));
     }
-    #buildES6LoadBlock(document: Document): HTMLScriptElement {
+    #buildLoadBlockForAllPluginsPreservingOrder(document: Document): HTMLScriptElement {
         const scriptElement = document.createElement('script');
         scriptElement.type = 'module';
         scriptElement.async = true;
         scriptElement.blocking = 'render';
-        scriptElement.textContent += `import installEs6Plugins from './assets/installEs6Plugins.js';\r\n`;
-        const pluginsByEntryPoint:Map<string, OpenMctPlugin[]> = this.#configuration.getNodePlugins()
-            .filter(plugin => plugin.isEnabled())
-            .reduce((acc, plugin) => {
-                const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName());
-                if (npmPackage.getPackageType() !== 'module') {
-                    return acc;
-                }
-                const entryPoint = npmPackage.getResolvedEntryPoint(plugin);
-                if (!acc.has(entryPoint)) {
-                    acc.set(entryPoint, []);
-                }
-                acc.get(entryPoint)?.push(plugin);
+        scriptElement.textContent += `import installEs6Plugin from './assets/installEs6Plugin.js';\r\n`;
+        scriptElement.textContent += `import installCommonJsPlugin from './assets/installCommonJsPlugin.js';\r\n`;
+        scriptElement.textContent += `openmct.setAssetPath("node_modules/openmct/dist");\n`;
 
-                return acc;
-        }, new Map<string, OpenMctPlugin[]>());
-
-        pluginsByEntryPoint.forEach((plugins, entryPoint) => {
-            const installFunctionNames:string[] = [];
-            const installFunctionOptions:(object | undefined)[] = [];
-            plugins.forEach((plugin: OpenMctPlugin) => {
-                installFunctionNames.push(plugin.getInstallFunction() || plugin.getName());
-                const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName()) as InstalledNpmPackage;
-                const optionsWithSubstitutions = this.#substituteVariables(plugin.getOptions(), {pluginContextPath: npmPackage.getRelativeInstalledPath()});
-                installFunctionOptions.push(optionsWithSubstitutions);
-            });
-            scriptElement.textContent += `await installEs6Plugins({openmct: window.openmct, importPath: '../${entryPoint}', installFunctionNames: ${JSON.stringify(installFunctionNames)}, installFunctionOptions: ${JSON.stringify(installFunctionOptions)}});\r\n`;
-        });
-
-        scriptElement.textContent += `document.dispatchEvent(new Event("Es6PluginsInstalled"));`;
-
-        return scriptElement;
-    }
-    #buildCommonJsLoadBlock(document: Document): HTMLScriptElement {
-        const scriptElement = document.createElement('script');
-        scriptElement.type = 'module';
-        scriptElement.async = true;
-        scriptElement.blocking = 'render';
-        scriptElement.textContent += `import installCommonJsPlugins from './assets/installCommonJsPlugins.js';\r\n`;
-        const pluginsByEntryPoint:Map<string, OpenMctPlugin[]> = this.#configuration.getNodePlugins()
-            .filter(plugin => plugin.isEnabled())
-            .reduce((acc, plugin) => {
-                const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName());
-                if (npmPackage.getPackageType() === 'module') {
-                    return acc;
-                }
-                const entryPoint = npmPackage.getResolvedEntryPoint(plugin);
-                if (!acc.has(entryPoint)) {
-                    acc.set(entryPoint, []);
-                }
-                acc.get(entryPoint)?.push(plugin);
-
-                return acc;
-        }, new Map<string, OpenMctPlugin[]>());
-
-        pluginsByEntryPoint.forEach((plugins, entryPoint) => {
-            const installFunctionNames:string[] = [];
-            const installFunctionOptions:(object | undefined)[] = [];
-            plugins.forEach((plugin: OpenMctPlugin) => {
-                installFunctionNames.push(plugin.getInstallFunction() || plugin.getName());
-                const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName()) as InstalledNpmPackage;
-                const optionsWithSubstitutions = this.#substituteVariables(plugin.getOptions(), {pluginContextPath: npmPackage.getRelativeInstalledPath()});
-                installFunctionOptions.push(optionsWithSubstitutions);
-            });
-            scriptElement.textContent += `await installCommonJsPlugins({openmct: window.openmct, importPath: '../${entryPoint}', installFunctionNames: ${JSON.stringify(installFunctionNames)}, installFunctionOptions: ${JSON.stringify(installFunctionOptions)}});\r\n`;
-        });
-
-        scriptElement.textContent += `document.dispatchEvent(new Event("CommonJsPluginsInstalled"));`;
-
-        return scriptElement;
-    }
-    
-    #buildBuiltinsInstallBlock(document: Document): HTMLScriptElement {
-        let pluginInstallFunctionBody = 'openmct.setAssetPath("node_modules/openmct/dist");\n';
-
-        this.#configuration.getBuiltinPlugins().forEach(plugin => {
+        this.#configuration.getPlugins().forEach(plugin => {
             if (plugin.isEnabled()) {
-                pluginInstallFunctionBody += `openmct.install(${plugin.generateBuiltinInstallFunctionCall()});\n`;
-            }
-        });
-        const pluginInstallFunction = `(() => {${pluginInstallFunctionBody}})();`;
+                if (plugin.isBuiltin()) {
+                    scriptElement.textContent += `openmct.install(${plugin.generateBuiltinInstallFunctionCall()});\n`;
+                } else {
+                    const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName()) as InstalledNpmPackage;
+                    const optionsWithSubstitutions = this.#substituteVariables(plugin.getOptions(), {pluginContextPath: npmPackage.getRelativeInstalledPath()});
+                    const installFunctionName = plugin.getInstallFunction() || plugin.getName();
 
-        const scriptElement = document.createElement('script');
-        scriptElement.textContent = pluginInstallFunction;
-        scriptElement.textContent += `document.dispatchEvent(new Event("BuiltinPluginsInstalled"));`;
-        return scriptElement;
-    }
-
-    #buildAsyncInitializationBlock(document: Document): HTMLScriptElement {
-        const scriptElement = document.createElement('script');
-        scriptElement.textContent = `(() => {
-            let builtinPluginsInstalled = false;
-            let commonJsPluginsInstalled = false;
-            let es6PluginsInstalled = false;
-
-            document.addEventListener("BuiltinPluginsInstalled", function () {
-                builtinPluginsInstalled = true;
-                checkIfAllPluginsInstalled();
-            });
-            document.addEventListener("CommonJsPluginsInstalled", function () {
-                commonJsPluginsInstalled = true;
-                checkIfAllPluginsInstalled();
-            });
-            document.addEventListener("Es6PluginsInstalled", function () {
-                es6PluginsInstalled = true;
-                checkIfAllPluginsInstalled();
-            });
-            function checkIfAllPluginsInstalled() {
-                if (builtinPluginsInstalled && commonJsPluginsInstalled && es6PluginsInstalled) {
-                    openmct.start();
+                    if (npmPackage.getPackageType() === 'module') {
+                        scriptElement.textContent += `await installEs6Plugin({openmct: window.openmct, importPath: '../${npmPackage.getResolvedEntryPoint(plugin)}', installFunctionName: '${installFunctionName}', installFunctionOptions: ${JSON.stringify(optionsWithSubstitutions)}});\n`;
+                    } else {
+                        scriptElement.textContent += `await installCommonJsPlugin({openmct: window.openmct, importPath: '../${npmPackage.getResolvedEntryPoint(plugin)}', installFunctionName: '${installFunctionName}', installFunctionOptions: ${JSON.stringify(optionsWithSubstitutions)}});\n`
+                    }
                 }
             }
-        })();`;
+        });
+
+        scriptElement.textContent += `openmct.start();\n`;
 
         return scriptElement;
     }
         
-
     generateDocument(): Document {
         const template = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
         const dom = new JSDOM(template);
         const document = dom.window.document;
         const scripts = this.#buildIncludeOpenMctBlock(document);
         scripts.forEach(script => document.head.appendChild(script));
-        const asyncInitializationBlock = this.#buildAsyncInitializationBlock(document);
-        const builtinInstallBlock = this.#buildBuiltinsInstallBlock(document);
-        const es6LoadBlock = this.#buildES6LoadBlock(document);
-        const commonJsLoadBlock = this.#buildCommonJsLoadBlock(document);
-        document.head.appendChild(asyncInitializationBlock);
-        document.head.appendChild(builtinInstallBlock);
-        document.head.appendChild(es6LoadBlock);
-        document.head.appendChild(commonJsLoadBlock);
-
+        const scriptBlockForAllPlugins = this.#buildLoadBlockForAllPluginsPreservingOrder(document);
+        document.head.appendChild(scriptBlockForAllPlugins);
         return document;
     }
 }

@@ -134,7 +134,7 @@
 - [X] Support multiple plugins for same npm package
     - Make sure this works with remove as well. Do NOT uninstall npm packages that still have references from other plugins.
 - [X] Support 'installFunctionName' from instance.yaml
-- [ ] Figure out how to support plugin-relative paths for assets
+- [X] Figure out how to support plugin-relative paths for assets
 - [ ] Ensure plugin order is preserved
 - [X] implement `mct plugins info <plugin name>` for just general available plugin configuration
     - For npm packages, get a description of the package from from the package.json. Options are a little trickier.
