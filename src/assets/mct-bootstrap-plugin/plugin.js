@@ -33,6 +33,8 @@ export function testRelativeAssetPaths({testAsset}) {
 }
 export function mctBootstrapPlugin({timeSystem, clock, start, end, startOffset, endOffset, mode} = {timeSystem: 'utc', clock: 'local', start: 'now - 900000', end: 'now', startOffset: -60000, endOffset: 0, mode: 'realtime'}) {
     return function install(openmct) {
+        openmct.install(openmct.plugins.UTCTimeSystem());
+        openmct.install(openmct.plugins.LocalClock());
         openmct.time.setTimeSystem(timeSystem);
         openmct.time.setClock(clock);
 
