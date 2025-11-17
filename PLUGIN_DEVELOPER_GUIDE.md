@@ -38,13 +38,19 @@ mct-cli is compatible with UMD and ES6 modules. To specify that your plugin is a
 
 ## Script Entry Point
 
-Your scripts's main entry point must export a single install function that takes an Open MCT instance and, optionally, an options object as arguments. In future mct-cli may support exporting multiple plugins per package. 
+Your scripts's main entry point must export a function that, when executed, will return an install function. The outer function may optionall accept an options object as an argument. The options object will be populated from one of three sources, in descending order of priority:
+1. Any options specified on the command line
+2. Any options specified in a provided recipe
+3. Any options specified in the YAML configuration file
+
+The returned install function takes an Open MCT instance as an argument.
 
 ### Example Plugin
 The example below will install a new object view provider that creates a new "hello world" object view.
 ```javascript
 // src/index.js
-export default function installMyPlugin(openmct, options?) {
+export default function myPlugin(options?) {
+  return function install(openmct) {
   // Register your plugin with Open MCT
   openmct.objectViews.addProvider({
     canView(object) {
@@ -61,6 +67,7 @@ export default function installMyPlugin(openmct, options?) {
       };
     }
   });
+  }
 }
 ```
 
