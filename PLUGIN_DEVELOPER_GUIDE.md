@@ -207,23 +207,25 @@ openmct:
 
 ```javascript
 
-export default function installMyPlugin(openmct, options?) {
-  //'options' object here will be {customMessage: "Hello Universe"}
-  openmct.objectViews.addProvider({
-    canView(object) {
-      return true;
-    },
-    canEdit(object) {
-      return false;
-    },
-    view(object) {
-      return {
-        show(domElement) {
-            domElement.innerHTML = `<div>${options?.customMessage ? options.customMessage : 'Hello World!'}</div>`;
-        }
-      };
-    }
-  });
+export default function myPlugin(openmct, options?) {
+  return function install(openmct) {
+    //'options' object here will be {customMessage: "Hello Universe"}
+    openmct.objectViews.addProvider({
+      canView(object) {
+        return true;
+      },
+      canEdit(object) {
+        return false;
+      },
+      view(object) {
+        return {
+          show(domElement) {
+              domElement.innerHTML = `<div>${options?.customMessage ? options.customMessage : 'Hello World!'}</div>`;
+          }
+        };
+      }
+    });
+  }
 }
 ```
 
