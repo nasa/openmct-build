@@ -1,5 +1,4 @@
 import OpenMctConfiguration from "../openmct/OpenMctConfiguration";
-import OpenMctPlugin from "../openmct/OpenMctPlugin";
 import * as fs from 'fs';
 import * as path from 'path';
 import { JSDOM } from 'jsdom';
@@ -22,40 +21,33 @@ export default class IndexFileCreator {
 
         return includeScriptElements;
     }
-    #substituteVariables(input?: object, variables?: object): object | undefined {
-        if (input === undefined || variables === undefined) {
-            return undefined;
-        }
-        return JSON.parse(JSON.stringify(input).replace(/\${(\w+)}/g, (match, variable) => {
-            if (variables[variable as keyof typeof variables] === undefined) {
-                return match;
-            } else {
-                return variables[variable as keyof typeof variables];
-            }
-        }));
-    }
+
     #buildLoadBlockForAllPluginsPreservingOrder(document: Document): HTMLScriptElement {
         const scriptElement = document.createElement('script');
         scriptElement.type = 'module';
         scriptElement.async = true;
         scriptElement.blocking = 'render';
+        scriptElement.textContent += `import installBuiltinPlugin from './assets/installBuiltinPlugin.js';\r\n`;
         scriptElement.textContent += `import installEs6Plugin from './assets/installEs6Plugin.js';\r\n`;
         scriptElement.textContent += `import installCommonJsPlugin from './assets/installCommonJsPlugin.js';\r\n`;
+        scriptElement.textContent += `const openmct = window.openmct;\r\n`;
         scriptElement.textContent += `openmct.setAssetPath("node_modules/openmct/dist");\n`;
 
         this.#configuration.getPlugins().forEach(plugin => {
             if (plugin.isEnabled()) {
+                const installFunctionName = plugin.getInstallFunction() || plugin.getName();
                 if (plugin.isBuiltin()) {
-                    scriptElement.textContent += `openmct.install(${plugin.generateBuiltinInstallFunctionCall()});\n`;
+                    scriptElement.textContent += `installBuiltinPlugin({openmct, installFunction: ${installFunctionName}, installFunctionOptions: ${JSON.stringify(plugin.getOptions())}, buildTimeSubstitutions: {}});\n`;
                 } else {
                     const npmPackage = this.#npmPackageManager.getPackage(plugin.getNpmPackageName()) as InstalledNpmPackage;
-                    const optionsWithSubstitutions = this.#substituteVariables(plugin.getOptions(), {pluginContextPath: npmPackage.getRelativeInstalledPath()});
-                    const installFunctionName = plugin.getInstallFunction() || plugin.getName();
+                    const variableSubstitutions = {
+                        '${pluginContextPath}': npmPackage.getRelativeInstalledPath()
+                    };
 
                     if (npmPackage.getPackageType() === 'module') {
-                        scriptElement.textContent += `await installEs6Plugin({openmct: window.openmct, importPath: '../${npmPackage.getResolvedEntryPoint(plugin)}', installFunctionName: '${installFunctionName}', installFunctionOptions: ${JSON.stringify(optionsWithSubstitutions)}});\n`;
+                        scriptElement.textContent += `await installEs6Plugin({openmct, importPath: '../${npmPackage.getResolvedEntryPoint(plugin)}', installFunctionName: '${installFunctionName}', installFunctionOptions: ${JSON.stringify(plugin.getOptions())}, buildTimeSubstitutions: ${JSON.stringify(variableSubstitutions)}});\n`;
                     } else {
-                        scriptElement.textContent += `await installCommonJsPlugin({openmct: window.openmct, importPath: '../${npmPackage.getResolvedEntryPoint(plugin)}', installFunctionName: '${installFunctionName}', installFunctionOptions: ${JSON.stringify(optionsWithSubstitutions)}});\n`
+                        scriptElement.textContent += `await installCommonJsPlugin({openmct, importPath: '../${npmPackage.getResolvedEntryPoint(plugin)}', installFunctionName: '${installFunctionName}', installFunctionOptions: ${JSON.stringify(plugin.getOptions())}, buildTimeSubstitutions: ${JSON.stringify(variableSubstitutions)}});\n`
                     }
                 }
             }
