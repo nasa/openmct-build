@@ -199,7 +199,7 @@ Variables can be used for plugin option values in order to substitute values fro
 
 - `${pluginContextPath}`: The path to the plugin's directory relative to the instance. This allows you to provide URLs as options that are relative to the plugin's installed path. This can be useful for referencing assets that are packaged with the plugin.
 - `${now}`: The current time in milliseconds since the epoch. This will be evaluated at _runtime_ not build time. It can be used to set time bounds for the conductor plugin. 
-- `${<some_duration>}`: A duration in milliseconds. Valid durations are: `five_seconds`, `ten_seconds`, `fifteen_seconds`, `thirty_seconds`, `one_minute`, `five_minutes`, `ten_minutes`, `fifteen_minutes`, `thirty_minutes`, `one_hour`, `two_hours`, `one_day`, `one_week`, `one_month`, `one_year`, `two_years`, `five_years`, `ten_years`. These can be combined with `+` and `-` to create more complex time expressions. eg. `${now} - ${thirty_minutes}`.
+- `${<time_duration>}`: A duration in milliseconds. Valid durations are: `five_seconds`, `ten_seconds`, `fifteen_seconds`, `thirty_seconds`, `one_minute`, `five_minutes`, `ten_minutes`, `fifteen_minutes`, `thirty_minutes`, `one_hour`, `two_hours`, `one_day`, `one_week`, `one_month`, `one_year`, `two_years`, `five_years`, `ten_years`. These can be combined with `+` and `-` to create more complex time expressions. eg. `${now} - ${thirty_minutes}`.
 
 eg.
 ```yaml
