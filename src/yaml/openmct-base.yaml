@@ -22,3 +22,52 @@ openmct:
             showAsView:
             - summary-widget
             - example.imagery
+    - openmct.plugins.Conductor:
+        options:
+          menuOptions:
+            - name: Fixed
+              timeSystem: utc
+              bounds:
+                start: ${now} - ${thirty_minutes}
+                end: ${now}
+              presets:
+                - label: Last Day
+                  bounds:
+                    start: ${now} - ${one_day}
+                    end: ${now}
+                - label: Last 2 hours
+                  bounds:
+                    start: ${now} - ${two_hours}
+                    end: ${now}
+                - label: Last hour
+                  bounds:
+                    start: ${now} - ${one_hour}
+                    end: ${now}
+              records: 10
+            - name: Realtime
+              timeSystem: utc
+              clock: local
+              clockOffsets:
+                start: -${thirty_minutes}
+                end: ${thirty_seconds}
+              presets:
+                - label: 1 Hour
+                  bounds:
+                    start: -${one_hour}
+                    end: ${thirty_seconds}
+                - label: 30 Minutes
+                  bounds:
+                    start: -${thirty_minutes}
+                    end: ${thirty_seconds}
+                - label: 15 Minutes
+                  bounds:
+                    start: -${fifteen_minutes}
+                    end: ${thirty_seconds}
+                - label: 5 Minutes
+                  bounds:
+                    start: -${five_minutes}
+                    end: ${thirty_seconds}
+                - label: 1 Minute
+                  bounds:
+                    start: -${one_minute}
+                    end: ${thirty_seconds}
