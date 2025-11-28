@@ -54,6 +54,14 @@ export async function loadUmd(src) {
     }
 }
 const timeMathSubstitutionsInternal = {
+    '\\d{4}[-/]\\d{2}[-/]\\d{2}.*': (input) => {
+        //Does it look like a date? Try and parse it as one.
+        const date = new Date(input);
+        if (!isNaN(date.getTime())) {
+            return date.getTime();
+        }
+        return input;
+    },
     'now': () => {
         return Date.now();
     },
@@ -76,23 +84,28 @@ const timeMathSubstitutionsInternal = {
     'five_years': 157680000000,
     'ten_years': 315360000000
 }
-const joined = Object.keys(timeMathSubstitutionsInternal).join('|');
+const timeMathSubstitutionsInternalKeys = Object.keys(timeMathSubstitutionsInternal);
+const joined = timeMathSubstitutionsInternalKeys.join('|');
 const regex = `/\\\${(${joined})}/`;
 const compiledRegex = new RegExp(regex.slice(1, regex.length - 1), 'g');
 const runtimeSubstitutionsInternal = {};
 runtimeSubstitutionsInternal[regex] = (originalProperty) => {
     return getEpochTime(originalProperty);
 };
-const simpleTimeMathRegex = /^(\d+)?\s*([-+]?\s*\d+)?$/;
 
 export const runtimeSubstitutions = runtimeSubstitutionsInternal;
 export const timeMathSubstitutions = timeMathSubstitutionsInternal;
 
 export function getEpochTime(timeExpression) {
     timeExpression = timeExpression.replaceAll(compiledRegex, (match, p1) => {
-        const timeSubstitution = timeMathSubstitutions[p1];
+        const matchingTimeSubstitutionKey = timeMathSubstitutionsInternalKeys.find(key => p1.match(key));
+        if (matchingTimeSubstitutionKey === undefined) { 
+            return match;
+        }
+            
+        const timeSubstitution = timeMathSubstitutionsInternal[matchingTimeSubstitutionKey];
         if (typeof timeSubstitution === 'function') {
-            return timeSubstitution();
+            return timeSubstitution(p1);
         } else {
             return timeSubstitution;
         }
@@ -100,6 +113,7 @@ export function getEpochTime(timeExpression) {
     return parseSimpleTimeMath(timeExpression);
 }
 
+const simpleTimeMathRegex = /^(\d+)?\s*([-+]?\s*\d+)?$/;
 function parseSimpleTimeMath(timeExpression) {
     const match = simpleTimeMathRegex.exec(timeExpression);
     if (match) {

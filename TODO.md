@@ -141,17 +141,23 @@
     - This could be a starting point for figuring out how to get type information out of the plugin     
         - https://github.com/ccontrols/structured-types?tab=readme-ov-file
     - In brief, this will rely upon types being published for plugins.
+- [ ] Plugin relative paths don't work for recipes right now, they only work for plugins installed via mct plugins add
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
     - [ ] 'entryPoint' works
     - [ ] Different 'entryPoint's for the same npmPackage works.
-- [ ] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
+- [X] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
    - @Jamie
+- [ ] Date support for specific dates
+- [ ] Implement example custom formatter
+- [ ] Restore legacy build for OMM
+- [ ] Docs for OMM plugin that detail all the options
+- [ ] Hand over to PDP
 - [ ] Get VIPER building with this tool
     - @Dave
-- [ ] Hand over to PDP
+- [ ] When installing builtin plugins via cli do not include the source property. It's just noise.
 - [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
 - [ ] Support cascading recipes
 - [ ] Plugin reorder command

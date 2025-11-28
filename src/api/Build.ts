@@ -23,6 +23,7 @@ export default class Build {
         if (npmPackage !== undefined) {
             config.setNpmPackage(npmPackage);
         }
+        this.#convertNpmPackagesToAbsolutePaths(config);
         configurator.saveForInstance(instance, config);
 
         const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
@@ -30,6 +31,16 @@ export default class Build {
         this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
 
         return new OpenMctInstance({name: instance, path: fullInstancePath, config});
+    }
+
+    #convertNpmPackagesToAbsolutePaths(config: OpenMctConfiguration) {
+        const nodePlugins = config.getNodePlugins();
+        nodePlugins.forEach((nodePlugin: OpenMctPlugin) => {
+            const packageName = nodePlugin.getNpmPackageName();
+            if (packageName && (packageName.startsWith('./') || packageName.startsWith('../'))) {
+                nodePlugin.setNpmPackageName(path.resolve(packageName));
+            }
+        });
     }
 
     #createDirectoryStructureIfNeeded(fullInstancePath:string) {
@@ -52,8 +63,8 @@ export default class Build {
     #installNpmPackages({config, npmPackageManager}: {config: OpenMctConfiguration, npmPackageManager: NpmPackageManager}) {
         const nodePackages = config.getNodePlugins();
         npmPackageManager.install();
-        nodePackages.forEach((nodePackage: OpenMctPlugin) => {
-            npmPackageManager.installPackage(nodePackage.getNpmPackageName());
+        nodePackages.forEach((nodePlugin: OpenMctPlugin) => {
+            npmPackageManager.installPackage(nodePlugin.getNpmPackageName());
         });
     }
 }
