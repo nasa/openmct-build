@@ -54,5 +54,4 @@ export interface Plugin {
    * The options to be passed to the plugin at install time. Can be either an object or an array. If an array is provided, each member will be treated as an argument to the plugin install function.
    */
   options?: {} | unknown[];
-  [k: string]: unknown | undefined;
 }

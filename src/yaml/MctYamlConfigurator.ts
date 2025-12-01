@@ -6,8 +6,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import merge from 'lodash.merge';
 import jsonSchemaFile from '../assets/openmct-configuration-schema.json';
+import OpenMctPlugin from "../openmct/OpenMctPlugin";
 
 const BASE_CONFIG_LOCATION = path.join(__dirname, 'openmct-base.yaml');
+const RELATIVE_PATH_REGEX = /(file:)?(\.{1,2}.*)/;
 
 export default class MctYamlConfigurator {
     #validator: Validator;
@@ -16,22 +18,16 @@ export default class MctYamlConfigurator {
         this.#validator = new Validator();
     }
 
-    loadFromRecipe(recipe: string): OpenMctConfiguration {
-        let doc: OpenMctConfigurationSchema;
-        doc = this.#loadYaml(recipe);
-        doc = this.#applyBaseConfiguration(doc);
+    loadRecipe(recipe: string): OpenMctConfiguration {
+        let doc: OpenMctConfigurationSchema = this.#loadYaml(recipe);
 
-        const openmctConfiguration = new OpenMctConfiguration(doc);
-
-        return openmctConfiguration;
+        return new OpenMctConfiguration(doc);
     }
 
     #loadExistingConfiguration(yaml: string): OpenMctConfiguration {
         let doc: OpenMctConfigurationSchema = this.#loadYaml(yaml);
 
-        const openmctConfiguration = new OpenMctConfiguration(doc);
-
-        return openmctConfiguration;
+        return new OpenMctConfiguration(doc);
     }
 
     loadForInstance(instance: string): OpenMctConfiguration {
@@ -69,15 +65,33 @@ export default class MctYamlConfigurator {
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();
 
         if (recipe !== undefined) {
-            const templateYaml = fs.readFileSync(recipe, 'utf-8');
-            config = configurator.loadFromRecipe(templateYaml);
+            const recipeYaml = fs.readFileSync(recipe, 'utf-8');
+            config = configurator.loadRecipe(recipeYaml);
+            config = this.#convertNpmPackagesToAbsolutePaths(config, path.dirname(recipe));
+            const baseConfiguration = configurator.loadDefaultConfiguration();
+            config = this.#applyBaseConfiguration(config, baseConfiguration);
         } else {
             if (configurator.instanceConfigExists(instance)) {
                 config = configurator.loadForInstance(instance);
             } else {
                 config = configurator.loadDefaultConfiguration();
+                config = this.#convertNpmPackagesToAbsolutePaths(config, path.dirname(BASE_CONFIG_LOCATION));
             }
         }
+
+        return config;
+    }
+
+    #convertNpmPackagesToAbsolutePaths(config: OpenMctConfiguration, relativePathBase: string) {
+        const nodePlugins = config.getNodePlugins();
+        nodePlugins.forEach((nodePlugin: OpenMctPlugin) => {
+            const packageName = nodePlugin.getNpmPackageName();
+            const relativePathRegexResult = packageName.match(RELATIVE_PATH_REGEX);
+            if (relativePathRegexResult && relativePathRegexResult.length > 0) {
+                const resolvedPath = path.resolve(relativePathBase, relativePathRegexResult[2]);
+                nodePlugin.setNpmPackageName(`file:${resolvedPath}`);
+            }
+        });
 
         return config;
     }
@@ -127,15 +141,16 @@ export default class MctYamlConfigurator {
         return plugin !== undefined && Object.keys(plugin).length > 0;
     }
 
-    #applyBaseConfiguration(doc: OpenMctConfigurationSchema): OpenMctConfigurationSchema {
-        const baseConfigDoc = this.#loadDefaultConfigurationDocument();
+    #applyBaseConfiguration(instanceConfiguration: OpenMctConfiguration, baseConfiguration: OpenMctConfiguration): OpenMctConfiguration {
+        const baseConfigDoc = baseConfiguration.getConfigurationDocument();
+        const instanceConfigDoc = instanceConfiguration.getConfigurationDocument();
         const mappedBasePlugins = this.#normalizePlugins(baseConfigDoc.openmct.plugins ?? []);
-        const mappedDocPlugins = this.#normalizePlugins(doc.openmct?.plugins ?? []);
+        const mappedDocPlugins = this.#normalizePlugins(instanceConfigDoc.openmct?.plugins ?? []);
         const mergedPlugins = merge(mappedBasePlugins, mappedDocPlugins);
         const denormalizedPlugins = this.#denormalizePlugins(mergedPlugins);
-        doc.openmct.plugins = denormalizedPlugins;
+        instanceConfigDoc.openmct.plugins = denormalizedPlugins;
 
-        return doc;
+        return new OpenMctConfiguration(instanceConfigDoc);
     }
 
 
