@@ -11,18 +11,9 @@ export function helloWorld({greeting}) {
         openmct.indicators.add(indicator);
     };
 }
-export function loremIpsum() {
-    return function install(openmct) {
-        // Plugin installation code goes here
-        console.log(`Lorem ipsum plugin installed`);
-        openmct.on('start', () => {
-            alert(`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`);
-        });
-    };
-}
 
 export function pluginWithResources({customStylesheet}) {
-    return function install(openmct) {
+    return function install() {
           const customStyles = document.createElement('link');
           customStyles.setAttribute('rel', 'stylesheet');
           customStyles.setAttribute('href', customStylesheet);
