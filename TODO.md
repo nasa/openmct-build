@@ -141,20 +141,22 @@
     - This could be a starting point for figuring out how to get type information out of the plugin     
         - https://github.com/ccontrols/structured-types?tab=readme-ov-file
     - In brief, this will rely upon types being published for plugins.
-- [ ] Plugin relative paths don't work for recipes right now, they only work for plugins installed via mct plugins add
+- [X] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
+   - @Jamie
+- [X] Date support for specific dates
+- [X] Implement example custom plugin
+- [ ] ~~When installing a local plugin, either via a plugins or build command, copy the content of the plugin path across to the new instance directory, then run the npm command from there to install dependencies.~~
+    - No. instance.yaml uses absolute path. This gives equivalent behavior to remote npm packages. The difference is that it's located on your computer and not the internet. For development in particular, this is what you want. Changes are immediately reflected in the running instance.
+    - _Recipes_ by contrast can use relative paths to assets, including plugins, located relative to the recipe.
+- [ ] Docs for OMM plugin that detail all the options
+- [ ] Restore legacy build process for OMM
+- [ ] Hand over to PDP
 - [ ] Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
     - [ ] 'entryPoint' works
     - [ ] Different 'entryPoint's for the same npmPackage works.
-- [X] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
-   - @Jamie
-- [ ] Date support for specific dates
-- [ ] Implement example custom formatter
-- [ ] Restore legacy build for OMM
-- [ ] Docs for OMM plugin that detail all the options
-- [ ] Hand over to PDP
 - [ ] Get VIPER building with this tool
     - @Dave
 - [ ] When installing builtin plugins via cli do not include the source property. It's just noise.
