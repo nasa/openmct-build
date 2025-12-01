@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
+openmct:
+  version: stable
+  plugins:
+    - hello-world:
+        npmPackage: file:./plugin
+        options:
+          greeting: fellow human
+    - plugin-with-resources:
+        npmPackage: file:./plugin
+        options:
+          customStylesheet: ${pluginContextPath}/assets/custom-styles.css
