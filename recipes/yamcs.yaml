@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../src/assets/openmct-configuration-schema.json
 openmct:
-  version: '4.1.0'
+  version: 4.1.0
   plugins:
   - akhenry/openmct-yamcs:
       options:

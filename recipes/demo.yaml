@@ -1,14 +1,29 @@
 # yaml-language-server: $schema=../src/assets/openmct-configuration-schema.json
+# The equivalent of runnning the dev configuration of Open MCT provided by the Open MCT GitHub repository
 openmct:
-  version: '4.1.0'
+  version: 4.1.0
   plugins:
-  - openmct.plugins.example.Generator
-  - openmct.plugins.LADTable
-  - akhenry/openmct-yamcs:
-      options:
-        yamcsDictionaryEndpoint: 'http://localhost:8090/'
-        yamcsHistoricalEndpoint: 'http://localhost:8090/'
-        yamcsInstance: 'myproject'
-        yamcsFolder: 'myproject'
-        yamcsProcessor: 'realtime'
-        yamcsWebsocketEndpoint: 'http://localhost:8090/api/websocket'
+    - openmct.plugins.LocalStorage
+    - openmct.plugins.example.Generator
+    - openmct.plugins.example.EventGeneratorPlugin
+    - openmct.plugins.example.ExampleImagery
+    - openmct.plugins.example.ExampleTags
+    - openmct.plugins.ImageryPlugin
+    - openmct.plugins.example.Generator
+    - openmct.plugins.LADTable
+    - openmct.plugins.BarChart
+    - openmct.plugins.ScatterPlot
+    - openmct.plugins.Notebook
+    - openmct.plugins.RestrictedNotebook:
+        options:
+          - 'Notebook Shift Log'
+          - whitelistedNotebookEntryUrls: ['nasa.gov']
+    - openmct.plugins.ClearData:
+        options:
+          - ['table', 'telemetry.plot.overlay', 'telemetry.plot.stacked', 'example.imagery']
+          - indicator: true
+    - openmct.plugins.Clock:
+        options:
+          enableClockIndicator: true
+    - openmct.plugins.Timer
+    - openmct.plugins.Timelist
