@@ -33,7 +33,6 @@ openmct:
         useClockIndicator: false
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
-  # Open MCT for MCWS Plugin
   - openmct-mcws-plugin:
       options:
         camUrl: ''
@@ -46,7 +45,3 @@ openmct:
             key: 'r50-dev'
             name: 'R5.0 Users'
             url: ''
-  # Optional Dev Plugins
-  # - openmct.plugins.LocalStorage
-  # - openmct.plugins.MyItems
-  # Open MCT for MCWS Plugin Options
