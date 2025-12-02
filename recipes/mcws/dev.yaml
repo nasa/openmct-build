@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
+# Builds Open MCT for MCWS with plugins enabled for local development. eg. local storage, and generator.
 openmct:
   npmPackage: nasa/openmct#omm-r5.4.0-rc4
   plugins:

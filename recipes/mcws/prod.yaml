@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
+# Builds Open MCT for MCWS without dev plugins enabled. Requires an MCWS server to connect to.
 openmct:
   version: 4.1.0
   plugins:
