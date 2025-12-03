@@ -35,6 +35,7 @@ openmct:
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
   - openmct-mcws-plugin:
+      npmPackage: NASA-AMMOS/openmct-mcws#omm-plugin
       options:
         camUrl: ''
         mcwsUrl: ''

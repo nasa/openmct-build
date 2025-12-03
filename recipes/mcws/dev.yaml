@@ -36,7 +36,7 @@ openmct:
       options: ['VISTA']
   # Open MCT for MCWS Plugin
   - openmct-mcws-plugin:
-      npmPackage: file:/Users/akhenry/Code/openmct-mcws
+      npmPackage: NASA-AMMOS/openmct-mcws#omm-plugin
       options:
         useDeveloperStorage: true
         camUrl: ''

@@ -145,10 +145,12 @@
    - @Jamie
 - [X] Date support for specific dates
 - [X] Implement example custom plugin
-- [ ] ~~When installing a local plugin, either via a plugins or build command, copy the content of the plugin path across to the new instance directory, then run the npm command from there to install dependencies.~~
+- [X] ~~When installing a local plugin, either via a plugins or build command, copy the content of the plugin path across to the new instance directory, then run the npm command from there to install dependencies.~~
     - No. instance.yaml uses absolute path. This gives equivalent behavior to remote npm packages. The difference is that it's located on your computer and not the internet. For development in particular, this is what you want. Changes are immediately reflected in the running instance.
     - _Recipes_ by contrast can use relative paths to assets, including plugins, located relative to the recipe.
+- [X] Retest all builds
 - [ ] Docs for OMM plugin that detail all the options
+    - Jamie
 - [ ] Restore legacy build process for OMM
 - [ ] Hand over to PDP
 - [ ] Tests
@@ -157,6 +159,8 @@
     - [ ] Options for default plugins can be overridden
     - [ ] 'entryPoint' works
     - [ ] Different 'entryPoint's for the same npmPackage works.
+- [ ] Mainline changes to conductor
+- [ ] Mainline changes to openmct-mcws-plugin
 - [ ] Get VIPER building with this tool
     - @Dave
 - [ ] When installing builtin plugins via cli do not include the source property. It's just noise.
