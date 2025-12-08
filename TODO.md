@@ -149,7 +149,7 @@
     - No. instance.yaml uses absolute path. This gives equivalent behavior to remote npm packages. The difference is that it's located on your computer and not the internet. For development in particular, this is what you want. Changes are immediately reflected in the running instance.
     - _Recipes_ by contrast can use relative paths to assets, including plugins, located relative to the recipe.
 - [X] Retest all builds
-- [ ] Docs for OMM plugin that detail all the options
+- [X] Docs for OMM plugin that detail all the options
     - Jamie
 - [X] Restore legacy build process for OMM
 - [ ] Hand over to PDP

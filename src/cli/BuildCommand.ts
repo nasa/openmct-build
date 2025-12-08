@@ -43,6 +43,17 @@ export default class BuildCommand extends Command {
     }
 
     async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
+        let buildMessage = `Build ${instance}`;
+        if (recipe !== undefined) {
+            buildMessage += ` with recipe ${recipe}`;
+        }
+        if (version !== undefined) {
+            buildMessage += ` and Open MCT version ${version}`;
+        }
+        if (npmPackage !== undefined) {
+            buildMessage += ` and Open MCT npm package ${npmPackage}`;
+        }
+        console.log(buildMessage);
         return this.#buildApi.execute(verb, name, {instance, recipe, version, npmPackage});
     }
 }
