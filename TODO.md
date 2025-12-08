@@ -151,7 +151,7 @@
 - [X] Retest all builds
 - [ ] Docs for OMM plugin that detail all the options
     - Jamie
-- [ ] Restore legacy build process for OMM
+- [X] Restore legacy build process for OMM
 - [ ] Hand over to PDP
 - [ ] Tests
     - [ ] Default plugins can be disabled
