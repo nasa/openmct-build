@@ -1,6 +1,7 @@
 import Command from "./Command";
 import { ParseArgsConfig } from "util";
 import Build from "../api/Build";
+import OpenMctInstance from "../openmct/OpenMctInstance";
 
 export default class BuildCommand extends Command {
     #buildApi:Build;
@@ -43,7 +44,7 @@ export default class BuildCommand extends Command {
     }
 
     async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
-        let buildMessage = `Build ${instance}`;
+        let buildMessage = `Building ${instance} instance`;
         if (recipe !== undefined) {
             buildMessage += ` with recipe ${recipe}`;
         }
@@ -54,6 +55,10 @@ export default class BuildCommand extends Command {
             buildMessage += ` and Open MCT npm package ${npmPackage}`;
         }
         console.log(buildMessage);
-        return this.#buildApi.execute(verb, name, {instance, recipe, version, npmPackage});
+        const result:OpenMctInstance = await this.#buildApi.execute(verb, name, {instance, recipe, version, npmPackage});
+        if (result !== undefined){
+            console.log(result.toStringDetailed());
+        }
+        return result;
     }
 }
