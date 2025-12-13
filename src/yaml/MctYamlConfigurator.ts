@@ -8,7 +8,7 @@ import merge from 'lodash.merge';
 import jsonSchemaFile from '../assets/openmct-configuration-schema.json';
 import OpenMctPlugin from "../openmct/OpenMctPlugin";
 
-const BASE_CONFIG_LOCATION = path.join(__dirname, 'openmct-base.yaml');
+const BASE_CONFIG_LOCATION = path.join(__dirname, '../', 'openmct-base.yaml');
 const RELATIVE_PATH_REGEX = /(file:)?(\.{1,2}.*)/;
 
 export default class MctYamlConfigurator {
@@ -75,7 +75,6 @@ export default class MctYamlConfigurator {
                 config = configurator.loadForInstance(instance);
             } else {
                 config = configurator.loadDefaultConfiguration();
-                config = this.#convertNpmPackagesToAbsolutePaths(config, path.dirname(BASE_CONFIG_LOCATION));
             }
         }
 

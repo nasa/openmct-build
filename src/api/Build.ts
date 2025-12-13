@@ -23,7 +23,7 @@ export default class Build {
         if (npmPackage !== undefined) {
             config.setNpmPackage(npmPackage);
         }
-        this.#convertNpmPackagesToAbsolutePaths(config);
+        
         configurator.saveForInstance(instance, config);
 
         const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});

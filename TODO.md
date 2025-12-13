@@ -152,6 +152,18 @@
 - [X] Docs for OMM plugin that detail all the options
     - Jamie
 - [X] Restore legacy build process for OMM
+- [X] Deploy OMM from new build process to uphill.
+- [X] Deploy OMM from new "legacy" process to uphill.
+- [ ]Fix bug reported by Jamie from legacy build process openmct-mcws.css is 404.
+    - [X] Support dynamic roots (Andrew)
+    - [ ] Support dynamic namespaces (Jamie)
+- [ ] Fix bug with running globally.
+- [ ] Add some more console logs for feedback to user.
+- [ ] Proof read docs.
+- [ ] Ask NASA org to create new public repo for build tool
+- [ ] Merge to master
+- [ ] Publish OMM to npm
+- [ ] Publish Open MCT to npm
 - [ ] Hand over to PDP
 - [ ] Tests
     - [ ] Default plugins can be disabled
@@ -176,8 +188,14 @@ EOY scope ends here.
     - Support a custom organizational plugin index eg. `-i https://trunk.ndc.nasa.gov/bitbucket/VIPERGDS/viper-openmct-nasa-internal-plugins.json`
 - [ ] file:// packages always bypass plugin registry for validation
 - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
-
 - [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use Levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
+
+## Performance
+This tool is NOT optimized for speed right now.
+- [ ] Publish OMM to npm
+- [ ] Publish Open MCT to npm
+- [ ] Compile TS to JS for npm version of build tool
+- [ ] Reduce the number of `npm` calls necessary. 
 
 ## Bugs
 - [ ] Figure out how to build parseArgs options programmatically from commands. Need the superset of options for all commands for the first pass.

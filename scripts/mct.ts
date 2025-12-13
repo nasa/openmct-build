@@ -68,14 +68,7 @@ async function main() {
             strict: true,
             ...argsForVerb
         });
-        const response = await command.execute(verb, name, args.values);
-        if (response instanceof Array) {
-            response.forEach((obj) => {
-                console.log(obj.toString());
-            })
-        } else if (response!== undefined){
-            console.log(response.toString());
-        }
+        await command.execute(verb, name, args.values);
     } catch (e: any) {
         if (e instanceof InvalidApiCallError) {
             console.error(e.message);

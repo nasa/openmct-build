@@ -56,9 +56,7 @@ export default class BuildCommand extends Command {
         }
         console.log(buildMessage);
         const result:OpenMctInstance = await this.#buildApi.execute(verb, name, {instance, recipe, version, npmPackage});
-        if (result !== undefined){
-            console.log(result.toStringDetailed());
-        }
+        console.log(result?.toStringDetailed());
         return result;
     }
 }
