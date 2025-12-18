@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
 # Builds Open MCT for MCWS without dev plugins enabled. Requires an MCWS server to connect to.
 openmct:
-  version: 4.1.0
+  version: latest 
   plugins:
   - openmct.plugins.Snow # Theme: 'Snow', 'Espresso' or 'Maelstrom'
   - openmct.plugins.ObjectMigration
@@ -35,7 +35,7 @@ openmct:
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
   - openmct-mcws-plugin:
-      npmPackage: NASA-AMMOS/openmct-mcws#omm-plugin
+      npmPackage: openmct-mcws-plugin@latest
       options:
         camUrl: ''
         mcwsUrl: ''

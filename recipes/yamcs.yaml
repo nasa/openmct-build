@@ -10,3 +10,5 @@ openmct:
         yamcsFolder: 'myproject'
         yamcsProcessor: 'realtime'
         yamcsWebsocketEndpoint: 'http://localhost:8090/api/websocket'
+        throttleRate: 1000
+        maxBufferSize: 1000000

@@ -157,7 +157,8 @@
 - [ ]Fix bug reported by Jamie from legacy build process openmct-mcws.css is 404.
     - [X] Support dynamic roots (Andrew)
     - [ ] Support dynamic namespaces (Jamie)
-- [ ] Fix bug with running globally.
+- [X] Fix bug with running globally.
+- [ ] Confirm that npm relative paths still work with plugins?
 - [ ] Add some more console logs for feedback to user.
 - [ ] Proof read docs.
 - [ ] Ask NASA org to create new public repo for build tool

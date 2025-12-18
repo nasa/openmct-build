@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
 # Builds Open MCT for MCWS with plugins enabled for local development. eg. local storage, and generator.
 openmct:
-  npmPackage: nasa/openmct#omm-r5.4.0-rc4
+  version: latest
   plugins:
   - openmct.plugins.Snow # Theme: 'Snow', 'Espresso' or 'Maelstrom'
   - openmct.plugins.ObjectMigration
@@ -36,7 +36,7 @@ openmct:
       options: ['VISTA']
   # Open MCT for MCWS Plugin
   - openmct-mcws-plugin:
-      npmPackage: NASA-AMMOS/openmct-mcws#omm-plugin
+      npmPackage: openmct-mcws-plugin@latest
       options:
         useDeveloperStorage: true
         camUrl: ''
