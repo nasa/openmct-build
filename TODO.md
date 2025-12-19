@@ -7,32 +7,6 @@
 - [X] Support removing builtin plugins via CLI
 - [X] Support adding npm plugins via CLI
 - [X] Support removing npm plugins via CLI
-
-- [X] Demo
-   - Start with context, show a diagram
-   - Start from scratch, create a new default instance
-      - Use stable initially
-      - Switch to latest
-      - HOLD FOR APPLAUSE
-      - launch http-server to demonstrate
-   - Customize it by enabling a another builtin plugin.
-      - openmct.plugins.example.Generator
-      - launch http-server to demonstrate
-      - openmct.plugins.LADTable
-   - Customize it by adding an npm plugin (openmct-yamcs)
-      - akhenry/openmct-yamcs#defaults
-   - Now, this is all very manual, how do I define "recipes"?
-      - Open the yamcs.yaml template
-      - Talk about the format and how options etc. are specified
-      - Open the default recipe
-   - Talk about instances
-      - Create a new instance named something else
-      - Explain why this is important.
-   - Talk about the codebase
-      - Yaml schema and how Yaml files get validated
-      - Show our Open MCT custom schema and how it enables IDE support
-      - All implemented in TypeScript
-   - Roadmap and where this fits in it
 - [X] Plugins remove needs to uninstall npm dependency
 - [X] Decide on whether OMM is multiple plugins, or just one
    * For V1 it is a single plugin
@@ -158,23 +132,21 @@
     - [X] Support dynamic roots (Andrew)
     - [ ] Support dynamic namespaces (Jamie)
 - [X] Fix bug with running globally.
-- [ ] Confirm that npm relative paths still work with plugins?
-- [ ] Add some more console logs for feedback to user.
-- [ ] Proof read docs.
-- [ ] Ask NASA org to create new public repo for build tool
-- [ ] Merge to master
-- [ ] Publish OMM to npm
-- [ ] Publish Open MCT to npm
-- [ ] Hand over to PDP
-- [ ] Tests
+- [X] Confirm that npm relative paths still work with plugins?
+- [X] Add some more console logs for feedback to user.
+- [X] Proof read docs.
+- [X] Ask NASA org to create new public repo for build tool
+- [X] Merge to master
+- [X] Publish OMM to npm
+- [X] Publish Open MCT to npm
+- [X] Mainline changes to conductor
+- [X] Mainline changes to openmct-mcws-plugin
+- [ ] Additional Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
     - [ ] 'entryPoint' works
     - [ ] Different 'entryPoint's for the same npmPackage works.
-- [ ] Mainline changes to conductor
-- [ ] Mainline changes to openmct-mcws-plugin
-- [ ] Get VIPER building with this tool
     - @Dave
 - [ ] When installing builtin plugins via cli do not include the source property. It's just noise.
 - [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
@@ -186,20 +158,17 @@
 - [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
 EOY scope ends here.
 - [ ] define a plugin registry for external plugins
-    - Support a custom organizational plugin index eg. `-i https://trunk.ndc.nasa.gov/bitbucket/VIPERGDS/viper-openmct-nasa-internal-plugins.json`
+    - Support a custom organizational plugin index eg. `-i https://blahblahblah.nasa.gov/bitbucket/GDS/viper-openmct-nasa-internal-plugins.json`
 - [ ] file:// packages always bypass plugin registry for validation
 - [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 - [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use Levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
 
 ## Performance
 This tool is NOT optimized for speed right now.
-- [ ] Publish OMM to npm
-- [ ] Publish Open MCT to npm
-- [ ] Compile TS to JS for npm version of build tool
-- [ ] Reduce the number of `npm` calls necessary. 
+- [X] Publish OMM to npm
+- [X] Publish Open MCT to npm
+- [ ] Pre-compile TS to JS for npm version of build tool
+- [ ] Reduce the number of `npm` calls used. 
 
 ## Bugs
 - [ ] Figure out how to build parseArgs options programmatically from commands. Need the superset of options for all commands for the first pass.
-
-## Improvements to OMM
-- [ ] package.json should identify the source location.

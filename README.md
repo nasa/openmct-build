@@ -31,7 +31,7 @@ npx http-server instances/default -o
 
 * This version of the build tool is not optimized. It's doing a lot of npm operations that it doesn't strictly need to do and as a result some seemingly simple operations may be inexplicably slow. We are working on it. In the mean time using published NPM packages helps speed things up alot.
 * This will only build Open MCT plugins. It cannot be used to build or package Yamcs, MCWS, AMPCS, or any other upstream dependencies.
-* Some Open MCT plugins are still installed by default in code and cannot be overridden via the build tool. This will be fixed in a future release of Open MCT.
+* Some Open MCT plugins are still [installed by default in code](https://github.com/nasa/openmct/blob/4ab98ffef09adbe38a28a5e275d45a37e8196ef4/src/MCT.js#L277) and cannot be overridden via the build tool. This will be fixed in a future release of Open MCT.
 
 ## Commands
 
@@ -241,6 +241,8 @@ openmct:
           port: 8090
 ```
 
+A JSON schema document is also provided for convenience to support IDE and build-time validation of your instance YAML file. It is referenced at the top of the instance.yaml file.
+
 #### Key Fields
 
 - **version** (string): The version of Open MCT to use. Can be a specific version (e.g., "3.0.0"), a version range (e.g., "^3.0.0"), or "latest".
@@ -349,36 +351,6 @@ See the `recipes/` directory for example recipes:
 
 - `recipes/demo.yaml` - A demo configuration with common builtin plugins
 - `recipes/yamcs.yaml` - A configuration for YAMCS integration
-
-## Examples
-
-
-10. List plugins installed for the default instance:
-```bash
-mct plugins list
-```
-11. List plugins installed for a specific instance:
-```bash
-mct -i my-instance plugins list
-```
-12. List all available plugins for the default instance:
-```bash
-mct plugins list -a
-```
-13. List all available plugins for a specific instance:
-```bash
-mct -i my-instance plugins list -a
-```
-14. Configure an installed plugin:
-```bash
-mct plugins configure openmct.plugins.PlanLayout --enabled true --options '{"creatable": true}'
-```
-15. Override a default plugin:
-```bash
-mct plugins configure openmct.plugins.Espresso --enabled false
-# With espresso disabled some theme needs to be applied. Apply the snow theme.
-mct plugins add openmct.plugins.Snow
-```
 
 ## Development
 
