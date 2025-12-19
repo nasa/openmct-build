@@ -12,7 +12,7 @@ export function helloWorld({greeting}) {
     };
 }
 
-export function pluginWithResources({customStylesheet}) {
+export function pluginWithResources({customStylesheet}={customStylesheet:''}) {
     return function install() {
           const customStyles = document.createElement('link');
           customStyles.setAttribute('rel', 'stylesheet');

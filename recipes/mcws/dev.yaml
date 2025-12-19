@@ -34,9 +34,13 @@ openmct:
         useClockIndicator: false
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
+  # Required core plugins for development
+  - openmct.plugins.LocalStorage
+  - openmct.plugins.MyItems
+  - openmct.plugins.example.Generator
   # Open MCT for MCWS Plugin
   - openmct-mcws-plugin:
-      npmPackage: openmct-mcws-plugin@latest
+      npmPackage: openmct-mcws-plugin
       options:
         useDeveloperStorage: true
         camUrl: ''
@@ -49,7 +53,3 @@ openmct:
             key: 'r50-dev'
             name: 'R5.0 Users'
             url: ''
-  # Required core plugins for development
-  - openmct.plugins.LocalStorage
-  - openmct.plugins.MyItems
-  - openmct.plugins.example.Generator

@@ -24,7 +24,10 @@ export default class InstancesCommand extends Command {
         }
     }
     async list() {
-        return this.#instancesApi.list();
+        const instances = await this.#instancesApi.list();
+        instances?.forEach((instance) => {
+            console.log(instance.toStringLimited());
+        });
     }
 
     async info(instanceName:string) {

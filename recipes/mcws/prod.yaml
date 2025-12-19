@@ -35,8 +35,9 @@ openmct:
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
   - openmct-mcws-plugin:
-      npmPackage: openmct-mcws-plugin@latest
+      npmPackage: openmct-mcws-plugin
       options:
+        useDeveloperStorage: false
         camUrl: ''
         mcwsUrl: ''
         namespaces:

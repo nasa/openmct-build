@@ -69,6 +69,7 @@ async function main() {
             ...argsForVerb
         });
         await command.execute(verb, name, args.values);
+        process.exit(0);
     } catch (e: any) {
         if (e instanceof InvalidApiCallError) {
             console.error(e.message);
@@ -81,7 +82,6 @@ async function main() {
                 console.error(`An error occurred while executing this command: ${e.message}`);
             }
         }
-    } finally {
         process.exit(1);
     }
 }

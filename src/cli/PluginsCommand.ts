@@ -64,15 +64,6 @@ export default class PluginsCommand extends Command {
                     }
                 };
                 break;
-            case 'info':
-                additionalArgs.options = {
-                    instance: {
-                        type: 'string',
-                        short: 'i',
-                        default: undefined,
-                    }
-                };
-                break;
         };
 
         return {
@@ -102,14 +93,21 @@ export default class PluginsCommand extends Command {
         if (options !== undefined) {
             parsedOptions = this.#parseOptions(options);
         }
+        console.log(`Adding plugin ${name} for ${instance} instance`);
         return this.#pluginsApi.add(name, {instance, npmPackage, options: parsedOptions});
     }
-    async list(name: undefined, {instance, available, indexUrl}: {instance: string, available?: boolean, indexUrl: string}): Promise<OpenMctPlugin[]> {
+    async list(name: undefined, {instance, available, indexUrl}: {instance: string, available?: boolean, indexUrl: string}) {
+        let plugins;
+
         if (available) {
-            return this.#pluginsApi.listAll(instance, indexUrl);
+            plugins = await this.#pluginsApi.listAll(instance, indexUrl);
         } else {
-            return this.#pluginsApi.listInstalled(name, {instance});
+            plugins = await this.#pluginsApi.listInstalled(name, {instance});
         }
+        
+        plugins?.forEach((plugin:OpenMctPlugin) => {
+            console.log(plugin.getName());
+        });
     }
     async remove(name:string, {instance}: {instance: string}) {
         if (name === undefined) {

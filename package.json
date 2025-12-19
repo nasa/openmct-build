@@ -1,5 +1,5 @@
 {
-  "name": "openmct-configurator",
+  "name": "openmct-build",
   "version": "0.0.1",
   "description": "",
   "main": "scripts/mct.ts",

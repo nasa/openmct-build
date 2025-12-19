@@ -231,7 +231,8 @@ export default function myPlugin(openmct, options?) {
 
 ## Publishing Your Plugin
 
-1. Update your `package.json` with correct metadata
-2. Build your plugin: `npm run build`
+1. Update your `package.json` with correct version information. Npm uses semver, more information is available here - https://docs.npmjs.com/about-semantic-versioning
+2. * Best practice: Update your `package.json` with a `peerDependencies` entry for Open MCT, specifying the version of Open MCT that this version of your plugin has been tested with. This allows the Open MCT build tool to identify version incompatibilities. We strongly recommend specifying an npm version of Open MCT, and not a GitHub version as this avoids the need to compile from source.
+2. Build your plugin
 3. Publish to npm: `npm publish`
 4. Users can now install it with mct-cli

@@ -16,16 +16,17 @@ export default class PluginsApi{
     }
 
     async add(name:string, {instance, npmPackage, options}: {instance: string, npmPackage?: string, options?: any}) {
+        let wasNpmPackageSpecified = false;
+
         if (npmPackage === undefined) {
             npmPackage = name;
+        } else {
+            wasNpmPackageSpecified = true;
         }
         const config = await this.#configurator.resolveConfiguration({instance});
         const plugin = await this.#getMatchingPlugin(name, instance, npmPackage);
         if (!plugin) {
             throw new Error(`Unknown plugin ${name}`);
-        }
-        if (config.hasPlugin(plugin)) {
-            throw new Error(`Plugin ${name} already installed in ${instance} instance`);
         }
         if (options !== undefined) {
             plugin.setOptions(options);
@@ -40,7 +41,20 @@ export default class PluginsApi{
             const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
             const npmPackage:NpmPackage = npmPackageManager.getPackage(plugin.getNpmPackageName());
             name = npmPackage.getResolvedPackageName();
-            plugin.setName(name);
+            if (name === undefined || name.trim().length === 0) {
+                throw new InvalidApiCallError(`No valid Open MCT plugin was found with the name '${npmPackageName}'`);
+            }
+            //Do not universally set the plugin name to the resolved package name. Sometimes we export multiple plugins from a single package.
+            //Right now if an npmPackage is specified, we assume that the plugin name is the install function exported for that plugin.
+            //If no npmPackage was specified, then the plugin name is assumed to be an npm package specifier and should be normalized 
+            // (ie. branche designations etc. removed)
+
+            if (!wasNpmPackageSpecified){
+                plugin.setName(name);
+            }
+        }
+        if (config.hasPlugin(plugin)) {
+            throw new Error(`Plugin ${name} already installed in ${instance} instance`);
         }
         config.addPlugin(plugin);
         this.#configurator.saveForInstance(instance, config);
@@ -119,12 +133,6 @@ export default class PluginsApi{
         const configuration = await this.#configurator.resolveConfiguration({instance});
         const plugin = configuration.getPlugin(name);
 
-        //Get info from typescript definitions for builtin types
-        // if (plugin !== undefined && plugin.getSource() === 'builtin') {
-        //     const docs = parseFiles([`${INSTANCE_PATH}/${instance}/node_modules/openmct/dist/types/index.d.ts`], {scope: 'all'});
-        //     console.log(docs);
-        // }
-
         if (plugin === undefined) {
             throw new Error(`No plugin with name ${name} registered in ${instance} instance`);
         }
@@ -171,7 +179,6 @@ export default class PluginsApi{
         if (name === undefined) {
             throw new InvalidApiCallError('Plugin name is required');
         }
-        console.log(`Removing plugin ${name} for ${instance} instance`);
         const config = await this.#configurator.resolveConfiguration({instance});
         const matchingPlugin = await this.#getMatchingPlugin(name, instance);
         if (!matchingPlugin) {
@@ -195,9 +202,12 @@ export default class PluginsApi{
         if (name === undefined) {
             throw new InvalidApiCallError('Plugin name is required');
         }
-        console.log(`Configuring plugin ${name} for instance ${instance}`);
+        if (options === undefined) {
+            throw new InvalidApiCallError('No configuration specified');
+        }
         const config = await this.#configurator.resolveConfiguration({instance});
         const plugin = config.getPlugin(name);
+
         if (plugin === undefined) {
             throw new Error(`Plugin ${name} not found for instance ${instance}`);
         }
@@ -210,6 +220,7 @@ export default class PluginsApi{
         if (options !== undefined) {
             plugin.setOptions(options);
         }
+
         this.#configurator.saveForInstance(instance, config);
         this.#rebuild(instance);
     }

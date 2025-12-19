@@ -1,7 +1,7 @@
-# yaml-language-server: $schema=../src/assets/openmct-configuration-schema.json
+# yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
 # The equivalent of runnning the dev configuration of Open MCT provided by the Open MCT GitHub repository
 openmct:
-  version: 4.1.0
+  version: 4.3.0-rc1
   plugins:
     - openmct.plugins.LocalStorage
     - openmct.plugins.example.Generator
