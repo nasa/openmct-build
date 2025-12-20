@@ -1,10 +1,10 @@
-# mct-cli Plugin Developer Guide
+# Open MCT Build Tool Plugin Developer Guide
 
-This guide explains how to prepare your Open MCT plugin for use with **mct-cli**, the Open MCT Configuration Tool.
+This guide explains how to prepare your Open MCT plugin for use `mct` - the Open MCT Build Tool.
 
 ## Overview
 
-mct-cli allows developers to build an Open MCT deployment and install and manage Open MCT plugins through a command-line interface. To make your plugin compatible with mct-cli, you need to follow a few key conventions.
+`mct` allows developers to build an Open MCT deployment and install and manage Open MCT plugins through a command-line interface. To make your plugin compatible with mct, you need to follow a few key conventions.
 
 ## TL;DR
 
@@ -19,7 +19,7 @@ mct-cli allows developers to build an Open MCT deployment and install and manage
 
 Your plugin should be published as an npm package with a clear entry point that exports an install function. It is also good practice to include a peerDependencies field in your package.json to specify the version(s) of Open MCT your plugin is compatible with.
 
-mct-cli is compatible with UMD and ES6 modules. To specify that your plugin is an ES6 module, include a "type": "module" field in your package.json. The default type is "commonjs", but this can also be specified manually.
+mct is compatible with UMD and ES6 modules. To specify that your plugin is an ES6 module, include a "type": "module" field in your package.json. The default type is "commonjs", but this can also be specified manually.
 
 ### Basic Plugin Package.json
 
@@ -45,43 +45,21 @@ Your scripts's main entry point must export a function that, when executed, will
 
 The returned install function takes an Open MCT instance as an argument.
 
-### Example Plugin
-The example below will install a new object view provider that creates a new "hello world" object view.
-```javascript
-// src/index.js
-export default function myPlugin(options?) {
-  return function install(openmct) {
-  // Register your plugin with Open MCT
-  openmct.objectViews.addProvider({
-    canView(object) {
-      return true;
-    },
-    canEdit(object) {
-      return false;
-    },
-    view(object) {
-      return {
-        show(domElement) {
-            domElement.innerHTML = '<div>Hello World!</div>';
-        }
-      };
-    }
-  });
-  }
-}
-```
+### Example Plugins
 
-## Adding a plugin with mct-cli
+Example plugins are available from `recipes/examples/`
+
+## Adding a plugin with the Open MCT Build Tool
 
 ### For plugins published to GitHub or NPM
-Once your plugin is published to npm, users can install it using mct-cli:
+Once your plugin is published to npm, users can install it using mct:
 
 ```bash
 # Install to default instance
-mct-cli plugins add @myorg/my-openmct-plugin
+mct plugins add @myorg/my-openmct-plugin
 
 # Install plugin to a specific instance
-mct-cli -i my-instance plugins add @myorg/openmct-my-plugin
+mct plugins add @myorg/openmct-my-plugin -i my-instance
 
 ```
 
@@ -89,46 +67,46 @@ The above is shorthand for:
 
 ```bash
 # Install to default instance
-mct-cli plugins add my-openmct-plugin --source npm --npmPackage @myorg/my-openmct-plugin
+mct plugins add my-openmct-plugin --source npm --npmPackage @myorg/my-openmct-plugin
 
 # Install plugin to a specific instance
-mct-cli -i my-instance plugins add openmct-my-plugin  --source npm --npmPackage @myorg/my-openmct-plugin
+mct -i my-instance plugins add my-openmct-plugin  --source npm --npmPackage @myorg/my-openmct-plugin
 ```
 
 ### For plugins available locally
 
 ```bash
 # Install to default instance
-mct-cli plugins add file:../path/to/your/plugin
+mct plugins add file:../path/to/your/plugin
 
 # Install plugin to a specific instance
-mct-cli -i my-instance plugins add file:../path/to/your/plugin
+mct -i my-instance plugins add file:../path/to/your/plugin
 ```
 The above is shorthand for:
 
 ```bash
 # Install to default instance
-mct-cli plugins add my-local-plugin --npmPackage ../path/to/your/plugin
+mct plugins add my-local-plugin --npmPackage ../path/to/your/plugin
 
 # Install plugin to a specific instance
-mct-cli -i my-instance plugins add my-local-plugin --npmPackage ../path/to/your/plugin
+mct -i my-instance plugins add my-local-plugin --npmPackage ../path/to/your/plugin
 ```
 
-## Removing a plugin with mct-cli
+## Removing a plugin with mct
 
-Note that when removing a plugin, you only need to specify the package name, not the source or npm package.
+Note that when removing a plugin, you must specify the package name, not the source or npm package. Plugin names are normalized during installation.
 
 ```bash
 # Remove plugin from default instance
-mct-cli plugins remove my-openmct-plugin
+mct plugins remove my-openmct-plugin
 
 # Remove plugin from specific instance
-mct-cli -i my-instance plugins remove my-openmct-plugin
+mct -i my-instance plugins remove my-openmct-plugin
 ```
 
 ## Plugin Configuration
 
-Plugins can be configured through mct-cli by specifying options in the YAML configuration file or via the command line.
+Plugins can be configured through mct by specifying options in the YAML configuration file or via the command line.
 
 ### YAML Configuration
 
@@ -164,7 +142,7 @@ openmct:
 ```
 
 ```bash
-mct-cli plugins configure openmct-my-plugin --options '{"customMessage": "value"}'
+mct plugins configure openmct-my-plugin --options '{"customMessage": "value"}'
 ```
 
 Note: An options object with named properties is the preferred approach for reasons of user friendliness, but for legacy support an array of JavaScript primitives and / or objects may also be specified here.
@@ -184,49 +162,7 @@ openmct:
 ```
 
 ```bash
-mct-cli plugins configure openmct-my-plugin --options '[true, "my-value", 1234, ["An Array", "Of Values"]]'
-```
-
-
-### Example Instance Configuration specifying a combination of builtin and npm plugins
-
-```yaml
-openmct:
-  version: stable
-  plugins:
-    # Builtin plugin
-    - openmct.plugins.LocalStorage
-    
-    # Plugin with options
-    - openmct-my-plugin:
-      source: npm
-      npmPackage: @myorg/my-openmct-plugin
-      options:
-        customMessage: "value"
-```
-
-```javascript
-
-export default function myPlugin(openmct, options?) {
-  return function install(openmct) {
-    //'options' object here will be {customMessage: "Hello Universe"}
-    openmct.objectViews.addProvider({
-      canView(object) {
-        return true;
-      },
-      canEdit(object) {
-        return false;
-      },
-      view(object) {
-        return {
-          show(domElement) {
-              domElement.innerHTML = `<div>${options?.customMessage ? options.customMessage : 'Hello World!'}</div>`;
-          }
-        };
-      }
-    });
-  }
-}
+mct plugins configure openmct-my-plugin --options '[true, "my-value", 1234, ["An Array", "Of Values"]]'
 ```
 
 ## Publishing Your Plugin
@@ -235,4 +171,4 @@ export default function myPlugin(openmct, options?) {
 2. * Best practice: Update your `package.json` with a `peerDependencies` entry for Open MCT, specifying the version of Open MCT that this version of your plugin has been tested with. This allows the Open MCT build tool to identify version incompatibilities. We strongly recommend specifying an npm version of Open MCT, and not a GitHub version as this avoids the need to compile from source.
 2. Build your plugin
 3. Publish to npm: `npm publish`
-4. Users can now install it with mct-cli
+4. Users can now install it with the Open MCT build tool `mct`
