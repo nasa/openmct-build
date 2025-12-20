@@ -93,7 +93,7 @@
 - [X] Mainline changes to openmct-mcws-plugin
 - [X] Update MCWS package.json with compatibility information, AND MAINTAIN IT GOING FORWARD.
 
-EOY scope ends here.
+## Forward Work
 
 - [ ] Additional Tests
     - [ ] Default plugins can be disabled
