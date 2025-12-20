@@ -1,4 +1,4 @@
-# mct - Open MCT Build Tool
+# mct - The Open MCT Build Tool
 
 The Open MCT Build Tool's `mct` command is a command-line interface for building a packaged Open MCT instance that can be deployed to a web server. It allows you to install and remove supported Open MCT plugins.
 
