@@ -9,57 +9,7 @@
 - [X] Support removing npm plugins via CLI
 - [X] Plugins remove needs to uninstall npm dependency
 - [X] Decide on whether OMM is multiple plugins, or just one
-   * For V1 it is a single plugin
-   * Define how multiple plugins will be supported in future though, so we don't paint ourselves into a corner.
-   ```yaml
-       - NASA-Ammos/openmct-mcws:
-        source: npm
-        plugins:
-          firstPluginName:
-            options:
-              foo: bar
-          secondPluginName:
-            options:
-              foo2: bar2
-   ```
-   ```JavaScript
-   //IndexFileCreator.ts
-    #buildImportLoadBlock(document: Document): HTMLScriptElement {
-        const scriptElement = document.createElement('script');
-        scriptElement.type = 'module';
-        scriptElement.async = true;
-        scriptElement.blocking = 'render';
-        //Do import block first
-        this.#configuration.getNodePlugins({type: 'es6'}).forEach((plugin: OpenMctPlugin) => {
-            const packageEntryPoint = this.#npmPackageManager.getPackage(plugin.getName()).getResolvedEntryPoint(plugin);
-            const subPlugins = plugin.getSubPlugins();
-            if (subPlugins.length > 0) {
-                subPlugins.forEach((subPlugin: OpenMctPlugin) => {
-                    scriptElement.textContent += `import ${subPlugin.getName()} from '${packageEntryPoint}';\r\n`;
-                });
-            } else {
-                scriptElement.textContent += `import ${subPlugin.getName()} from '${packageEntryPoint}';\r\n`;
-            }
-        });
-
-        //Then do install block
-        this.#configuration.getNodePlugins({type: 'es6'}).forEach((plugin: OpenMctPlugin) => {
-            const subPlugins = plugin.getSubPlugins();
-            if (subPlugins.length > 0) {
-                subPlugins.forEach((subPlugin: OpenMctPlugin) => {
-                    scriptElement.textContent += `openmct.install(${subPlugin.getName()}(${JSON.stringify(subPlugin.getOptions())}));\r\n`;
-                });
-            } else {
-                scriptElement.textContent += `openmct.install(${plugin.getName()}(${JSON.stringify(plugin.getOptions())}));\r\n`;
-            }
-        });
-
-        scriptElement.textContent += `document.dispatchEvent(new Event("OpenMCTPluginsInstalled"));`;
-
-        return scriptElement;
-    }
-
-   ```
+    - Just one initially.
 - [X] Remove plugins should work on ~~name-as-installed or~~ package name only for now.
     - [X] Should be able to remove locally install openmct-yamcs without having to specify the entire path.
     - [X] Once again plugins remove openmct-yamcs is not working for openmct-yamcs#defaults
@@ -116,7 +66,6 @@
         - https://github.com/ccontrols/structured-types?tab=readme-ov-file
     - In brief, this will rely upon types being published for plugins.
 - [X] Remove all Open MCT internal plugins from loader.js in openmct-mcws and move them to a recipe
-   - @Jamie
 - [X] Date support for specific dates
 - [X] Implement example custom plugin
 - [X] ~~When installing a local plugin, either via a plugins or build command, copy the content of the plugin path across to the new instance directory, then run the npm command from there to install dependencies.~~
@@ -124,8 +73,9 @@
     - _Recipes_ by contrast can use relative paths to assets, including plugins, located relative to the recipe.
 - [X] Retest all builds
 - [X] Docs for OMM plugin that detail all the options
-    - Jamie
 - [X] Restore legacy build process for OMM
+- [X] define a plugin registry for external plugins
+    - Support a custom organizational plugin index eg. `-i https://blahblahblah.nasa.gov/bitbucket/GDS/viper-openmct-nasa-internal-plugins.json`
 - [X] Deploy OMM from new build process to uphill.
 - [X] Deploy OMM from new "legacy" process to uphill.
 - [ ]Fix bug reported by Jamie from legacy build process openmct-mcws.css is 404.
@@ -141,26 +91,24 @@
 - [X] Publish Open MCT to npm
 - [X] Mainline changes to conductor
 - [X] Mainline changes to openmct-mcws-plugin
+- [X] Update MCWS package.json with compatibility information, AND MAINTAIN IT GOING FORWARD.
+
+EOY scope ends here.
+
 - [ ] Additional Tests
     - [ ] Default plugins can be disabled
     - [ ] An already installed plugin can be configured
     - [ ] Options for default plugins can be overridden
     - [ ] 'entryPoint' works
     - [ ] Different 'entryPoint's for the same npmPackage works.
-    - @Dave
 - [ ] When installing builtin plugins via cli do not include the source property. It's just noise.
 - [ ] Refactor BuildCommand to be an alias to InstancesCommand.build(). Move all build logic into InstancesCommand, because you're building a mystery (instance).
 - [ ] Support cascading recipes
 - [ ] Plugin reorder command
 - [ ] How can plugins reference other installed plugins. eg. for the CouchDB / CouchDBSearchFolder plugin case
-- [ ] Figure out how the hell this will be compiled and run as a cli tool
-- [ ] Error on version incompatibilities between plugins, Open MCT versions, etc.
-- [ ] Update all Open MCT package.jsons with compatibility information, AND MAINTAIN IT GOING FORWARD.
-EOY scope ends here.
-- [ ] define a plugin registry for external plugins
-    - Support a custom organizational plugin index eg. `-i https://blahblahblah.nasa.gov/bitbucket/GDS/viper-openmct-nasa-internal-plugins.json`
+- [ ] Compile TS to JS for build tool to speed it up.
+- [ ] Better feedback on version incompatibilities between plugins, Open MCT versions, etc.
 - [ ] file:// packages always bypass plugin registry for validation
-- [ ] Include a `--force` `-f` flag to bypass plugin registry validation. Will only validate that npm package exists.
 - [ ] Add a "did you mean?" capability when trying to match a plugin name. Can use Levenshtein distance to calculate similarity. https://www.npmjs.com/package/js-levenshtein-esm
 
 ## Performance
@@ -169,6 +117,3 @@ This tool is NOT optimized for speed right now.
 - [X] Publish Open MCT to npm
 - [ ] Pre-compile TS to JS for npm version of build tool
 - [ ] Reduce the number of `npm` calls used. 
-
-## Bugs
-- [ ] Figure out how to build parseArgs options programmatically from commands. Need the superset of options for all commands for the first pass.
