@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./assets/openmct-configuration-schema.json
 openmct:
-    version: stable
+    version: latest
     plugins:
     - mct-bootstrap-plugin:
         npmPackage: file:./assets/mct-bootstrap-plugin
