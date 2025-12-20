@@ -2,7 +2,7 @@
 When including the Open MCT for MCWS Plugin into your Open MCT project, the following are available configuration options.
 ```yaml
 - openmct-mcws-plugin:
-  npmPackage: NASA-AMMOS/openmct-mcws#omm-plugin
+  npmPackage: openmct-mcws-plugin
   options:
     camUrl: ''
     mcwsUrl: http://localhost:8090/mcws-test
