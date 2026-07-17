@@ -130,9 +130,13 @@ export default class PluginsCommand extends Command {
     }
 
     async info(name:string, {instance}: {instance: string}) {
-        const plugin = await this.#pluginsApi.info(name, {instance});
+        const plugin:(OpenMctPlugin | void) = await this.#pluginsApi.info(name, {instance});
         console.log(`Instance: ${instance}`);
-        console.log(plugin.toStringDetailed());
+        if (plugin) {
+            console.log(plugin.toStringDetailed());
+        } else {
+            console.log(`Plugin undefined`);
+        }
     }
     #parseOptions(options: string): object | any[] {
         try {

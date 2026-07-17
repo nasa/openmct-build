@@ -126,7 +126,6 @@ export default class OpenMctPlugin {
 
     toJSON(): Plugin {
         return {
-            name: this.#name,
             ...this.#pluginDefinition
         }
     }

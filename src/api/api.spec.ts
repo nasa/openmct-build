@@ -1,6 +1,7 @@
 import Api from "./api";
 import BuildCommand from "../cli/BuildCommand";
 import PluginsCommand from "../cli/PluginsCommand";
+import { describe, it, expect, beforeEach } from '@jest/globals';
 
 describe('API', () => {
     let api:Api;

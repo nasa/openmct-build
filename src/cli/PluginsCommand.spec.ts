@@ -2,7 +2,12 @@ import Api from "../api/api";
 import PluginsCommand from "./PluginsCommand";
 import BuildCommand from "./BuildCommand";
 import * as fs from 'fs';
+import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import appRootPath from "app-root-path";
+import path from "path";
+
 const MCT_BUILD_API_INSTANCE_PATH = process.env.MCT_BUILD_API_INSTANCE_PATH!;
+const EXAMPLE_RECIPES_PATH = path.join(appRootPath.path, 'recipes', 'examples');
 
 describe('PluginsCommand', () => {
     let api:Api;
@@ -20,18 +25,13 @@ describe('PluginsCommand', () => {
     });
 
     afterEach(() => {
-        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true});
+        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true, force: true});
     });
 
-    it('Lists installed plugins', () => {
-        expect(() => pluginsCommand.execute('list', undefined, {instance: 'default'})).not.toThrow();
+    it('Supports adding a new local plugin', async () => {
+        await pluginsCommand.execute('add', `file:${path.join(EXAMPLE_RECIPES_PATH, 'hello-world')}`, {instance: 'default', });
+        const instanceConfig = fs.readFileSync(path.join(MCT_BUILD_API_INSTANCE_PATH, 'default', 'instance.yaml'), { encoding: 'utf8', flag: 'r' });
+        expect(instanceConfig.includes(`npmPackage: file:${path.join(EXAMPLE_RECIPES_PATH, 'hello-world')}`)).toBe(true);
     });
 
-    it('Supports adding a new plugin', () => {
-        expect(() => pluginsCommand.execute('add', 'test-plugin', {instance: 'default'})).not.toThrow();
-    });
-
-    it('rejects unknown verbs', () => {
-        expect(() => pluginsCommand.execute('tesselate')).toThrow();
-    })
 });

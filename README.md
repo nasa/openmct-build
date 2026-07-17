@@ -6,6 +6,7 @@ The Open MCT Build Tool's `mct` command is a command-line interface for building
 
 ```bash
 git clone https://github.com/akhenry/openmct-build.git
+cd openmct-build
 npm install
 npm link
 ```

@@ -1,21 +1,23 @@
 import OpenMctConfiguration, { CONFIGURATION_YAML, INSTANCE_PATH } from "../openmct/OpenMctConfiguration";
 import * as yamllib from 'js-yaml';
-import { Validator, ValidationError } from 'jsonschema';
+import { Validator, ValidationError, Schema } from 'jsonschema';
 import { OpenMctConfigurationSchema, Plugin, PluginMap } from "../openmct/OpenMctConfigurationDocument";
 import * as path from 'path';
 import * as fs from 'fs';
 import merge from 'lodash.merge';
-import jsonSchemaFile from '../assets/openmct-configuration-schema.json';
 import OpenMctPlugin from "../openmct/OpenMctPlugin";
 
 const BASE_CONFIG_LOCATION = path.join(__dirname, '../', 'openmct-base.yaml');
+const CONFIG_SCHEMA_LOCATION = path.join(__dirname, '../', 'assets/openmct-configuration-schema.json');
 const RELATIVE_PATH_REGEX = /(file:)?(\.{1,2}.*)/;
 
 export default class MctYamlConfigurator {
     #validator: Validator;
+    #schema: Schema;
 
     constructor() {
         this.#validator = new Validator();
+        this.#schema = JSON.parse(fs.readFileSync(CONFIG_SCHEMA_LOCATION, 'utf-8'));
     }
 
     loadRecipe(recipe: string): OpenMctConfiguration {
@@ -103,7 +105,7 @@ export default class MctYamlConfigurator {
     #loadYaml(yaml: string): OpenMctConfigurationSchema {
         let doc = yamllib.load(yaml) as OpenMctConfigurationSchema;
 
-        const result = this.#validator.validate(doc, jsonSchemaFile);
+        const result = this.#validator.validate(doc, this.#schema);
         if (result.errors.length > 0) {
             const errorMessages = result.errors.map(err => 
                 `[${err.property}] ${err.message}`

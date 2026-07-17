@@ -3,6 +3,7 @@ import fs from "fs";
 import Api from "../api/api";
 import BuildCommand from "./BuildCommand";
 import { randomUUID } from "crypto";
+import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 
 const MCT_BUILD_API_INSTANCE_PATH = process.env.MCT_BUILD_API_INSTANCE_PATH!;
 
@@ -20,7 +21,7 @@ describe('BuildCommand', () => {
     });
 
     afterEach(() => {
-        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true});
+        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true, force: true});
     });
 
     it('Does not throw', () => {
