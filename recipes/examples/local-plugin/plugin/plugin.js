@@ -1,8 +1,8 @@
-export function helloWorld({greeting}) {
+export function helloWorld({greeting} = {greeting: "World"}) {
     return function install(openmct) {
         console.log(`Hello world indicator installed with greeting: ${greeting}`);
         const indicator = openmct.indicators.simpleIndicator();
-        indicator.text(`Hello ${greeting ?? 'World'}!`);
+        indicator.text(`Hello ${greeting}!`);
         indicator.iconClass('icon-bell');
         indicator.statusClass('s-status-warning-hi');
         indicator.on('click', () => {

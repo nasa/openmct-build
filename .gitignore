@@ -3,3 +3,6 @@ instances
 coverage
 .DS_Store
 dist
+temp-tests
+test-results
+playwright-report

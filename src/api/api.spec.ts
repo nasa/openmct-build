@@ -1,30 +1,30 @@
+import { test, expect } from '@playwright/test';
 import Api from "./api";
 import BuildCommand from "../cli/BuildCommand";
 import PluginsCommand from "../cli/PluginsCommand";
-import { describe, it, expect, beforeEach } from '@jest/globals';
 
-describe('API', () => {
+test.describe('API', () => {
     let api:Api;
 
-    beforeEach(() => {
+    test.beforeEach(() => {
         api = new Api();
     });
 
-    it('Returns a PluginsCommand object', () => {
+    test('Returns a PluginsCommand object', () => {
         let pluginsCommand:PluginsCommand;
         pluginsCommand = api.getCommandForNoun('plugins') as PluginsCommand;
         expect(pluginsCommand).toBeDefined();
         expect(pluginsCommand).toBeInstanceOf(PluginsCommand);
     });
 
-    it('Returns a BuildCommand object', () => {
+    test('Returns a BuildCommand object', () => {
         let buildCommand:BuildCommand;
         buildCommand = api.getCommandForNoun('build') as BuildCommand;
         expect(buildCommand).toBeDefined();
         expect(buildCommand).toBeInstanceOf(BuildCommand);
     });
 
-    it('Throws for unknown command', () => {
+    test('Throws for unknown command', () => {
         expect(() => api.getCommandForNoun('frangible')).toThrow();
     });
 });

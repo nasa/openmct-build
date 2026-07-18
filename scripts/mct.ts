@@ -61,7 +61,6 @@ async function main() {
 
     const argsForVerb = command.getArgsForVerb(verb);
 
-
     try {
         args = parseArgs({
             allowPositionals: true,

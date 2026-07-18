@@ -108,6 +108,8 @@ export default class PluginsCommand extends Command {
         plugins?.forEach((plugin:OpenMctPlugin) => {
             console.log(plugin.getName());
         });
+
+        return plugins;
     }
     async remove(name:string, {instance}: {instance: string}) {
         if (name === undefined) {

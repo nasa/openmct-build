@@ -202,15 +202,18 @@ export default class PluginsApi{
         if (name === undefined) {
             throw new InvalidApiCallError('Plugin name is required');
         }
-        if (options === undefined) {
-            throw new InvalidApiCallError('No configuration specified');
-        }
+
         const config = await this.#configurator.resolveConfiguration({instance});
         const plugin = config.getPlugin(name);
 
         if (plugin === undefined) {
             throw new Error(`Plugin ${name} not found for instance ${instance}`);
         }
+
+        if (options === undefined && enabled === undefined) {
+            throw new InvalidApiCallError('No configuration specified');
+        }
+
         if (enabled !== undefined) {
             plugin.setEnabled(enabled);
         }

@@ -378,19 +378,25 @@ When you update the schema in `src/yaml/openmct-configuration-schema.json`:
 
 ### Testing
 
+Tests run under [Playwright Test](https://playwright.dev/), combining direct execution of CLI commands (asserting on generated files, same as before) with real-browser assertions against the built instance served over HTTP. Install the Chromium browser binary once before running tests for the first time (this is a large download and is intentionally not run automatically on `npm install`):
+
+```bash
+npx playwright install chromium
+```
+
 Run the test suite:
 
 ```bash
 npm test
 ```
 
-Run tests in watch mode:
+Run tests in watch/UI mode:
 
 ```bash
 npm run test:watch
 ```
 
-Generate test coverage report:
+Generate a test coverage report for the build tool's own source (`src/**/*.ts`, excluding the browser-only runtime shims under `src/assets/`):
 
 ```bash
 npm run test:coverage
