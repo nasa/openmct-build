@@ -15,6 +15,10 @@ export interface OpenMctConfigurationSchema {
          * Version of OpenMCT to use
          */
         version: string;
+        /**
+         * When true, npm installs use --legacy-peer-deps, so peer dependency conflicts (e.g. against an Open MCT prerelease) do not fail the install. Intended for local/prerelease development.
+         */
+        legacyPeerDeps?: boolean;
         plugins?: (string | PluginMap)[];
       }
     | {
@@ -22,6 +26,10 @@ export interface OpenMctConfigurationSchema {
          * NPM package that provides Open MCT. If present this will override any Open MCT version specified.
          */
         npmPackage: string;
+        /**
+         * When true, npm installs use --legacy-peer-deps, so peer dependency conflicts (e.g. against an Open MCT prerelease) do not fail the install. Intended for local/prerelease development.
+         */
+        legacyPeerDeps?: boolean;
         plugins?: (string | PluginMap)[];
       };
 }

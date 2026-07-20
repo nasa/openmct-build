@@ -29,6 +29,12 @@ export default class NpmPackageManager {
             child_process.spawnSync('npm', ['init', '-y'], { cwd: this.#fullInstancePath });
         }
     }
+    #withLegacyPeerDeps(args: string[]): string[] {
+        if (this.#config.getLegacyPeerDeps()) {
+            args.push('--legacy-peer-deps');
+        }
+        return args;
+    }
     getDistinctPackages(): NpmPackage[] {
         const distinctPackages = this.#config.getPlugins().reduce((acc, plugin) => {
             if (!acc.has(plugin.getNpmPackageName())) {
@@ -40,7 +46,10 @@ export default class NpmPackageManager {
         return Array.from(distinctPackages.values());
     }
     installPackage(packageName: string){
-        const result = child_process.spawnSync('npm', ['install', '--save-dev', packageName], { cwd: this.#fullInstancePath });
+        const args = this.#withLegacyPeerDeps(['install', '--save-dev']);
+        args.push(packageName);
+
+        const result = child_process.spawnSync('npm', args, { cwd: this.#fullInstancePath });
         if (result.status !== 0) {
             const decoder = new StringDecoder('utf8');
             const error = decoder.write(result.stderr);
@@ -70,8 +79,9 @@ export default class NpmPackageManager {
     }
     install() {
         this.installPackage(this.#config.getNpmPackage());
-
-        const result = child_process.spawnSync('npm', ['install'], { cwd: this.#fullInstancePath });
+        
+        const args = this.#withLegacyPeerDeps(['install']);
+        const result = child_process.spawnSync('npm', args, { cwd: this.#fullInstancePath });
         if (result.status !== 0) {
             throw new Error(`Failed to install dependencies for ${this.#fullInstancePath}`);
         }
