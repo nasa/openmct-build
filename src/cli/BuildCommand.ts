@@ -28,7 +28,11 @@ export default class BuildCommand extends Command {
                     type: 'string',
                     short: 'v',
                     default: undefined,
-                }
+                },
+                legacyPeerDeps: {
+                    type: 'boolean',
+                    default: undefined,
+                },
             }
         };
 
@@ -40,10 +44,10 @@ export default class BuildCommand extends Command {
     }
 
     getUsageForVerb(): string {
-        return 'Usage: mct build [--instance <instance-name>] [--recipe <recipe-name>] [--version <version>] [--npm-package <npm-package-name>]';
+        return 'Usage: mct build [--instance <instance-name>] [--recipe <recipe-name>] [--version <version>] [--npm-package <npm-package-name>] [--legacy-peer-deps]';
     }
 
-    async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
+    async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage, legacyPeerDeps}: {instance: string, recipe?: string, version?: string, npmPackage?: string, legacyPeerDeps?: boolean}) {
         let buildMessage = `Building ${instance} instance`;
         if (recipe !== undefined) {
             buildMessage += ` with recipe ${recipe}`;
@@ -54,8 +58,11 @@ export default class BuildCommand extends Command {
         if (npmPackage !== undefined) {
             buildMessage += ` and Open MCT npm package ${npmPackage}`;
         }
+        if (legacyPeerDeps) {
+            buildMessage += ' with legacy peer deps';
+        }
         console.log(buildMessage);
-        const result:OpenMctInstance = await this.#buildApi.execute(verb, name, {instance, recipe, version, npmPackage});
+        const result:OpenMctInstance = await this.#buildApi.execute(verb, name, {instance, recipe, version, npmPackage, legacyPeerDeps});
         console.log(result?.toStringDetailed());
         return result;
     }
