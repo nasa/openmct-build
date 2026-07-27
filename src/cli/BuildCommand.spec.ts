@@ -67,6 +67,9 @@ test.describe('BuildCommand', () => {
         expect(fs.existsSync(fullInstancePath)).toBe(true);
         expect(fs.existsSync(path.join(fullInstancePath, 'index.html'))).toBe(true);
 
+        const indexHtml = fs.readFileSync(path.join(fullInstancePath, 'index.html'), 'utf-8');
+        expect(indexHtml.trimStart().toLowerCase().startsWith('<!doctype html>')).toBe(true);
+
         const errors: string[] = [];
         page.on('pageerror', (error) => errors.push(error.message));
         page.on('console', (message) => {
@@ -93,6 +96,9 @@ test.describe('BuildCommand', () => {
         await buildCommand.execute(undefined, undefined, {instance: instanceName, recipe: path.join(EXAMPLE_RECIPES_PATH, 'local-plugin', 'recipe.yaml') });
         expect(fs.existsSync(fullInstancePath)).toBe(true);
         expect(fs.existsSync(path.join(fullInstancePath, 'index.html'))).toBe(true);
+
+        const indexHtml = fs.readFileSync(path.join(fullInstancePath, 'index.html'), 'utf-8');
+        expect(indexHtml.trimStart().toLowerCase().startsWith('<!doctype html>')).toBe(true);
 
         const errors: string[] = [];
         page.on('pageerror', (error) => errors.push(error.message));
