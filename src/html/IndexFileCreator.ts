@@ -58,7 +58,7 @@ export default class IndexFileCreator {
         return scriptElement;
     }
         
-    generateDocument(): Document {
+    generateHtml(): string {
         const template = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
         const dom = new JSDOM(template);
         const document = dom.window.document;
@@ -66,6 +66,6 @@ export default class IndexFileCreator {
         scripts.forEach(script => document.head.appendChild(script));
         const scriptBlockForAllPlugins = this.#buildLoadBlockForAllPluginsPreservingOrder(document);
         document.head.appendChild(scriptBlockForAllPlugins);
-        return document;
+        return dom.serialize(); // previously returned document, which excluded <!DOCTYPE html>
     }
 }

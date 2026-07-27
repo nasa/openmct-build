@@ -51,9 +51,9 @@ export default class Build {
 
     #generateHtmlDocument({config, fullInstancePath, npmPackageManager}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackageManager: NpmPackageManager}) {
         const indexFileCreator = new IndexFileCreator(config, npmPackageManager);
-        const indexFile = indexFileCreator.generateDocument();
+        const indexHtml = indexFileCreator.generateHtml();
 
-        fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.outerHTML);
+        fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexHtml);
     }
 
     #copyAssets({fullInstancePath}: {fullInstancePath: string}) {
