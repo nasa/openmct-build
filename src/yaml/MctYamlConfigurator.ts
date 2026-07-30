@@ -9,7 +9,7 @@ import OpenMctPlugin from "../openmct/OpenMctPlugin";
 
 const BASE_CONFIG_LOCATION = path.join(__dirname, '../', 'openmct-base.yaml');
 const CONFIG_SCHEMA_LOCATION = path.join(__dirname, '../', 'assets/openmct-configuration-schema.json');
-const RELATIVE_PATH_REGEX = /(file:)?(\.{1,2}.*)/;
+const RELATIVE_PATH_REGEX = /^(file:)?(\.{1,2}.*)/;
 
 export default class MctYamlConfigurator {
     #validator: Validator;

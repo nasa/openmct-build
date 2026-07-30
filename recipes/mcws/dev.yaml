@@ -40,7 +40,7 @@ openmct:
   - openmct.plugins.example.Generator
   # Open MCT for MCWS Plugin
   - openmct-mcws-plugin:
-      npmPackage: openmct-mcws-plugin
+      npmPackage: NASA-AMMOS/openmct-mcws#test-peer-dep
       options:
         useDeveloperStorage: true
         camUrl: ''

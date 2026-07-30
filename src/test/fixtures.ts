@@ -4,7 +4,8 @@ import path from 'path';
 import appRootPath from 'app-root-path';
 
 export const MCT_BUILD_API_INSTANCE_PATH = process.env.MCT_BUILD_API_INSTANCE_PATH!;
-export const EXAMPLE_RECIPES_PATH = path.join(appRootPath.path, 'recipes', 'examples');
+export const RECIPES_PATH = path.join(appRootPath.path, 'recipes');
+export const EXAMPLE_RECIPES_PATH = path.join(RECIPES_PATH, 'examples');
 
 type McrBuildFixtures = {
     /**
