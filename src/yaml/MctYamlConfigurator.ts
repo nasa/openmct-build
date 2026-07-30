@@ -69,6 +69,7 @@ export default class MctYamlConfigurator {
         if (recipe !== undefined) {
             const recipeYaml = fs.readFileSync(recipe, 'utf-8');
             config = configurator.loadRecipe(recipeYaml);
+            config = this.#convertOpenMctPackageToAbsolutePath(config, path.dirname(recipe));
             config = this.#convertNpmPackagesToAbsolutePaths(config, path.dirname(recipe));
             const baseConfiguration = configurator.loadDefaultConfiguration();
             config = this.#applyBaseConfiguration(config, baseConfiguration);
@@ -93,6 +94,17 @@ export default class MctYamlConfigurator {
                 nodePlugin.setNpmPackageName(`file:${resolvedPath}`);
             }
         });
+
+        return config;
+    }
+
+    #convertOpenMctPackageToAbsolutePath(config: OpenMctConfiguration, relativePathBase: string) {
+        const openMctNpmPackage:String = config.getNpmPackage();
+        const relativePathRegexResult = openMctNpmPackage.match(RELATIVE_PATH_REGEX);
+        if (relativePathRegexResult && relativePathRegexResult.length > 0) {
+            const resolvedPath = path.resolve(relativePathBase, relativePathRegexResult[2]);
+            config.setNpmPackage(`file:${resolvedPath}`);
+        }
 
         return config;
     }

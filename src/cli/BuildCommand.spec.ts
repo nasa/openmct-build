@@ -1,13 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, MCT_BUILD_API_INSTANCE_PATH, EXAMPLE_RECIPES_PATH } from '../test/fixtures';
 import path from "path";
 import fs from "fs";
 import Api from "../api/api";
 import BuildCommand from "./BuildCommand";
 import { randomUUID } from "crypto";
-import appRootPath from 'app-root-path';
-
-const MCT_BUILD_API_INSTANCE_PATH = process.env.MCT_BUILD_API_INSTANCE_PATH!;
-const EXAMPLE_RECIPES_PATH = path.join(appRootPath.path, 'recipes', 'examples');
 
 test.describe('BuildCommand', () => {
     test(`returns correct args`, () => {
@@ -43,16 +39,8 @@ test.describe('BuildCommand', () => {
     let buildCommand:BuildCommand;
 
     test.beforeEach(() => {
-        if (!fs.existsSync(MCT_BUILD_API_INSTANCE_PATH)) {
-            fs.mkdirSync(MCT_BUILD_API_INSTANCE_PATH, { recursive: true });
-        }
-
         api = new Api();
         buildCommand = api.getCommandForNoun('build') as BuildCommand;
-    });
-
-    test.afterEach(() => {
-        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true, force: true});
     });
 
     test('Does not throw', async () => {

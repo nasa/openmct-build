@@ -27,20 +27,10 @@ export default class Build {
         configurator.saveForInstance(instance, config);
 
         const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
-        this.#installNpmPackages({config, npmPackageManager});
-        this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
+        await this.#installNpmPackages({config, npmPackageManager});
+        await this.#generateHtmlDocument({config, fullInstancePath, npmPackageManager});
 
         return new OpenMctInstance({name: instance, path: fullInstancePath, config});
-    }
-
-    #convertNpmPackagesToAbsolutePaths(config: OpenMctConfiguration) {
-        const nodePlugins = config.getNodePlugins();
-        nodePlugins.forEach((nodePlugin: OpenMctPlugin) => {
-            const packageName = nodePlugin.getNpmPackageName();
-            if (packageName && (packageName.startsWith('./') || packageName.startsWith('../'))) {
-                nodePlugin.setNpmPackageName(path.resolve(packageName));
-            }
-        });
     }
 
     #createDirectoryStructureIfNeeded(fullInstancePath:string) {
@@ -49,9 +39,9 @@ export default class Build {
         }
     }
 
-    #generateHtmlDocument({config, fullInstancePath, npmPackageManager}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackageManager: NpmPackageManager}) {
+    async #generateHtmlDocument({config, fullInstancePath, npmPackageManager}: {config: OpenMctConfiguration, fullInstancePath: string, npmPackageManager: NpmPackageManager}) {
         const indexFileCreator = new IndexFileCreator(config, npmPackageManager);
-        const indexFile = indexFileCreator.generateDocument();
+        const indexFile = await indexFileCreator.generateDocument();
 
         fs.writeFileSync(path.join(fullInstancePath, 'index.html'), indexFile.documentElement.outerHTML);
     }
@@ -60,11 +50,12 @@ export default class Build {
         fs.cpSync(path.join(__dirname, '..', 'assets'), path.join(fullInstancePath, 'assets'), { recursive: true });
     }
 
-    #installNpmPackages({config, npmPackageManager}: {config: OpenMctConfiguration, npmPackageManager: NpmPackageManager}) {
+    async #installNpmPackages({config, npmPackageManager}: {config: OpenMctConfiguration, npmPackageManager: NpmPackageManager}) {
         const nodePackages = config.getNodePlugins();
-        npmPackageManager.install();
-        nodePackages.forEach((nodePlugin: OpenMctPlugin) => {
-            npmPackageManager.installPackage(nodePlugin.getNpmPackageName());
-        });
+        await npmPackageManager.install();
+
+        return Promise.all(nodePackages.map((nodePlugin: OpenMctPlugin) => {
+            return npmPackageManager.installPackage(nodePlugin.getNpmPackageName());
+        }));
     }
 }
