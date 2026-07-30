@@ -35,15 +35,15 @@ export default class OpenMctConfiguration {
             return plugin.getSource() === 'builtin';
         });
     }
-    getPluginsForNpmPackage(npmPackage: NpmPackage): OpenMctPlugin[] {
+    async getPluginsForNpmPackage(npmPackage: NpmPackage): Promise<OpenMctPlugin[]> {
         const npmPackageManager = new NpmPackageManager({fullInstancePath: INSTANCE_PATH, config: this});
-        return this.getPlugins().filter((plugin: OpenMctPlugin) => {
+        return Promise.all(this.getPlugins().filter(async (plugin: OpenMctPlugin) => {
             if (plugin.isBuiltin()) {
                 return false;
             }
-            const npmPackageForPlugin = npmPackageManager.getPackage(plugin.getNpmPackageName());
+            const npmPackageForPlugin = await npmPackageManager.getInstalledPackage(plugin.getNpmPackageName());
             return npmPackageForPlugin.getConfiguredPackageName() === npmPackage.getConfiguredPackageName();
-        });
+        }));
     }
     async generateListOfBuiltinPlugins(instance: string) {
         const virtualConsole = new VirtualConsole();

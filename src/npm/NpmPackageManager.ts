@@ -6,7 +6,7 @@ import * as child_process from 'child_process';
 import NpmPackage from "./NpmPackage";
 import { StringDecoder } from "string_decoder";
 import { OpenMCTPluginsIndex } from "./OpenMctPluginsIndex";
-import { view } from "./NpmCommands";
+import pacote from "pacote";
 import InstalledNpmPackage from "./InstalledNpmPackage";
 
 const PACKAGE_DEFAULTS = {
@@ -29,27 +29,8 @@ export default class NpmPackageManager {
             child_process.spawnSync('npm', ['init', '-y'], { cwd: this.#fullInstancePath });
         }
     }
-    #withLegacyPeerDeps(args: string[]): string[] {
-        if (this.#config.getLegacyPeerDeps()) {
-            args.push('--legacy-peer-deps');
-        }
-        return args;
-    }
-    getDistinctPackages(): NpmPackage[] {
-        const distinctPackages = this.#config.getPlugins().reduce((acc, plugin) => {
-            if (!acc.has(plugin.getNpmPackageName())) {
-                acc.set(plugin.getNpmPackageName(), this.getPackage(plugin.getNpmPackageName()));
-            }
-            return acc;
-        }, new Map<string, NpmPackage>());
-
-        return Array.from(distinctPackages.values());
-    }
-    installPackage(packageName: string){
-        const args = this.#withLegacyPeerDeps(['install', '--save-dev']);
-        args.push(packageName);
-
-        const result = child_process.spawnSync('npm', args, { cwd: this.#fullInstancePath });
+    async installPackage(packageName: string){
+        const result = child_process.spawnSync('npm', ['install', '--save-dev', packageName], { cwd: this.#fullInstancePath });
         if (result.status !== 0) {
             const decoder = new StringDecoder('utf8');
             const error = decoder.write(result.stderr);
@@ -60,12 +41,9 @@ export default class NpmPackageManager {
         } else {
             // TODO: Validate the installed package
             // Does it have a `main` function specified in package.json?
-            const installedPackage = this.getPackage(packageName);
-            let entryPoint = installedPackage.getNpmEntryPoint();
-            if (!entryPoint) {
-                console.warn(`NPM package ${packageName} does not have a 'main' entry point specified in package.json. Will default to 'index.js'`);
-                entryPoint = 'index.js';
-            }
+            const installedPackage = await this.getInstalledPackage(packageName);
+            const entryPoint = installedPackage.getNpmEntryPoint();
+
             const entryPointPath = path.join(this.#fullInstancePath, 'node_modules', installedPackage.getResolvedPackageName(), entryPoint);
             if (!fs.existsSync(entryPointPath)) {
                 throw new Error(`Could not resolve entry point for ${packageName}: ${entryPointPath}`);
@@ -77,25 +55,29 @@ export default class NpmPackageManager {
             }
         }
     }
-    install() {
-        this.installPackage(this.#config.getNpmPackage());
-        
-        const args = this.#withLegacyPeerDeps(['install']);
-        const result = child_process.spawnSync('npm', args, { cwd: this.#fullInstancePath });
+    async install() {
+        await this.installPackage(this.#config.getNpmPackage());
+
+        const result = child_process.spawnSync('npm', ['install'], { cwd: this.#fullInstancePath });
         if (result.status !== 0) {
             throw new Error(`Failed to install dependencies for ${this.#fullInstancePath}`);
         }
     }
-    uninstallPackage(packageName: string) {
-        const npmPackage:NpmPackage = this.getPackage(packageName);
+    async uninstallPackage(packageName: string) {
+        const npmPackage:NpmPackage = await this.getInstalledPackage(packageName);
+
         child_process.spawnSync('npm', ['uninstall', npmPackage.getResolvedPackageName()], { cwd: this.#fullInstancePath });
     }
-    getPackage(packageName: string): NpmPackage {
-        return new InstalledNpmPackage({fullInstancePath: this.#fullInstancePath, nameAsConfigured: packageName});
+    async getInstalledPackage(packageName: string): Promise<NpmPackage> {
+        const manifest = await pacote.manifest(packageName, {fullMetadata: true, where: this.#fullInstancePath });
+
+        return new InstalledNpmPackage({fullInstancePath: this.#fullInstancePath, nameAsConfigured: packageName, manifest});
     }
 
-    static getNpmPackageFromRegistry(packageName: string): NpmPackage {
-        return new NpmPackage({nameAsConfigured: packageName});
+    static async getNpmPackageFromRegistry(packageName: string): Promise<NpmPackage> {
+        const manifest = await pacote.manifest(packageName, {fullMetadata: true});
+
+        return new NpmPackage({nameAsConfigured: packageName, manifest});
     }
 
     static getNodePackageManagerForInstance({instance, config}: {instance: string, config: OpenMctConfiguration}): NpmPackageManager {

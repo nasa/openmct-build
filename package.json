@@ -9,7 +9,7 @@
   "scripts": {
     "test": "playwright test",
     "test:watch": "playwright test --ui",
-    "test:coverage": "c8 --all --src src --include 'src/**' --exclude '**/*.spec.ts' --exclude 'src/assets/**' --exclude 'src/openmct/OpenMctConfigurationDocument.ts' --reporter=text --reporter=lcov playwright test",
+    "test:coverage": "c8 --all --src src --include 'src/**' --exclude '**/*.spec.ts' --exclude 'src/test/**' --exclude 'src/assets/**' --exclude 'src/openmct/OpenMctConfigurationDocument.ts' --reporter=text --reporter=lcov playwright test",
     "generate:types": "npx tsx scripts/generate-types.ts"
   },
   "author": "National Aeronautics and Space Administration",
@@ -19,10 +19,10 @@
     "@types/jsonschema": "^1.1.1",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "22.9.0",
+    "@types/pacote": "^11.1.8",
     "c8": "^12.0.0",
     "http-server": "^14.1.1",
     "json-schema-to-typescript": "^15.0.4",
-    "openmct": "^4.3.0-rc1",
     "test-plugin": "^0.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
@@ -37,6 +37,7 @@
     "jsdom": "^26.1.0",
     "jsonschema": "^1.5.0",
     "lodash.merge": "^4.6.2",
+    "pacote": "^22.0.0",
     "tsx": "^4.7.1"
   }
 }

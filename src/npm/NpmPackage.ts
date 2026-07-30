@@ -1,16 +1,20 @@
-import * as child_process from 'child_process';
+import fs from 'fs';
 import path from 'path';
 import OpenMctPlugin from '../openmct/OpenMctPlugin';
+import { Manifest } from 'pacote';
 
 export default class NpmPackage {
     protected cwdForNpmCommands: string;
     protected nameAsConfigured: string;
     protected nameAsResolved: string | undefined;
-    #entryPoint: string | undefined;
+    protected entryPoint: string | undefined;
+    protected pathToEntryPoint: string | undefined;
+    protected manifest: Manifest;
 
-    constructor({nameAsConfigured}: {nameAsConfigured: string}) {
+    constructor({nameAsConfigured, manifest}: {nameAsConfigured: string, manifest: Manifest}) {
         this.nameAsConfigured = nameAsConfigured;
         this.cwdForNpmCommands = process.cwd();
+        this.manifest = manifest;
     }
 
     getConfiguredPackageName(): string {
@@ -18,40 +22,33 @@ export default class NpmPackage {
     }
 
     getResolvedPackageName(): string {
-        if (this.nameAsResolved === undefined) {
-            const resolvedPackageDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'name'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });
-            this.nameAsResolved = resolvedPackageDetails.stdout?.trim() ?? this.nameAsConfigured;
-        }
-
-        return this.nameAsResolved;
+        return this.manifest.name;
     }
 
-    getResolvedEntryPoint(plugin: OpenMctPlugin): string {
-        const configuredEntryPoint = plugin.getEntryPoint();
-        let resolvedEntryPoint: string | undefined;
+    getPathToEntryPoint(plugin: OpenMctPlugin): string {
+        if (this.pathToEntryPoint !== undefined) {
+            return this.pathToEntryPoint;
+        }
 
-        if (configuredEntryPoint !== undefined) {
-            resolvedEntryPoint = configuredEntryPoint;
+        const resolvedEntryPoint:string = plugin.getEntryPoint() || this.getNpmEntryPoint();
+        const pathToEntryPoint = path.join('node_modules', this.getResolvedPackageName(), resolvedEntryPoint);
+
+        if (!fs.existsSync(path.join(this.cwdForNpmCommands, pathToEntryPoint))) {
+            throw new Error(`Unable to resolve entry point for ${plugin.getName()}`);
         } else {
-            resolvedEntryPoint = this.getNpmEntryPoint();
+            this.pathToEntryPoint = pathToEntryPoint;
+            return this.pathToEntryPoint;
         }
-        if (resolvedEntryPoint === undefined) {
-            throw new Error('Could not determine entry point for plugin ' + plugin.getName());
-        } else {
-            return path.join('node_modules', this.getResolvedPackageName(), resolvedEntryPoint);
-        }
-        
     }
+
     getPackageType(): string | undefined {
-        const packageTypeDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'type'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });
-        return packageTypeDetails.stdout?.trim();
+        return this.manifest.type as string | undefined;
     }
-    getNpmEntryPoint(): string | undefined {
-        if (this.#entryPoint === undefined) {
-            const entryPointDetails: child_process.SpawnSyncReturns<string> = child_process.spawnSync('npm', ['view', this.nameAsConfigured, 'main'], { cwd: this.cwdForNpmCommands, encoding: 'utf-8' });
-            this.#entryPoint = entryPointDetails.stdout?.trim();
+
+    getNpmEntryPoint(): string {
+        if (this.manifest.main === undefined) {
+            console.warn(`Package ${this.nameAsConfigured} as no 'main' script specified. Defaulting to index.js`);
         }
-        
-        return this.#entryPoint;
+        return this.manifest.main || 'index.js';
     }
 }
