@@ -1,13 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, MCT_BUILD_API_INSTANCE_PATH, EXAMPLE_RECIPES_PATH } from '../test/fixtures';
 import Api from "../api/api";
 import PluginsCommand from "./PluginsCommand";
 import BuildCommand from "./BuildCommand";
 import * as fs from 'fs';
-import appRootPath from "app-root-path";
 import path from "path";
-
-const MCT_BUILD_API_INSTANCE_PATH = process.env.MCT_BUILD_API_INSTANCE_PATH!;
-const EXAMPLE_RECIPES_PATH = path.join(appRootPath.path, 'recipes', 'examples');
 
 /**
  * Captures everything written to this process's stdout (console.log, console.info,
@@ -119,23 +115,51 @@ test.describe('PluginsCommand verb arguments', () => {
     });
 });
 
+test.describe('PluginsCommand verb usage', () => {
+    let pluginsCommand: PluginsCommand;
+
+    test.beforeEach(() => {
+        pluginsCommand = new PluginsCommand();
+    });
+
+    test('returns usage for the add verb', () => {
+        expect(pluginsCommand.getUsageForVerb('add')).toBe(
+            'Usage: mct plugins add <plugin-name> [--instance <instance-name>] [--npm-package <npm-package-name>] [--options <options>]'
+        );
+    });
+
+    test('returns usage for the remove verb', () => {
+        expect(pluginsCommand.getUsageForVerb('remove')).toBe(
+            'Usage: mct plugins remove <plugin-name> [--instance <instance-name>]'
+        );
+    });
+
+    test('returns usage for the configure verb', () => {
+        expect(pluginsCommand.getUsageForVerb('configure')).toBe(
+            'Usage: mct plugins configure <plugin-name> [--instance <instance-name>] [--enabled <true|false>] [--npm-package <npm-package-name>] [--options <options>]'
+        );
+    });
+
+    test('returns general usage for an unrecognized verb', () => {
+        expect(pluginsCommand.getUsageForVerb('list')).toBe(
+            'Usage: mct plugins <add|remove|configure>'
+        );
+        expect(pluginsCommand.getUsageForVerb('bogus')).toBe(
+            'Usage: mct plugins <add|remove|configure>'
+        );
+    });
+});
+
 test.describe('PluginsCommand', () => {
     let api:Api;
     let pluginsCommand:PluginsCommand;
     let buildCommand:BuildCommand;
 
     test.beforeEach(async () => {
-        if (!fs.existsSync(MCT_BUILD_API_INSTANCE_PATH)) {
-            fs.mkdirSync(MCT_BUILD_API_INSTANCE_PATH, { recursive: true });
-        }
         api = new Api();
         pluginsCommand = api.getCommandForNoun('plugins') as PluginsCommand;
         buildCommand = api.getCommandForNoun('build') as BuildCommand;
         await buildCommand.execute(undefined, undefined, {instance: 'default'});
-    });
-
-    test.afterEach(() => {
-        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true, force: true});
     });
 
     test.describe('adding and removing a local plugin', () => {
@@ -182,6 +206,42 @@ test.describe('PluginsCommand', () => {
 
             // Confirm that the hello world dialog did not appear
             expect(dialogAppeared).toBe(false);
+
+        });
+    });
+
+    test.describe('adding and removing a builtin plugin', () => {
+        test.beforeEach(async () => {
+            await pluginsCommand.execute('add', `openmct.plugins.PerformanceIndicator`, {instance: 'default'});
+
+            const instanceConfig = fs.readFileSync(path.join(MCT_BUILD_API_INSTANCE_PATH, 'default', 'instance.yaml'), { encoding: 'utf8', flag: 'r' });
+            expect(instanceConfig.includes(`openmct.plugins.PerformanceIndicator`)).toBe(true);
+        });
+
+        test('Supports adding a new builtin plugin', async ({ page }) => {
+            await page.goto('/default/index.html');
+            // Proves the plugin isn't just correctly written into instance.yaml/index.html
+            // source, but actually loads and executes in a real browser.
+            const performanceIndicatorLocator = page.locator('.c-indicator').and(page.getByTitle('Performance Indicator'));
+            await expect(performanceIndicatorLocator).toBeVisible();
+        });
+
+        test('supports removing a builtin plugin', async ({ page }) => {
+            await pluginsCommand.execute('remove', 'openmct.plugins.PerformanceIndicator', {instance: 'default'});
+            const instanceConfig = fs.readFileSync(path.join(MCT_BUILD_API_INSTANCE_PATH, 'default', 'instance.yaml'), { encoding: 'utf8', flag: 'r' });
+            
+            // Confirm that the plugin does not appear in the instance configuration
+            expect(instanceConfig.includes(`openmct.plugins.PerformanceIndicator`)).toBe(false);
+
+            await page.goto('/default/index.html');
+
+            // Wait for evidence that the app is fully initialized
+            const browseBarObjectLabel = page.getByLabel('Browse bar object name');
+            await expect(browseBarObjectLabel).toBeVisible();
+            await expect(browseBarObjectLabel).toHaveText('My Items');
+
+            const performanceIndicatorLocator = page.locator('.c-indicator').and(page.getByTitle('Performance Indicator'));
+            await expect(performanceIndicatorLocator).toBeHidden();
 
         });
     });

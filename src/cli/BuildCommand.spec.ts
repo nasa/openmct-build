@@ -1,13 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, MCT_BUILD_API_INSTANCE_PATH, EXAMPLE_RECIPES_PATH, RECIPES_PATH } from '../test/fixtures';
 import path from "path";
 import fs from "fs";
 import Api from "../api/api";
 import BuildCommand from "./BuildCommand";
 import { randomUUID } from "crypto";
-import appRootPath from 'app-root-path';
-
-const MCT_BUILD_API_INSTANCE_PATH = process.env.MCT_BUILD_API_INSTANCE_PATH!;
-const EXAMPLE_RECIPES_PATH = path.join(appRootPath.path, 'recipes', 'examples');
 
 test.describe('BuildCommand', () => {
     test(`returns correct args`, () => {
@@ -43,16 +39,8 @@ test.describe('BuildCommand', () => {
     let buildCommand:BuildCommand;
 
     test.beforeEach(() => {
-        if (!fs.existsSync(MCT_BUILD_API_INSTANCE_PATH)) {
-            fs.mkdirSync(MCT_BUILD_API_INSTANCE_PATH, { recursive: true });
-        }
-
         api = new Api();
         buildCommand = api.getCommandForNoun('build') as BuildCommand;
-    });
-
-    test.afterEach(() => {
-        fs.rmSync(MCT_BUILD_API_INSTANCE_PATH, {recursive: true, force: true});
     });
 
     test('Does not throw', async () => {
@@ -85,8 +73,6 @@ test.describe('BuildCommand', () => {
         await expect(browseBarObjectLabel).toHaveText('My Items');
 
         expect(errors).toEqual([]);
-
-        fs.rmSync(fullInstancePath, {recursive: true});
     });
 
     test('builds a new instance based on a recipe', async ({ page }) => {
@@ -115,7 +101,22 @@ test.describe('BuildCommand', () => {
         await expect(versionNumberLabel).toHaveText('Version: 4.0.0');
 
         expect(errors).toEqual([]);
+    });
 
-        fs.rmSync(fullInstancePath, {recursive: true});
+    test('builds successfully from the AMPCS/MCWS recipe', async ({ page }) => {
+        test.slow();
+        const instanceName:string = randomUUID();
+        const fullInstancePath = path.join(MCT_BUILD_API_INSTANCE_PATH, instanceName);
+        expect(fs.existsSync(fullInstancePath)).toBe(false);
+        await buildCommand.execute(undefined, undefined, {instance: instanceName, recipe: path.join(RECIPES_PATH, 'mcws', 'dev.yaml') });
+        expect(fs.existsSync(fullInstancePath)).toBe(true);
+        expect(fs.existsSync(path.join(fullInstancePath, 'index.html'))).toBe(true);
+
+        await page.goto(`/${instanceName}/index.html`);
+        const aboutModalLabel = page.getByLabel('About Modal');
+        await expect(aboutModalLabel).toBeVisible();
+        await aboutModalLabel.click();
+        const mcwsLabel = page.locator('.l-vista-build-info', {hasText: 'Open MCT for MCWS'});
+        await expect(mcwsLabel).toBeVisible();
     });
 });

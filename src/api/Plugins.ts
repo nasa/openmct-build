@@ -39,7 +39,7 @@ export default class PluginsApi{
                 plugin.setNpmPackageName(`file:${absolutePath}`);
             }
             const npmPackageManager:NpmPackageManager = NpmPackageManager.getNodePackageManagerForInstance({instance, config});
-            const npmPackage:NpmPackage = npmPackageManager.getPackage(plugin.getNpmPackageName());
+            const npmPackage:NpmPackage = await npmPackageManager.getInstalledPackage(plugin.getNpmPackageName());
             name = npmPackage.getResolvedPackageName();
             if (name === undefined || name.trim().length === 0) {
                 throw new InvalidApiCallError(`No valid Open MCT plugin was found with the name '${npmPackageName}'`);
@@ -58,7 +58,8 @@ export default class PluginsApi{
         }
         config.addPlugin(plugin);
         this.#configurator.saveForInstance(instance, config);
-        this.#rebuild(instance);
+
+        return this.#rebuild(instance);
     }
     async #getMatchingPlugin(name: string, instance: string, npmPackage?: string): Promise<OpenMctPlugin | undefined> {
         if (name.startsWith('openmct.')) {
@@ -195,7 +196,7 @@ export default class PluginsApi{
         }
 
         this.#configurator.saveForInstance(instance, config);
-        this.#rebuild(instance);
+        return this.#rebuild(instance);
     }
 
     async configure(name:string, {instance, enabled, npmPackage, options}: {instance: string, enabled?: boolean, npmPackage?: string, options?: any}) {
@@ -225,12 +226,12 @@ export default class PluginsApi{
         }
 
         this.#configurator.saveForInstance(instance, config);
-        this.#rebuild(instance);
+        return this.#rebuild(instance);
     }
 
     #rebuild(instance: string) {
         console.log(`Rebuilding instance ${instance}`);
         const buildCommand:BuildCommand = new BuildCommand();
-        buildCommand.execute(undefined, undefined, {instance});
+        return buildCommand.execute(undefined, undefined, {instance});
     }
 }
