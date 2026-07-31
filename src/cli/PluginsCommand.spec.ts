@@ -4,28 +4,7 @@ import PluginsCommand from "./PluginsCommand";
 import BuildCommand from "./BuildCommand";
 import * as fs from 'fs';
 import path from "path";
-
-/**
- * Captures everything written to this process's stdout (console.log, console.info,
- * direct process.stdout.write calls) while `during` runs. Output still reaches the
- * real stdout; this just tees it into the returned string.
- */
-async function captureStdout(during: () => Promise<unknown>): Promise<string> {
-    const chunks: string[] = [];
-    const originalWrite = process.stdout.write.bind(process.stdout);
-    process.stdout.write = ((chunk: string | Uint8Array, ...args: any[]) => {
-        chunks.push(chunk.toString());
-        return originalWrite(chunk, ...args);
-    }) as typeof process.stdout.write;
-
-    try {
-        await during();
-    } finally {
-        process.stdout.write = originalWrite;
-    }
-
-    return chunks.join('');
-}
+import { captureStdOut } from './TestUtils';
 
 test.describe('PluginsCommand verb arguments', () => {
     const instanceOption = {
@@ -247,7 +226,7 @@ test.describe('PluginsCommand', () => {
     });
 
     test('Lists installed plugins', async () => {
-        const outputOfFirstListCommand = await captureStdout(() =>
+        const outputOfFirstListCommand = await captureStdOut(() =>
             pluginsCommand.execute('list', undefined, {instance: 'default'})
         );
 
@@ -265,7 +244,7 @@ test.describe('PluginsCommand', () => {
 
         await pluginsCommand.execute('add', `file:${path.join(EXAMPLE_RECIPES_PATH, 'hello-world')}`, {instance: 'default'});
 
-        const outputOfSecondListCommand = await captureStdout(() =>
+        const outputOfSecondListCommand = await captureStdOut(() =>
             pluginsCommand.execute('list', undefined, {instance: 'default'})
         );
 
@@ -273,7 +252,7 @@ test.describe('PluginsCommand', () => {
     });
 
     test('Provides info on a single plugin', async () => {
-        const outputOfInfoCommand = await captureStdout(() =>
+        const outputOfInfoCommand = await captureStdOut(() =>
             pluginsCommand.execute('info', 'openmct.plugins.Conductor', {instance: 'default'})
         );
         expect(outputOfInfoCommand).toContain('Instance: default');
@@ -289,7 +268,7 @@ test.describe('PluginsCommand', () => {
 
         await pluginsCommand.execute('configure', 'hello-world', {instance: 'default', enabled: false});
 
-        const outputOfInfoCommand = await captureStdout(() =>
+        const outputOfInfoCommand = await captureStdOut(() =>
             pluginsCommand.execute('info', 'hello-world', {instance: 'default'})
         );
 
