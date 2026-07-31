@@ -19,10 +19,6 @@ test.describe('BuildCommand', () => {
                     short: 'p',
                     default: undefined,
                 },
-                legacyPeerDeps: {
-                    type: 'boolean',
-                    default: undefined,
-                },
                 recipe: {
                     type: 'string',
                     short: 'r',
@@ -116,32 +112,5 @@ test.describe('BuildCommand', () => {
         await aboutModalLabel.click();
         const mcwsLabel = page.locator('.l-vista-build-info', {hasText: 'Open MCT for MCWS'});
         await expect(mcwsLabel).toBeVisible();
-    });
-
-    test('persists legacyPeerDeps when passed via CLI', async () => {
-        const instanceName = randomUUID();
-        const result = await buildCommand.execute(undefined, undefined, {
-            instance: instanceName,
-            legacyPeerDeps: true
-        });
-        expect(result.getConfig().getLegacyPeerDeps()).toBe(true);
-        const instanceConfig = fs.readFileSync(
-            path.join(MCT_BUILD_API_INSTANCE_PATH, instanceName, 'instance.yaml'),
-            'utf8'
-        );
-        expect(instanceConfig).toContain('legacyPeerDeps: true');
-    });
-
-    test('does not set legacyPeerDeps when CLI flag is omitted', async () => {
-        const instanceName = randomUUID();
-        const result = await buildCommand.execute(undefined, undefined, {
-            instance: instanceName
-        });
-        expect(result.getConfig().getLegacyPeerDeps()).toBe(false);
-        const instanceConfig = fs.readFileSync(
-            path.join(MCT_BUILD_API_INSTANCE_PATH, instanceName, 'instance.yaml'),
-            'utf8'
-        );
-        expect(instanceConfig).not.toContain('legacyPeerDeps: true');
     });
 });

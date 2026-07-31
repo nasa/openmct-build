@@ -117,8 +117,7 @@ export default class OpenMctConfiguration {
     setOpenMctVersion(version: string) {
         this.#configuration.openmct = {
             version,
-            plugins: this.#configuration.openmct.plugins,
-            legacyPeerDeps: this.#configuration.openmct.legacyPeerDeps
+            plugins: this.#configuration.openmct.plugins
         };
     }
 
@@ -135,19 +134,7 @@ export default class OpenMctConfiguration {
     setNpmPackage(npmPackage: string) {
         this.#configuration.openmct = {
             npmPackage,
-            plugins: this.#configuration.openmct.plugins,
-            legacyPeerDeps: this.#configuration.openmct.legacyPeerDeps
-        };
-    }
-
-    getLegacyPeerDeps(): boolean {
-        return this.#configuration.openmct.legacyPeerDeps ?? false;
-    }
-
-    setLegacyPeerDeps(legacyPeerDeps: boolean) {
-        this.#configuration.openmct = {
-            ...this.#configuration.openmct,
-            legacyPeerDeps
+            plugins: this.#configuration.openmct.plugins
         };
     }
 

@@ -9,7 +9,7 @@ import OpenMctInstance from "../openmct/OpenMctInstance";
 
 export default class Build {
 
-    async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage, legacyPeerDeps}: {instance: string, recipe?: string, version?: string, npmPackage?: string, legacyPeerDeps?: boolean}) {
+    async execute(verb: undefined, name: undefined, {instance, recipe, version, npmPackage}: {instance: string, recipe?: string, version?: string, npmPackage?: string}) {
         const fullInstancePath:string = path.join(INSTANCE_PATH, instance);
         const configurator:MctYamlConfigurator = new MctYamlConfigurator();
         const config:OpenMctConfiguration = await configurator.resolveConfiguration({recipe, instance});
@@ -22,9 +22,6 @@ export default class Build {
         }
         if (npmPackage !== undefined) {
             config.setNpmPackage(npmPackage);
-        }
-        if (legacyPeerDeps === true) {
-            config.setLegacyPeerDeps(true);
         }
         
         configurator.saveForInstance(instance, config);
