@@ -18,5 +18,4 @@ export default class InstalledNpmPackage extends NpmPackage {
     getRelativeInstalledPath(): string {
         return path.join('node_modules', this.getResolvedPackageName());
     }
-
 }
