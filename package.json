@@ -1,7 +1,7 @@
 {
   "name": "openmct-build",
   "version": "0.0.1",
-  "description": "",
+  "description": "Command Line Interface for building and managing openmct applications.",
   "main": "scripts/mct.ts",
   "bin": {
     "mct": "scripts/mct.ts"
