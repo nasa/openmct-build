@@ -37,7 +37,7 @@ openmct:
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
   - openmct-mcws-plugin:
-      npmPackage: openmct-mcws-plugin@next
+      npmPackage: NASA-AMMOS/openmct-mcws#release/6.0.0-rc3
       options:
         useDeveloperStorage: false
         proxyUrl: 'http://localhost:8080/'

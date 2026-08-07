@@ -1,10 +1,8 @@
 # yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
 # Builds Open MCT for MCWS without dev plugins enabled. Requires an MCWS server to connect to.
 openmct:
-  version: latest 
+  npmPackage: ../../../openmct
   plugins:
-  - openmct.plugins.MyItems:
-      enabled: false
   - openmct.plugins.Snow # Theme: 'Snow', 'Espresso' or 'Maelstrom'
   - openmct.plugins.ObjectMigration
   - openmct.plugins.ClearData:
@@ -36,18 +34,18 @@ openmct:
         useClockIndicator: false
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
+  - openmct.plugins.MyItems:
+      enabled: false
   - openmct-mcws-plugin:
-      npmPackage: openmct-mcws-plugin@next
+      npmPackage: ../../../OMM/openmct-mcws
       options:
-        runtimeConfig: config.json
         useDeveloperStorage: false
-        camUrl: 'https://atb-ocio-12b.jpl.nasa.gov:8443/cam-ui/login'
         mcwsUrl: 'https://uphill.jpl.nasa.gov/mcws'
         namespaces:
           - key: 'r60-testing'
-            name: 'R6.0 Test Shared'
+            name: 'R6.0 Testing Shared'
             url: '/gov/nasa/jpl/mcs/project/ammos/dev/openmct/r60-testing/shared'
           - userNamespace: true
             key: 'r60-testing'
-            name: 'R6.0 Test Users'
+            name: 'R6.0 Testing Users'
             url: '/gov/nasa/jpl/mcs/project/ammos/dev/openmct/r60-testing/users'
