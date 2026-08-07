@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
+# Builds Open MCT for MCWS without dev plugins enabled. Requires an MCWS server to connect to.
+openmct:
+  version: latest 
+  plugins:
+  - openmct.plugins.MyItems:
+      enabled: false
+  - openmct.plugins.Snow # Theme: 'Snow', 'Espresso' or 'Maelstrom'
+  - openmct.plugins.ObjectMigration
+  - openmct.plugins.ClearData:
+      options:
+        - ['table', 'telemetry.plot.overlay', 'telemetry.plot.stacked', 'vista.packetSummaryEvents', 'vista.dataProducts', 'vista.packets', 'vista.frameSummary', 'vista.frameWatch', 'vista.chanTableGroup']
+        - indicator: false
+  - openmct.plugins.DisplayLayout:
+      options:
+        showAsView:
+          - summary-widget
+          - vista.packetSummaryEvents
+          - vista.dataProducts
+          - vista.packets
+          - vista.frameSummary
+          - vista.frameWatch
+  - openmct.plugins.Filters:
+      options:
+        - - vista.alarmsView
+          - telemetry.plot.overlay
+          - table
+          - vista.chanTableGroup
+          - vista.commandEventsView
+          - vista.messagesView
+          - vista.evrView
+  - openmct.plugins.UTCTimeSystem
+  - openmct.plugins.Notebook
+  - openmct.plugins.Clock:
+      options:
+        useClockIndicator: false
+  - openmct.plugins.DefaultRootName:
+      options: ['VISTA']
+  - openmct-mcws-plugin:
+      npmPackage: file:/../../../omm/openmct-mcws/package/
+      options:
+        runtimeConfig: config.json
+        useDeveloperStorage: false
+        camUrl: 'https://atb-ocio-12b.jpl.nasa.gov:8443/cam-ui/login'
+        mcwsUrl: 'https://uphill.jpl.nasa.gov/mcws'
+        namespaces:
+          - key: 'r60-testing'
+            name: 'R6.0 Test Shared'
+            url: '/gov/nasa/jpl/mcs/project/ammos/dev/openmct/r60-testing/shared'
+          - userNamespace: true
+            key: 'r60-testing'
+            name: 'R6.0 Test Users'
+            url: '/gov/nasa/jpl/mcs/project/ammos/dev/openmct/r60-testing/users'
