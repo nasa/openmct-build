@@ -95,24 +95,6 @@ runtimeSubstitutionsInternal[regex] = (originalProperty) => {
 
 export const runtimeSubstitutions = runtimeSubstitutionsInternal;
 export const timeMathSubstitutions = timeMathSubstitutionsInternal;
-export function getUserDefinedSubstitutions() {
-    const raw = window.__MCT_BUILD__?.substitutions ?? {};
-    const normalized = {};
-    for (const [name, value] of Object.entries(raw)) {
-        const token = `\${${name}}`;
-        const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regexKey = `/${escaped}/`;
-        normalized[regexKey] = (originalProperty) => {
-            const resolved = typeof value === 'function' ? value(originalProperty) : value;
-            // if it was only the substitution string, return the resolved value
-            if (originalProperty === token) {
-                return resolved;
-            }
-            return originalProperty.replaceAll(token, String(resolved));
-        };
-    }
-    return normalized;
-}
 
 export function getEpochTime(timeExpression) {
     timeExpression = timeExpression.replaceAll(compiledRegex, (match, p1) => {
