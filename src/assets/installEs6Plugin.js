@@ -1,4 +1,4 @@
-import { substituteVariables, runtimeSubstitutions } from "./mct-builder-core.js";
+import { substituteVariables, runtimeSubstitutions, callInstallFunction } from "./mct-builder-core.js";
 
 export default async function installEs6Plugin({openmct, importPath, installFunctionName, installFunctionOptions, buildTimeSubstitutions}) {
     const imports = await import(importPath);
@@ -12,13 +12,21 @@ export default async function installEs6Plugin({openmct, importPath, installFunc
     if (exportedNames.length === 1) {
         const resolvedInstallFunctionName = exportedNames[0];
         const installFunction = imports[resolvedInstallFunctionName];
-        openmct.install(installFunction(optionsWithSubstitutions));
+        openmct.install(callInstallFunction(
+            installFunction, 
+            optionsWithSubstitutions, 
+            { enableRegistration: true }
+        ));
     } else {
         const exportedFunctionMap = Object.keys(imports).reduce((map, key) => {
             map.set(key.toLowerCase().replaceAll(/[^a-z0-9]/g, ''), imports[key]);
             return map;
         }, new Map());
         const installFunction = exportedFunctionMap.get(installFunctionName.toLowerCase().replaceAll(/[^a-z0-9]/g, ''));
-        openmct.install(installFunction(optionsWithSubstitutions));
+        openmct.install(callInstallFunction(
+            installFunction, 
+            optionsWithSubstitutions, 
+            { enableRegistration: true }
+        ));
     }
 }
