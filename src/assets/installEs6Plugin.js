@@ -8,7 +8,6 @@ export default async function installEs6Plugin({openmct, importPath, installFunc
         ...buildTimeSubstitutions,
         ...runtimeSubstitutions
     });
-
     // If only one export, assume it is the install function. This simplifies things for the 90% case of a single default export
     if (exportedNames.length === 1) {
         const resolvedInstallFunctionName = exportedNames[0];
