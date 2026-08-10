@@ -46,8 +46,8 @@ openmct:
         namespaces:
           - key: 'r60-testing'
             name: 'R6.0 Test Shared'
-            url: '/Users/username/fastmio/shared'
+            url: '/fastmio/shared'
           - userNamespace: true
             key: 'r60-testing'
             name: 'R6.0 Test Users'
-            url: '/Users/username/fastmio/users'
+            url: '/fastmio/users'
