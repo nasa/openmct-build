@@ -103,6 +103,46 @@ test.describe('BuildCommand', () => {
         expect(errors).toEqual([]);
     });
 
+    test('builds a new instance based with correct runtime substitutions', async ({ page }) => {
+        const instanceName:string = randomUUID();
+        const fullInstancePath = path.join(MCT_BUILD_API_INSTANCE_PATH, instanceName);
+        expect(fs.existsSync(fullInstancePath)).toBe(false);
+        await buildCommand.execute(undefined, undefined, {instance: instanceName, recipe: path.join(EXAMPLE_RECIPES_PATH, 'runtime-substitutions', 'recipe.yaml') });
+        expect(fs.existsSync(fullInstancePath)).toBe(true);
+        expect(fs.existsSync(path.join(fullInstancePath, 'index.html'))).toBe(true);
+
+        const errors: string[] = [];
+        page.on('pageerror', (error) => errors.push(error.message));
+        page.on('console', (message) => {
+            if (message.type() === 'error') errors.push(message.text());
+        });
+
+        await page.goto(`/${instanceName}/index.html`);        
+        await page.getByRole('treeitem', { name: 'Sunrise' }).click();
+
+        const sunriseTime = await page.locator('.c-sunrise__time').textContent();
+        const sunriseDate = await page.locator('.c-sunrise__date').textContent();
+        const sunriseLatitude = await page.locator('.c-sunrise__latitude').textContent();
+        const sunriseLongitude = await page.locator('.c-sunrise__longitude').textContent();
+       
+        // negative test
+        expect(sunriseTime).not.toBe('{sunriseTime}');
+        expect(sunriseDate).not.toBe('${sunriseDate}');
+        expect(sunriseLatitude).not.toBe('${sunriseLatitude}');
+        expect(sunriseLongitude).not.toBe('${sunriseLongitude}');
+
+        const timePattern = /^\d{1,2}:\d{2}(?:\s?[AP]M)?$/i;
+        const datePattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+
+        // positive test
+        expect(sunriseTime).toMatch(timePattern);
+        expect(sunriseDate).toMatch(datePattern);
+        expect(sunriseLatitude).toBe('33.158');
+        expect(sunriseLongitude).toBe('-117.351');
+
+        expect(errors).toEqual([]);
+    });
+
     test('builds successfully from the AMPCS/MCWS recipe', async ({ page }) => {
         test.slow();
         const instanceName:string = randomUUID();
