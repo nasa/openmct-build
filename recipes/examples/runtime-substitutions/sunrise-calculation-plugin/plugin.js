@@ -2,8 +2,8 @@ import { calculateSunrise } from './calculateSunrise.js';
 
 export function sunriseCalculationPlugin(options = {}, {registerRuntimeSubstitution} = {}) {
     const {
-        latitude = 34.05,   // fallback (e.g. Pasadena) if not provided
-        longitude = -118.25,
+        latitude = 33.158,
+        longitude = -117.351,
         date: dateOption = new Date()
     } = options;
     const date = dateOption instanceof Date ? dateOption : new Date(dateOption);
