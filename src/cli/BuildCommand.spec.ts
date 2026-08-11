@@ -103,7 +103,7 @@ test.describe('BuildCommand', () => {
         expect(errors).toEqual([]);
     });
 
-    test('builds a new instance based with correct runtime substitutions', async ({ page }) => {
+    test('builds a new instance with correct runtime substitutions from plugins', async ({ page }) => {
         const instanceName:string = randomUUID();
         const fullInstancePath = path.join(MCT_BUILD_API_INSTANCE_PATH, instanceName);
         expect(fs.existsSync(fullInstancePath)).toBe(false);
