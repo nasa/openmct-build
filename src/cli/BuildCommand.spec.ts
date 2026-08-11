@@ -137,6 +137,7 @@ test.describe('BuildCommand', () => {
         // positive test
         expect(sunriseTime).toMatch(timePattern);
         expect(sunriseDate).toMatch(datePattern);
+        // these are the values from the recipe at recipes/examples/runtime-substitutions/recipe.yaml
         expect(sunriseLatitude).toBe('33.158');
         expect(sunriseLongitude).toBe('-117.351');
 
