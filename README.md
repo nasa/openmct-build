@@ -302,6 +302,39 @@ openmct:
           end: "${now}"
 ```
 
+##### Runtime substitutions from plugins
+
+In addition to the built-in substitutions above, plugins can register their own substitutions at runtime. This is useful when a value must be computed in the browser, or when configuration cannot be expressed in YAML alone.
+
+To register a substitution, a plugin's install function may accept a second argument with a `registerRuntimeSubstitution` helper:
+
+```js
+export function myPlugin(options = {}, { registerRuntimeSubstitution } = {}) {
+    registerRuntimeSubstitution('myValue', 'hello');
+    return function install(openmct) {
+        // ...
+    };
+}
+```
+
+Registered values can then be referenced in later plugin options using `${myValue}`:
+
+```yaml
+openmct:
+  version: latest
+  plugins:
+    - my-plugin:
+        npmPackage: file:./my-plugin
+    - another-plugin:
+        npmPackage: file:./another-plugin
+        options:
+          greeting: ${myValue}
+```
+
+Plugin order matters. The plugin that registers a substitution must appear _before_ any plugin that consumes it.
+
+See `recipes/examples/runtime-substitutions` for a complete example.
+
 ### Modifying an Instance After Creation
 
 After creating an instance, you can modify any plugin configuration either by editing the `instance.yaml` file directly, or using the `mct plugins` commands.
@@ -350,8 +383,13 @@ Recipes are simply YAML files with the same structure as `instance.yaml`. As suc
 
 See the `recipes/` directory for example recipes:
 
-- `recipes/demo.yaml` - A demo configuration with common builtin plugins
 - `recipes/yamcs.yaml` - A configuration for YAMCS integration
+- `recipes/mcws/` - Example configurations for Open MCT with the MCWS plugin (`dev.yaml`, `prod.yaml`)
+- `recipes/examples/demo.yaml` - A demo configuration with common builtin and example plugins
+- `recipes/examples/custom-openmct-build` - Same demo-style plugin set, but using a custom Open MCT npm package (`npmPackage`) instead of a published version
+- `recipes/examples/hello-world` - A minimal plugin package that can be added to an instance with `mct plugins add`
+- `recipes/examples/local-plugin` - Building an instance that references local plugin code via `file:` npm packages, including multiple exports from one package and `${pluginContextPath}` for assets
+- `recipes/examples/runtime-substitutions` - An example of plugins registering and consuming runtime substitutions
 
 ## Development
 
