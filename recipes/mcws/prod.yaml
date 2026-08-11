@@ -1,8 +1,10 @@
 # yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
 # Builds Open MCT for MCWS without dev plugins enabled. Requires an MCWS server to connect to.
 openmct:
-  version: latest 
+  version: next
   plugins:
+  - substitutions-test-plugin:
+      npmPackage: file:/Users/jjviglio/OpenMCT/OMM/substitutionsTestPlugin
   - openmct.plugins.Snow # Theme: 'Snow', 'Espresso' or 'Maelstrom'
   - openmct.plugins.ObjectMigration
   - openmct.plugins.ClearData:
@@ -34,8 +36,10 @@ openmct:
         useClockIndicator: false
   - openmct.plugins.DefaultRootName:
       options: ['VISTA']
+  - openmct.plugins.MyItems:
+      enabled: false
   - openmct-mcws-plugin:
-      npmPackage: openmct-mcws-plugin
+      npmPackage: openmct-mcws-plugin@next
       options:
         useDeveloperStorage: false
         camUrl: ''
@@ -43,8 +47,8 @@ openmct:
         namespaces:
           - key: 'r50-dev'
             name: 'R5.0 Shared'
-            url: ''
+            url: '${path_to_shared}/shared'
           - userNamespace: true
             key: 'r50-dev'
             name: 'R5.0 Users'
-            url: ''
+            url: '${path_to_users_full}'
