@@ -1,0 +1,12 @@
+{
+  "name": "sunrise-plugin",
+  "version": "1.0.0",
+  "description": "An example sunrise plugin for Open MCT build tool. This plugin displays the sunrise time in the Open MCT interface using the sunriseTime, sunriseDate, sunriseLatitude, and sunriseLongitude substitutions.",
+  "main": "plugin.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "National Aeronautics and Space Administration",
+  "license": "Apache-2.0"
+}

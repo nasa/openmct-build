@@ -27,6 +27,27 @@ export function substituteVariables(input, variables) {
     }));
 }
 
+// gives plugins the ability to register runtime substitutions, 
+// while protecting existing substitutions object from modification
+function registerRuntimeSubstitution(key, value) {
+    const token = `\${${key}}`;
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regexKey = `/${escaped}/`;
+
+    runtimeSubstitutions[regexKey] = (original) => original.replaceAll(token, value);
+}
+
+// add install helper to allow plugins to optionally register runtime substitutions
+// as well as support array syntax for install functions (ex: Notebooks, ClearData, etc)
+export function callInstallFunction(installFunction, options, { enableRegistration = false } = {}) {
+    if (Array.isArray(options)) {
+        return installFunction(...options);
+    }
+    return enableRegistration
+        ? installFunction(options, { registerRuntimeSubstitution })
+        : installFunction(options);
+  }
+
 export async function loadUmd(src) {
     const mockExports = {};
     const mockModule = {exports: mockExports};

@@ -26,7 +26,7 @@ You can now preview your instance using an HTTP server.
 
 eg.
 ```bash
-npx http-server instance/mct-examples
+npx http-server instances/mct-examples
 ```
 
 Navigate to `http://localhost:8080` in your browser to view the example instance.

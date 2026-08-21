@@ -1,0 +1,12 @@
+{
+  "name": "sunrise-calculation-plugin",
+  "version": "1.0.0",
+  "description": "An example sunrise calculation plugin for Open MCT build tool. This plugin calculates the sunrise time for a given location and sets the sunriseTime substitution.",
+  "main": "plugin.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "National Aeronautics and Space Administration",
+  "license": "Apache-2.0"
+}

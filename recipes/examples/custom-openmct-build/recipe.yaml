@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
+# yaml-language-server: $schema=../../../src/assets/openmct-configuration-schema.json
 # The equivalent of runnning the dev configuration of Open MCT provided by the Open MCT GitHub repository
 openmct:
   npmPackage: file:./assets/openmct-4.2.0-next.tgz
