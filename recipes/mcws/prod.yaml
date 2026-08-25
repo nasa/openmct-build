@@ -43,10 +43,10 @@ openmct:
         camUrl: ''
         mcwsUrl: ''
         namespaces:
-          - key: 'r50-dev'
-            name: 'R5.0 Shared'
+          - key: 'example-key'
+            name: 'Shared'
             url: ''
           - userNamespace: true
-            key: 'r50-dev'
-            name: 'R5.0 Users'
+            key: 'example-key'
+            name: 'Users'
             url: ''
