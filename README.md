@@ -395,22 +395,25 @@ See the `recipes/` directory for example recipes:
 
 ### Type Generation
 
-This project uses [json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript) to generate TypeScript types from the JSON Schema.
+This project uses [json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript) to generate TypeScript types from its JSON Schemas.
 
 #### Generating Types
 
-Types are automatically generated:
-1. When you run `npm install` (via the `postinstall` hook)
-2. Manually by running:
+Generate the types by running:
 ```bash
 npm run generate:types
 ```
 
-The generated types will be available in `src/openmct/types.ts`.
+This regenerates two files from their corresponding schemas:
+
+| Schema | Generated types |
+| --- | --- |
+| `src/assets/openmct-configuration-schema.json` | `src/openmct/OpenMctConfigurationDocument.ts` |
+| `src/npm/openmct-plugins-index-schema.json` | `src/npm/OpenMctPluginsIndex.ts` |
 
 #### Schema Updates
 
-When you update the schema in `src/yaml/openmct-configuration-schema.json`:
+When you update either schema listed above:
 1. Run `npm run generate:types` to update the TypeScript types
 2. The TypeScript compiler will show any type errors in your code
 
