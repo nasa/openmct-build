@@ -40,16 +40,16 @@ openmct:
   - openmct.plugins.example.Generator
   # Open MCT for MCWS Plugin
   - openmct-mcws-plugin:
-      npmPackage: NASA-AMMOS/openmct-mcws#test-peer-dep
+      npmPackage: openmct-mcws-plugin@latest
       options:
         useDeveloperStorage: true
         camUrl: ''
         mcwsUrl: http://localhost:8090/mcws-test
         namespaces:
-          - key: 'r50-dev'
-            name: 'R5.0 Shared'
-            url: ''
+          - key: 'example-key'
+            name: 'Deployment Shared'
+            url: '/path/to/persistence/shared'
           - userNamespace: true
-            key: 'r50-dev'
-            name: 'R5.0 Users'
-            url: ''
+            key: 'example-key'
+            name: 'Deployment Users'
+            url: '/path/to/persistence/users'
