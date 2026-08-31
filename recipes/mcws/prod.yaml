@@ -37,16 +37,16 @@ openmct:
   - openmct.plugins.MyItems:
       enabled: false
   - openmct-mcws-plugin:
-      npmPackage: latest
+      npmPackage: openmct-mcws-plugin@latest
       options:
         useDeveloperStorage: false
         camUrl: ''
         mcwsUrl: ''
         namespaces:
           - key: 'example-key'
-            name: 'Shared'
-            url: ''
+            name: 'Deployment Shared'
+            url: '/path/to/persistence/shared'
           - userNamespace: true
             key: 'example-key'
-            name: 'Users'
-            url: ''
+            name: 'Deployment Users'
+            url: '/path/to/persistence/users'
