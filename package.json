@@ -2,11 +2,14 @@
   "name": "openmct-build",
   "version": "0.0.1",
   "description": "Command Line Interface for building and managing openmct applications.",
-  "main": "scripts/mct.ts",
+  "main": "dist/scripts/mct.js",
   "bin": {
-    "mct": "scripts/mct.ts"
+    "mct": "dist/scripts/mct.js"
   },
   "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.build.json && node scripts/post-build.mjs",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
     "test": "playwright test",
     "test:watch": "playwright test --ui",
     "test:coverage": "c8 --all --src src --include 'src/**' --exclude '**/*.spec.ts' --exclude 'src/test/**' --exclude 'src/assets/**' --exclude 'src/openmct/OpenMctConfigurationDocument.ts' --reporter=text --reporter=lcov playwright test",
@@ -39,5 +42,11 @@
     "lodash.merge": "^4.6.2",
     "pacote": "^22.0.0",
     "tsx": "^4.7.1"
-  }
+  },
+  "types": "dist/scripts/mct.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "PLUGIN_DEVELOPER_GUIDE.md"
+  ]
 }

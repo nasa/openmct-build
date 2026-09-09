@@ -9,7 +9,7 @@ import InvalidApiCallError from "../src/api/InvalidApiCallError";
 async function main() {
     const api = new Api();
 
-    let args = parseArgs({
+    const globalArgs = parseArgs({
         allowPositionals: true,
         strict: false,
         options: {
@@ -50,7 +50,7 @@ async function main() {
             }
         }
     });
-    const [noun, verb, name] = args.positionals;
+    const [noun, verb, name] = globalArgs.positionals;
     let command: Command;
     try {
         command = api.getCommandForNoun(noun);
@@ -62,12 +62,12 @@ async function main() {
     const argsForVerb = command.getArgsForVerb(verb);
 
     try {
-        args = parseArgs({
+        const verbArgs = parseArgs({
             allowPositionals: true,
             strict: true,
             ...argsForVerb
         });
-        await command.execute(verb, name, args.values);
+        await command.execute(verb, name, verbArgs.values);
         process.exit(0);
     } catch (e: any) {
         if (e instanceof InvalidApiCallError) {
