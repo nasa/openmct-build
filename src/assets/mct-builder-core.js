@@ -5,26 +5,62 @@ export function substituteVariables(input, variables) {
     if (input === undefined || variables === undefined) {
         return undefined;
     }
-    return JSON.parse(JSON.stringify(input, (instanceConfigurationKey, instanceConfigurationValue) => {
-        let result = instanceConfigurationValue;
+    return substituteNode(input, variables);
+}
 
-        if (typeof instanceConfigurationValue === 'string') {
-            for (const [replacementVariableKey, replacementVariableValue] of Object.entries(variables)) {
-                if (replacementVariableKey.startsWith('/')) {
-                    const regex = new RegExp(replacementVariableKey.slice(1, replacementVariableKey.length - 1));
-                    if (regex.test(result)) {
-                        if (typeof replacementVariableValue  === 'function') {
-                            result = replacementVariableValue(result, regex.exec(result));
-                        }
-                    }
-                } else if (result.includes(replacementVariableKey)){
-                    result = result.replaceAll(replacementVariableKey, replacementVariableValue);
-                }
+// Matches a whole-string dynamic marker such as "${dynamic:${now} - ${two_hours}}".
+// The captured group is a time expression in the usual ${}-token vocabulary,
+// evaluated fresh on every invocation of the returned closure.
+const dynamicMarkerRegex = /^\$\{dynamic:(.*)\}$/s;
+
+function substituteNode(node, variables) {
+    if (typeof node === 'string') {
+        return substituteString(node, variables);
+    }
+    if (Array.isArray(node)) {
+        return node.map((item) => substituteNode(item, variables));
+    }
+    if (node !== null && typeof node === 'object') {
+        // Preserve the JSON round-trip semantics this walk replaces:
+        // keys whose value resolves to undefined are dropped.
+        const result = {};
+        for (const [key, value] of Object.entries(node)) {
+            const replaced = substituteNode(value, variables);
+            if (replaced !== undefined) {
+                result[key] = replaced;
             }
         }
-
         return result;
-    }));
+    }
+    return node;
+}
+
+function substituteString(value, variables) {
+    const dynamicMatch = dynamicMarkerRegex.exec(value);
+    if (dynamicMatch) {
+        const timeExpression = dynamicMatch[1];
+        return () => getEpochTime(timeExpression);
+    }
+
+    let result = value;
+
+    for (const [replacementVariableKey, replacementVariableValue] of Object.entries(variables)) {
+        if (typeof result !== 'string') {
+            break;
+        }
+        if (replacementVariableKey.startsWith('/')) {
+            const regex = new RegExp(replacementVariableKey.slice(1, replacementVariableKey.length - 1));
+            if (regex.test(result)) {
+                if (typeof replacementVariableValue === 'function') {
+                    result = replacementVariableValue(result, regex.exec(result));
+                }
+            }
+        } else if (result.includes(replacementVariableKey)) {
+            result = result.replaceAll(replacementVariableKey, replacementVariableValue);
+        }
+    }
+
+    return result;
 }
 
 // gives plugins the ability to register runtime substitutions, 

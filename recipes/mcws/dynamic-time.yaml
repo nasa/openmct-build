@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=../../src/assets/openmct-configuration-schema.json
+# Builds Open MCT for MCWS with dynamic SCET time-conductor presets.
+# Realtime/LAD presets below re-evaluate on every click. Fixed calendar
+# presets cannot live in yaml and ship via mcws-config.json instead; see
+# the "Dynamic time presets" section in recipes/mcws/README.md.
+openmct:
+  version: latest
+  plugins:
+  - openmct.plugins.Snow # Theme: 'Snow', 'Espresso' or 'Maelstrom'
+  - openmct.plugins.ObjectMigration
+  - openmct.plugins.ClearData:
+      options:
+        - ['table', 'telemetry.plot.overlay', 'telemetry.plot.stacked', 'vista.packetSummaryEvents', 'vista.dataProducts', 'vista.packets', 'vista.frameSummary', 'vista.frameWatch', 'vista.chanTableGroup']
+        - indicator: false
+  - openmct.plugins.DisplayLayout:
+      options:
+        showAsView:
+          - summary-widget
+          - vista.packetSummaryEvents
+          - vista.dataProducts
+          - vista.packets
+          - vista.frameSummary
+          - vista.frameWatch
+  - openmct.plugins.Filters:
+      options:
+        - - vista.alarmsView
+          - telemetry.plot.overlay
+          - table
+          - vista.chanTableGroup
+          - vista.commandEventsView
+          - vista.messagesView
+          - vista.evrView
+  - openmct.plugins.UTCTimeSystem
+  - openmct.plugins.Notebook
+  - openmct.plugins.Clock:
+      options:
+        useClockIndicator: false
+  - openmct.plugins.DefaultRootName:
+      options: ['VISTA']
+  # Required core plugins for development
+  - openmct.plugins.LocalStorage
+  - openmct.plugins.MyItems
+  - openmct.plugins.example.Generator
+  # Open MCT for MCWS Plugin
+  - openmct-mcws-plugin:
+      npmPackage: openmct-mcws-plugin@latest
+      options:
+        useDeveloperStorage: true
+        camUrl: ''
+        mcwsUrl: http://localhost:8090/mcws-test
+        namespaces:
+          - key: 'example-key'
+            name: 'Deployment Shared'
+            url: '/path/to/persistence/shared'
+          - userNamespace: true
+            key: 'example-key'
+            name: 'Deployment Users'
+            url: '/path/to/persistence/users'
+        # Realtime preset bounds are clock OFFSETS (applied via setClockOffsets),
+        # so they track "now" inherently and need no dynamic markers. Ends use
+        # a +1 minute lead ("Now +1"); starts look back the labeled span.
+        # LAD clocks show their time system's realtime presets (core matches
+        # history presets by mode, not clock), so no lad presets are defined.
+        time:
+          defaultMode: fixed
+          utcFormat: utc.day-of-year
+          timeSystems:
+            - key: scet
+              modeSettings:
+                realtime:
+                  presets:
+                    - label: Last 5 minutes
+                      bounds:
+                        start: -300000
+                        end: 60000
+                    - label: Last 10 minutes
+                      bounds:
+                        start: -600000
+                        end: 60000
+                    - label: Last half hour
+                      bounds:
+                        start: -1800000
+                        end: 60000
+                    - label: Last two hours
+                      bounds:
+                        start: -7200000
+                        end: 60000
+                    - label: Last eight hours
+                      bounds:
+                        start: -28800000
+                        end: 60000
+            - ert
+          allowRealtime: true
+          allowLAD: true
+          records: 10
