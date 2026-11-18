@@ -16,6 +16,10 @@ openmct:
             showAsView:
             - summary-widget
             - example.imagery
+    # NOTE: instances that install openmct-mcws-plugin ignore these menus.
+    # The mcws TimePlugin installs its own conductor with per-time-system
+    # menus generated from its `time` options, overwriting this one. Tune
+    # mcws conductor menus via `time.timeSystems` modeSettings instead.
     - openmct.plugins.Conductor:
         options:
           menuOptions:

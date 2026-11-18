@@ -1,4 +1,4 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env -S npx tsx
 
 import { parseArgs } from "util";
 import Api from "../src/api/api";
