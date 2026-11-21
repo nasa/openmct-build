@@ -10,7 +10,9 @@
     "test": "playwright test",
     "test:watch": "playwright test --ui",
     "test:coverage": "c8 --all --src src --include 'src/**' --exclude '**/*.spec.ts' --exclude 'src/test/**' --exclude 'src/assets/**' --exclude 'src/openmct/OpenMctConfigurationDocument.ts' --reporter=text --reporter=lcov playwright test",
-    "generate:types": "npx tsx scripts/generate-types.ts"
+    "generate:types": "npx tsx scripts/generate-types.ts",
+    "typecheck": "npx tsc --noEmit",
+    "prepare": "husky"
   },
   "author": "National Aeronautics and Space Administration",
   "license": "UNLICENSED",
@@ -22,6 +24,7 @@
     "@types/pacote": "^11.1.8",
     "c8": "^12.0.0",
     "http-server": "^14.1.1",
+    "husky": "^9.1.7",
     "json-schema-to-typescript": "^15.0.4",
     "test-plugin": "^0.0.2",
     "ts-node": "^10.9.2",

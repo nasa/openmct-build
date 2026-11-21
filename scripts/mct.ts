@@ -9,7 +9,7 @@ import InvalidApiCallError from "../src/api/InvalidApiCallError";
 async function main() {
     const api = new Api();
 
-    let args = parseArgs({
+    let args: ReturnType<typeof parseArgs> = parseArgs({
         allowPositionals: true,
         strict: false,
         options: {
