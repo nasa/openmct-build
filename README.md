@@ -11,7 +11,13 @@ npm install
 npm link
 ```
 
-`npm link` will install `mct` as a global command line tool that can be run from any directory. Open MCT instances will be created in the `instances` directory relative to the current working directory. `npm install` installs the `mct` dependencies.
+`npm install` installs the `mct` dependencies and compiles the TypeScript sources to JavaScript in `dist` (via the `prepare` script). `npm link` will install `mct` as a global command line tool that can be run from any directory. Open MCT instances will be created in the `instances` directory relative to the current working directory.
+
+To rebuild `dist` after changing the sources -
+
+```bash
+npm run build
+```
 
 ## Quick start
 
